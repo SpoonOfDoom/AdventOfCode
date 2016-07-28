@@ -14,11 +14,11 @@ namespace AdventOfCode
 
         static void Main(string[] args)
         {
-            day d;
+            Day d;
 
             try
             {
-                d = new Day5();
+                d = new Day6();
             }
             catch (InputEmptyException ex)
             {

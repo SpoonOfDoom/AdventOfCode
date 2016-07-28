@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -29,18 +30,19 @@ namespace AdventOfCode.days
         { }
     }
 
-    public abstract class day
+    public abstract class Day
     {
         protected string input;
+        protected List<string> inputLines;
         public int Number;
         
-        public day(int number)
+        public Day(int number)
         {
             this.Number = number;
-            this.input = this.getInput();
+            this.getInput();
         }
 
-        public day(int number, string input)
+        public Day(int number, string input)
         {
             if (string.IsNullOrEmpty(input))
             {
@@ -54,9 +56,10 @@ namespace AdventOfCode.days
         /// </summary>
         /// <returns></returns>
 
-        public string getInput()
+        public void getInput()
         {
-            return File.ReadAllText("input\\day" + this.Number + ".txt");
+            this.input = File.ReadAllText("input\\day" + this.Number + ".txt");
+            this.inputLines = File.ReadAllLines("input\\day" + this.Number + ".txt").ToList();
         }
 
         public virtual string getSolutionPart1()
@@ -69,7 +72,7 @@ namespace AdventOfCode.days
         }
     }
 
-    public class Day4 : day
+    public class Day4 : Day
     {
         const int number = 4;
         public Day4() : base(number) { }
@@ -123,7 +126,7 @@ namespace AdventOfCode.days
         
     }
 
-    public class Day5 : day
+    public class Day5 : Day
     {
         const int number = 5;
         public Day5() : base(number) { }
@@ -169,18 +172,32 @@ namespace AdventOfCode.days
 
         public override string getSolutionPart1()
         {
-            var lines = input.Replace("\r", "").Split('\n').ToList();
-            int niceCount = lines.Count(x => isNice(x));
+            int niceCount = inputLines.Count(x => isNice(x));
             return niceCount.ToString();
         }
 
         public override string getSolutionPart2()
         {
-            var lines = input.Replace("\r", "").Split('\n').ToList();
-
-            
-            int niceCount = lines.Count(x => isNice2(x));
+            int niceCount = inputLines.Count(x => isNice2(x));
             return niceCount.ToString();
+        }
+    }
+
+    public class Day6 : Day
+    {
+        const int number = 6;
+        public Day6() : base(number) { }
+
+        private bool[,] lights = new bool[1000,1000];
+        
+        public override string getSolutionPart1()
+        {
+            return base.getSolutionPart1();
+        }
+
+        public override string getSolutionPart2()
+        {
+            return base.getSolutionPart2();
         }
     }
 }
