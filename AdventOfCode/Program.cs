@@ -18,7 +18,7 @@ namespace AdventOfCode
 
             try
             {
-                d = new Day6();
+                d = new Day7();
             }
             catch (InputEmptyException ex)
             {
