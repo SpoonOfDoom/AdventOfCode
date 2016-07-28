@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace AdventOfCode.days
 {
@@ -158,6 +159,14 @@ namespace AdventOfCode.days
             return doubleLetter && vowelCount >= 3;
         }
 
+        private bool isNice2(string myString)
+        {
+            Regex regexBetween = new Regex(@"(\w)\w\1");
+            Regex regexPair = new Regex(@"(\w\w)\w*\1");
+            
+            return regexBetween.IsMatch(myString) && regexPair.IsMatch(myString);
+        }
+
         public override string getSolutionPart1()
         {
             var lines = input.Replace("\r", "").Split('\n').ToList();
@@ -167,7 +176,11 @@ namespace AdventOfCode.days
 
         public override string getSolutionPart2()
         {
-            throw new NotImplementedException();
+            var lines = input.Replace("\r", "").Split('\n').ToList();
+
+            
+            int niceCount = lines.Count(x => isNice2(x));
+            return niceCount.ToString();
         }
     }
 }
