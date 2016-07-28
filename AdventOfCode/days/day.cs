@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AdventOfCode.Extensions;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -202,10 +203,10 @@ namespace AdventOfCode.days
                 var groups = reg.Match(instruction).Groups;
 
                 action = groups[1].Value;
-                x1 = int.Parse(groups[3].Value);
-                y1 = int.Parse(groups[4].Value);
-                x2 = int.Parse(groups[5].Value);
-                y2 = int.Parse(groups[6].Value);
+                x1 = groups[3].Value.ToInt();
+                y1 = groups[4].Value.ToInt();
+                x2 = groups[5].Value.ToInt();
+                y2 = groups[6].Value.ToInt();
             }
         }
         private void executeInstruction(string text)
