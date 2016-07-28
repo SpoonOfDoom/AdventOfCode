@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace AdventOfCode.days
@@ -129,12 +130,39 @@ namespace AdventOfCode.days
         
         private bool isNice(string myString)
         {
-            throw new NotImplementedException();
+            if (myString.Contains("ab") || myString.Contains("cd") || myString.Contains("pq") || myString.Contains("xy"))
+            {
+                return false;
+            }
+            char? lastChar = null;
+            bool doubleLetter = false;
+            int vowelCount = 0;
+
+            for (int i = 0; i < myString.Length; i++)
+            {
+                var c = myString[i];
+                if (lastChar.HasValue && lastChar == c)
+                {
+                    doubleLetter = true;
+                }
+
+
+                if (c.ToString().IndexOfAny(new char[] { 'a', 'e', 'i', 'o', 'u'}) >= 0)
+                {
+                    vowelCount++;
+                }
+
+                lastChar = c;
+            }
+
+            return doubleLetter && vowelCount >= 3;
         }
 
         public override string getSolutionPart1()
         {
-            return base.getSolutionPart1();
+            var lines = input.Replace("\r", "").Split('\n').ToList();
+            int niceCount = lines.Count(x => isNice(x));
+            return niceCount.ToString();
         }
 
         public override string getSolutionPart2()
