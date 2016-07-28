@@ -296,4 +296,20 @@ namespace AdventOfCode.days
             return lightCount.ToString();
         }
     }
+
+    class Day7 : Day
+    {
+        const int number = 7;
+        public Day7() : base(number) { }
+
+        public override string getSolutionPart1()
+        {
+            return base.getSolutionPart1();
+        }
+
+        public override string getSolutionPart2()
+        {
+            return base.getSolutionPart2();
+        }
+    }
 }
