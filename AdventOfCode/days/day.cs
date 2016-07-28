@@ -189,10 +189,65 @@ namespace AdventOfCode.days
         public Day6() : base(number) { }
 
         private bool[,] lights = new bool[1000,1000];
-        
+
+        private struct Instruction
+        {
+            public string action;
+            public int x1, x2, y1, y2;
+
+            public Instruction(string instruction)
+            {
+                Regex reg = new Regex(@"(toggle|turn o(n|ff)) (\d+),(\d+) through (\d+),(\d+)");
+                var groups = reg.Match(instruction).Groups;
+
+                action = groups[1].Value;
+                x1 = int.Parse(groups[3].Value);
+                y1 = int.Parse(groups[4].Value);
+                x2 = int.Parse(groups[5].Value);
+                y2 = int.Parse(groups[6].Value);
+            }
+        }
+        private void executeInstruction(string text)
+        {
+            Instruction i = new Instruction(text);
+
+            for (int x = i.x1; x <= i.x2; x++)
+            {
+                for (int y = i.y1; y <= i.y2; y++)
+                {
+                    switch (i.action)
+                    {
+                        case "turn on":
+                            lights[x, y] = true;
+                            break;
+                        case "turn off":
+                            lights[x, y] = false;
+                            break;
+                        case "toggle":
+                            lights[x, y] = !lights[x, y];
+                            break;
+
+                        default:
+                            throw new Exception("Instruction action not parsed properly");
+                            break;
+                    }
+                }
+            }
+        }
         public override string getSolutionPart1()
         {
-            return base.getSolutionPart1();
+            foreach (string line in inputLines)
+            {
+                executeInstruction(line);
+            }
+
+            int lightCount = 0;
+            var test = from bool item in lights
+                       where item
+                       select item;
+            lightCount = test.Count();
+
+            return lightCount.ToString();
         }
 
         public override string getSolutionPart2()
