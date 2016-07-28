@@ -188,7 +188,8 @@ namespace AdventOfCode.days
         const int number = 6;
         public Day6() : base(number) { }
 
-        private bool[,] lights = new bool[1000,1000];
+        private bool[,] lightsBool = new bool[1000, 1000];
+        private int[,] lightsInt = new int[1000, 1000];
 
         private struct Instruction
         {
@@ -218,13 +219,13 @@ namespace AdventOfCode.days
                     switch (i.action)
                     {
                         case "turn on":
-                            lights[x, y] = true;
+                            lightsBool[x, y] = true;
                             break;
                         case "turn off":
-                            lights[x, y] = false;
+                            lightsBool[x, y] = false;
                             break;
                         case "toggle":
-                            lights[x, y] = !lights[x, y];
+                            lightsBool[x, y] = !lightsBool[x, y];
                             break;
 
                         default:
@@ -234,6 +235,36 @@ namespace AdventOfCode.days
                 }
             }
         }
+
+        private void executeInstruction2(string text)
+        {
+            Instruction i = new Instruction(text);
+
+            for (int x = i.x1; x <= i.x2; x++)
+            {
+                for (int y = i.y1; y <= i.y2; y++)
+                {
+                    switch (i.action)
+                    {
+                        case "turn on":
+                            lightsInt[x, y]++;
+                            break;
+                        case "turn off":
+                            lightsInt[x, y] = Math.Max(lightsInt[x,y]-1, 0);
+
+                            break;
+                        case "toggle":
+                            lightsInt[x, y] = lightsInt[x, y] + 2;
+                            break;
+
+                        default:
+                            throw new Exception("Instruction action not parsed properly");
+                            break;
+                    }
+                }
+            }
+        }
+
         public override string getSolutionPart1()
         {
             foreach (string line in inputLines)
@@ -242,7 +273,7 @@ namespace AdventOfCode.days
             }
 
             int lightCount = 0;
-            var test = from bool item in lights
+            var test = from bool item in lightsBool
                        where item
                        select item;
             lightCount = test.Count();
@@ -252,7 +283,17 @@ namespace AdventOfCode.days
 
         public override string getSolutionPart2()
         {
-            return base.getSolutionPart2();
+            foreach (string line in inputLines)
+            {
+                executeInstruction2(line);
+            }
+
+            int lightCount = 0;
+            var test = from int item in lightsInt
+                       select item;
+            lightCount = test.Sum();
+
+            return lightCount.ToString();
         }
     }
 }
