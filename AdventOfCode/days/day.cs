@@ -607,9 +607,25 @@ namespace AdventOfCode.days
         const int number = 8;
         public Day8() : base(number) { }
 
+        private int getMemoryCharacters(string text)
+        {
+            text = text.Replace("\\\\", "1");
+            text = Regex.Replace(text, @"\\x..", "1");
+            text = text.Replace("\\\"", "1");
+            return text.Length - 2;
+        }
         public override string getSolutionPart1()
         {
-            return base.getSolutionPart1();
+            int sumChars = 0;
+            int sumMemoryChars = 0;
+
+            foreach (string line in inputLines)
+            {
+                sumChars += line.Length;
+                sumMemoryChars += getMemoryCharacters(line);
+            }
+
+            return (sumChars - sumMemoryChars).ToString();
         }
 
         public override string getSolutionPart2()
