@@ -614,6 +614,13 @@ namespace AdventOfCode.days
             text = text.Replace("\\\"", "1");
             return text.Length - 2;
         }
+
+        private int getEncodedCharacters(string text)
+        {
+            text = text.Replace("\\", "\\\\");
+            text = text.Replace("\"", "\\\"");
+            return text.Length + 2;
+        }
         public override string getSolutionPart1()
         {
             int sumChars = 0;
@@ -630,7 +637,16 @@ namespace AdventOfCode.days
 
         public override string getSolutionPart2()
         {
-            return base.getSolutionPart2();
+            int sumChars = 0;
+            int sumEncodedChars = 0;
+
+            foreach (string line in inputLines)
+            {
+                sumChars += line.Length;
+                sumEncodedChars += getEncodedCharacters(line);
+            }
+
+            return (sumEncodedChars - sumChars).ToString();
         }
     }
 }
