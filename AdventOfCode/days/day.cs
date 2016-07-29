@@ -649,4 +649,21 @@ namespace AdventOfCode.days
             return (sumEncodedChars - sumChars).ToString();
         }
     }
+
+    public class Day9 : Day
+    {
+        const int number = 9;
+
+        public Day9() : base(number) { }
+
+        public override string getSolutionPart1()
+        {
+            return base.getSolutionPart1();
+        }
+
+        public override string getSolutionPart2()
+        {
+            return base.getSolutionPart2();
+        }
+    }
 }
