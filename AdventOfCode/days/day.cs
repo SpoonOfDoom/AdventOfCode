@@ -491,7 +491,7 @@ namespace AdventOfCode.days
         }
     }
 
-    class Day7 : Day
+    public class Day7 : Day
     {
         const int number = 7;
         public Day7() : base(number) { }
@@ -599,6 +599,22 @@ namespace AdventOfCode.days
             instructionSolved.Clear();
             var solution = getValue("a");
             return solution.ToString();
+        }
+    }
+
+    public class Day8 : Day
+    {
+        const int number = 8;
+        public Day8() : base(number) { }
+
+        public override string getSolutionPart1()
+        {
+            return base.getSolutionPart1();
+        }
+
+        public override string getSolutionPart2()
+        {
+            return base.getSolutionPart2();
         }
     }
 }
