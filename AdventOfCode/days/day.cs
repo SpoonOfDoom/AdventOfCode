@@ -73,6 +73,45 @@ namespace AdventOfCode.days
         }
     }
 
+    public class Day1 : Day
+    {
+        const int number = 1;
+
+        public Day1() : base(number) { }
+
+        public override string getSolutionPart1()
+        {
+            int floor = 0;
+
+            floor += input.Count(c => c == '(');
+            floor -= input.Count(c => c == ')');
+
+            return floor.ToString();
+        }
+
+        public override string getSolutionPart2()
+        {
+            int floor = 0;
+            int i;
+            for (i = 0; i < input.Length; i++)
+            {
+                if (input[i] == '(')
+                {
+                    floor++;
+                }
+                else
+                {
+                    floor--;
+                }
+                if (floor < 0)
+                {
+                    break;
+                }
+            }
+            return (i + 1).ToString();
+        }
+    }
+
     public class Day4 : Day
     {
         const int number = 4;
