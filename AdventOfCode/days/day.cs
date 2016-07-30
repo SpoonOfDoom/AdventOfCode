@@ -491,7 +491,7 @@ namespace AdventOfCode.days
         }
     }
 
-    class Day7 : Day
+    public class Day7 : Day
     {
         const int number = 7;
         public Day7() : base(number) { }
@@ -599,6 +599,142 @@ namespace AdventOfCode.days
             instructionSolved.Clear();
             var solution = getValue("a");
             return solution.ToString();
+        }
+    }
+
+    public class Day8 : Day
+    {
+        const int number = 8;
+        public Day8() : base(number) { }
+
+        private int getMemoryCharacters(string text)
+        {
+            text = text.Replace("\\\\", "1");
+            text = Regex.Replace(text, @"\\x..", "1");
+            text = text.Replace("\\\"", "1");
+            return text.Length - 2;
+        }
+
+        private int getEncodedCharacters(string text)
+        {
+            text = text.Replace("\\", "\\\\");
+            text = text.Replace("\"", "\\\"");
+            return text.Length + 2;
+        }
+        public override string getSolutionPart1()
+        {
+            int sumChars = 0;
+            int sumMemoryChars = 0;
+
+            foreach (string line in inputLines)
+            {
+                sumChars += line.Length;
+                sumMemoryChars += getMemoryCharacters(line);
+            }
+
+            return (sumChars - sumMemoryChars).ToString();
+        }
+
+        public override string getSolutionPart2()
+        {
+            int sumChars = 0;
+            int sumEncodedChars = 0;
+
+            foreach (string line in inputLines)
+            {
+                sumChars += line.Length;
+                sumEncodedChars += getEncodedCharacters(line);
+            }
+
+            return (sumEncodedChars - sumChars).ToString();
+        }
+    }
+
+    public class Day9 : Day
+    {
+        const int number = 9;
+
+        public Day9() : base(number) { }
+
+        struct Route
+        {
+            public string city1;
+            public string city2;
+            public int distance;
+        }
+
+        List<Route> Routes = new List<Route>();
+        HashSet<string> cities = new HashSet<string>();
+
+        private int getDistance(string start, int distance, List<string> targets, bool longest = false)
+        {
+            if (targets.Count == 1)
+            {
+                return distance + Routes
+                                    .Where(r => r.city1 == start && r.city2 == targets.Single() || r.city2 == start && r.city1 == targets.Single())
+                                    .Select(r => r.distance)
+                                    .Single();
+            }
+
+            List<int> distances = new List<int>();
+
+            foreach (var target in targets)
+            {
+                distances.Add(
+                    getDistance(
+                        target,
+                        Routes.Where(r => r.city1 == start && r.city2 == target || r.city2 == start && r.city1 == target).Select(r => r.distance).Single(),
+                        targets.Where(t => t != target).ToList(),
+                        longest
+                        )
+                   );
+            }
+            if (longest)
+            {
+                return distance + distances.Max();
+            }
+            else
+            {
+                return distance + distances.Min();
+            }
+            
+        }
+
+        public override string getSolutionPart1()
+        {
+            Regex regLine = new Regex(@"(\w+) to (\w+) = (\d+)");
+            
+
+            foreach (string line in inputLines)
+            {
+                var groups = regLine.Match(line).Groups;
+                Route r = new Route
+                {
+                    city1 = groups[1].Value,
+                    city2 = groups[2].Value,
+                    distance = groups[3].Value.ToInt()
+                };
+                cities.Add(groups[1].Value);
+                cities.Add(groups[2].Value);
+                Routes.Add(r);
+            }
+            
+            List<int> distances = new List<int>();
+            foreach (var start in cities)
+            {
+                distances.Add(getDistance(start, 0, cities.Where(t => t != start).ToList()));
+            }
+            return distances.Min().ToString();
+        }
+
+        public override string getSolutionPart2()
+        {
+            List<int> distances = new List<int>();
+            foreach (var start in cities)
+            {
+                distances.Add(getDistance(start, 0, cities.Where(t => t != start).ToList(), true));
+            }
+            return distances.Max().ToString();
         }
     }
 }
