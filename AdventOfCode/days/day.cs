@@ -664,8 +664,9 @@ namespace AdventOfCode.days
         }
 
         List<Route> Routes = new List<Route>();
+        HashSet<string> cities = new HashSet<string>();
 
-        private int getDistance(string start, int distance, List<string> targets)
+        private int getDistance(string start, int distance, List<string> targets, bool longest = false)
         {
             if (targets.Count == 1)
             {
@@ -679,17 +680,30 @@ namespace AdventOfCode.days
 
             foreach (var target in targets)
             {
-                distances.Add(getDistance(target,
-                    Routes.Where(r => r.city1 == start && r.city2 == target || r.city2 == start && r.city1 == target).Select(r => r.distance).Single(),
-                    targets.Where(t => t != target).ToList()));
+                distances.Add(
+                    getDistance(
+                        target,
+                        Routes.Where(r => r.city1 == start && r.city2 == target || r.city2 == start && r.city1 == target).Select(r => r.distance).Single(),
+                        targets.Where(t => t != target).ToList(),
+                        longest
+                        )
+                   );
             }
-            return distance + distances.Min();
+            if (longest)
+            {
+                return distance + distances.Max();
+            }
+            else
+            {
+                return distance + distances.Min();
+            }
+            
         }
 
         public override string getSolutionPart1()
         {
             Regex regLine = new Regex(@"(\w+) to (\w+) = (\d+)");
-            HashSet<string> cities = new HashSet<string>();
+            
 
             foreach (string line in inputLines)
             {
@@ -715,7 +729,12 @@ namespace AdventOfCode.days
 
         public override string getSolutionPart2()
         {
-            return base.getSolutionPart2();
+            List<int> distances = new List<int>();
+            foreach (var start in cities)
+            {
+                distances.Add(getDistance(start, 0, cities.Where(t => t != start).ToList(), true));
+            }
+            return distances.Max().ToString();
         }
     }
 }
