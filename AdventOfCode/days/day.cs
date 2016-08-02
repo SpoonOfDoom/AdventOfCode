@@ -737,4 +737,21 @@ namespace AdventOfCode.days
             return distances.Max().ToString();
         }
     }
+
+    public class Day10 : Day
+    {
+        private const int number = 10;
+
+        public Day10() : base(number) { }
+
+        public override string getSolutionPart1()
+        {
+            return base.getSolutionPart1();
+        }
+
+        public override string getSolutionPart2()
+        {
+            return base.getSolutionPart2();
+        }
+    }
 }
