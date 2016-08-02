@@ -803,9 +803,74 @@ namespace AdventOfCode.days
 
         public Day11() : base(number) { }
 
+        private string iteratePassword(string password)
+        {
+            StringBuilder sb = new StringBuilder(password);
+
+            for (int i = sb.Length - 1; i >= 0; i--)
+            {
+                if (sb[i] == 'z')
+                {
+                    sb[i] = 'a';
+                    if (i == 0)
+                    {
+                        sb.Insert(0, 'a');
+                    }
+                }
+                else
+                {
+                    sb[i]++;
+                    break;
+                }
+            }
+
+            return sb.ToString();
+        }
+
+        private bool isValidPassword(string password)
+        {
+            Regex regPair = new Regex(@"(\w)\1");
+
+            var matches = regPair.Matches(password);
+            if (matches.Count <= 1)
+            {
+                return false;
+            }
+
+            if (password.IndexOfAny(new char[] { 'i', 'o', 'l' }) >= 0)
+            {
+                return false;
+            }
+
+            int straightCount = 0;
+            for (int i = 1; i < password.Length; i++)
+            {
+                if (password[i] == password[i - 1] + 1)
+                {
+                    straightCount++;
+                    if (straightCount >= 2)
+                    {
+                        return true;
+                    }
+                }
+                else
+                {
+                    straightCount = 0;
+                }
+            }
+            
+            return false;
+        }
+
         public override string getSolutionPart1()
         {
-            return base.getSolutionPart1();
+            string password = input;
+
+            while (!isValidPassword(password))
+            {
+                password = iteratePassword(password);
+            }
+            return password;
         }
 
         public override string getSolutionPart2()
