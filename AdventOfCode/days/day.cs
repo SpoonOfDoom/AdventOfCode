@@ -800,7 +800,7 @@ namespace AdventOfCode.days
     public class Day11 : Day
     {
         const int number = 11;
-
+        string result1 = null;
         public Day11() : base(number) { }
 
         private string iteratePassword(string password)
@@ -870,12 +870,19 @@ namespace AdventOfCode.days
             {
                 password = iteratePassword(password);
             }
+            result1 = password;
             return password;
         }
 
         public override string getSolutionPart2()
         {
-            return base.getSolutionPart2();
+            string password = iteratePassword(result1);
+
+            while (!isValidPassword(password))
+            {
+                password = iteratePassword(password);
+            }
+            return password;
         }
     }
 }
