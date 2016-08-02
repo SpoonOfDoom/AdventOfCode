@@ -788,7 +788,12 @@ namespace AdventOfCode.days
 
         public override string getSolutionPart2()
         {
-            return base.getSolutionPart2();
+            string result = input;
+            for (int i = 0; i < 50; i++)
+            {
+                result = getNewSequence(result);
+            }
+            return result.Length.ToString();
         }
     }
 }
