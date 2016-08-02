@@ -1,6 +1,7 @@
 ﻿using AdventOfCode.days;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -15,7 +16,7 @@ namespace AdventOfCode
         static void Main(string[] args)
         {
             Day d;
-
+            Stopwatch sw = new Stopwatch();
             try
             {
                 d = new Day10();
@@ -33,23 +34,27 @@ namespace AdventOfCode
 
             try
             {
+                sw.Start();
                 solution1 = d.getSolutionPart1().ToString();
+                sw.Stop();
             }
             catch (NotImplementedException)
             {
                 solution1 = "not implemented.";
             }
-            Console.WriteLine("day " + d.Number + " part 1 : " + solution1);
+            Console.WriteLine($"day {d.Number} part 1 : {solution1} - solved in {sw.Elapsed.TotalSeconds} seconds ({sw.Elapsed.TotalMilliseconds} milliseconds)");
 
             try
             {
+                sw.Restart();
                 solution2 = d.getSolutionPart2().ToString();
+                sw.Stop();
             }
             catch (NotImplementedException)
             {
                 solution2 = "not implemented.";
             }
-            Console.WriteLine("day " + d.Number + " part 2 : " + solution2);
+            Console.WriteLine($"day {d.Number} part 2 : {solution2} - solved in {sw.Elapsed.TotalSeconds} seconds ({sw.Elapsed.TotalMilliseconds} milliseconds)");
 
             Console.Read();
         }
