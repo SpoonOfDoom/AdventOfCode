@@ -885,4 +885,20 @@ namespace AdventOfCode.days
             return password;
         }
     }
+
+    public class Day12 : Day
+    {
+        const int number = 12;
+        public Day12() : base(number) { }
+
+        public override string getSolutionPart1()
+        {
+            return base.getSolutionPart1();
+        }
+
+        public override string getSolutionPart2()
+        {
+            return base.getSolutionPart2();
+        }
+    }
 }
