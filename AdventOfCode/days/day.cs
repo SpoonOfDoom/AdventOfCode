@@ -1,6 +1,7 @@
 ﻿using AdventOfCode.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -742,11 +743,47 @@ namespace AdventOfCode.days
     {
         private const int number = 10;
 
+        private string getNewSequence(string sequence)
+        {
+            StringBuilder sb = new StringBuilder();
+            char? n = null;
+            int count = 0;
+            for (int i = 0; i < sequence.Length; i++)
+            {
+                if (i == 0 || n == sequence[i])
+                {
+                    if (i == 0)
+                    {
+                        n = sequence[i];
+                    }
+                    count++;
+                }
+                else
+                {
+                    sb.Append(count);
+                    sb.Append(n);
+                    count = 1;
+                    n = sequence[i];
+                }
+                if (i == sequence.Length - 1)
+                {
+                    sb.Append(count);
+                    sb.Append(n);
+                }
+            }
+            return sb.ToString();
+        }
+
         public Day10() : base(number) { }
 
         public override string getSolutionPart1()
         {
-            return base.getSolutionPart1();
+            string result = input;
+            for (int i = 0; i < 40; i++)
+            {
+                result = getNewSequence(result);
+            }
+            return result.Length.ToString();
         }
 
         public override string getSolutionPart2()
