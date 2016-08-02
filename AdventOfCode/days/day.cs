@@ -796,4 +796,21 @@ namespace AdventOfCode.days
             return result.Length.ToString();
         }
     }
+
+    public class Day11 : Day
+    {
+        const int number = 11;
+
+        public Day11() : base(number) { }
+
+        public override string getSolutionPart1()
+        {
+            return base.getSolutionPart1();
+        }
+
+        public override string getSolutionPart2()
+        {
+            return base.getSolutionPart2();
+        }
+    }
 }
