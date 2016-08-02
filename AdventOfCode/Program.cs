@@ -1,11 +1,6 @@
 ﻿using AdventOfCode.days;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AdventOfCode
 {
@@ -31,12 +26,13 @@ namespace AdventOfCode
             
 
             string solution1, solution2 = "";
-
+            TimeSpan totalTime = new TimeSpan();
             try
             {
                 sw.Start();
                 solution1 = d.getSolutionPart1().ToString();
                 sw.Stop();
+                totalTime += sw.Elapsed;
             }
             catch (NotImplementedException)
             {
@@ -49,12 +45,14 @@ namespace AdventOfCode
                 sw.Restart();
                 solution2 = d.getSolutionPart2().ToString();
                 sw.Stop();
+                totalTime += sw.Elapsed;
             }
             catch (NotImplementedException)
             {
                 solution2 = "not implemented.";
             }
             Console.WriteLine($"day {d.Number} part 2 : {solution2} - solved in {sw.Elapsed.TotalSeconds} seconds ({sw.Elapsed.TotalMilliseconds} milliseconds)");
+            Console.WriteLine($"total time: {totalTime.TotalSeconds} seconds ({totalTime.TotalMilliseconds} milliseconds)");
 
             Console.Read();
         }
