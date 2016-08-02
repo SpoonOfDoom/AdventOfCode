@@ -891,14 +891,85 @@ namespace AdventOfCode.days
         const int number = 12;
         public Day12() : base(number) { }
 
+        private int addNumbers(int sum, dynamic json)
+        {
+            foreach (Newtonsoft.Json.Linq.JToken token in json.Children())
+            {
+                if (token is Newtonsoft.Json.Linq.JProperty)
+                {
+                    var prop = token as Newtonsoft.Json.Linq.JProperty;
+                    if (prop.Value is Newtonsoft.Json.Linq.JValue)
+                    {
+                        var val = prop.Value as Newtonsoft.Json.Linq.JValue;
+                        if (val.Type == Newtonsoft.Json.Linq.JTokenType.Integer)
+                        {
+                            int number = val.ToObject<int>();
+                            return sum + number;
+                        }
+                        else if (val.Type == Newtonsoft.Json.Linq.JTokenType.String)
+                        {
+                            if (val.Value.ToString() == "red")
+                            {
+                                return 0;
+                            }
+                        }
+                    }
+                    foreach (var child in token.Children())
+                    {
+                        sum += addNumbers(sum, child);
+                    }
+                }
+                else if (token is Newtonsoft.Json.Linq.JArray)
+                {
+                    var arr = token as Newtonsoft.Json.Linq.JArray;
+                    foreach (var item in arr)
+                    {
+                        sum += addNumbers(sum, item);
+                    }
+                }
+                else if (token is Newtonsoft.Json.Linq.JValue)
+                {
+                    var val = token as Newtonsoft.Json.Linq.JValue;
+                    if (val.Type == Newtonsoft.Json.Linq.JTokenType.Integer)
+                    {
+                        int number = val.ToObject<int>();
+                        return sum + number;
+                    }
+                    else
+                    {
+                        Console.WriteLine(val.Type);
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Something!");
+                }
+            }
+            return sum;
+        }
+
         public override string getSolutionPart1()
         {
-            return base.getSolutionPart1();
+            Regex regNumbers = new Regex(@"(-?\d+)");
+
+            var matches = regNumbers.Matches(input);
+            int sum = 0;
+
+            foreach (Match match in matches)
+            {
+                var number = int.Parse(match.Groups[1].Value);
+                sum += number;
+            }
+            return sum.ToString();
         }
+
 
         public override string getSolutionPart2()
         {
-            return base.getSolutionPart2();
+            dynamic json = Newtonsoft.Json.JsonConvert.DeserializeObject(input);
+            int sum = addNumbers(0, json);
+            
+            return sum.ToString();
         }
     }
 }
