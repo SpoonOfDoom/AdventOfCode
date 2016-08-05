@@ -891,61 +891,92 @@ namespace AdventOfCode.days
         const int number = 12;
         public Day12() : base(number) { }
 
-        private int addNumbers(int sum, dynamic json)
+        private bool containsRed(dynamic json)
         {
-            foreach (Newtonsoft.Json.Linq.JToken token in json.Children())
+            foreach (var child in json.Children())
             {
-                if (token is Newtonsoft.Json.Linq.JProperty)
+                if (child is Newtonsoft.Json.Linq.JProperty)
                 {
-                    var prop = token as Newtonsoft.Json.Linq.JProperty;
-                    if (prop.Value is Newtonsoft.Json.Linq.JValue)
+                    var c = child as Newtonsoft.Json.Linq.JProperty;
+                    if (c.Value is Newtonsoft.Json.Linq.JValue)
                     {
-                        var val = prop.Value as Newtonsoft.Json.Linq.JValue;
-                        if (val.Type == Newtonsoft.Json.Linq.JTokenType.Integer)
+                        var val = c.Value as Newtonsoft.Json.Linq.JValue;
+                        if (val.Value.ToString() == "red")
                         {
-                            int number = val.ToObject<int>();
-                            return sum + number;
-                        }
-                        else if (val.Type == Newtonsoft.Json.Linq.JTokenType.String)
-                        {
-                            if (val.Value.ToString() == "red")
-                            {
-                                return 0;
-                            }
+                            return true;
                         }
                     }
-                    foreach (var child in token.Children())
-                    {
-                        sum += addNumbers(sum, child);
-                    }
                 }
-                else if (token is Newtonsoft.Json.Linq.JArray)
+                else if (child is Newtonsoft.Json.Linq.JValue)
                 {
-                    var arr = token as Newtonsoft.Json.Linq.JArray;
-                    foreach (var item in arr)
+                    var c = child as Newtonsoft.Json.Linq.JValue;
+                    if (c.Value.ToString() == "red")
                     {
-                        sum += addNumbers(sum, item);
+                        return true;
                     }
-                }
-                else if (token is Newtonsoft.Json.Linq.JValue)
-                {
-                    var val = token as Newtonsoft.Json.Linq.JValue;
-                    if (val.Type == Newtonsoft.Json.Linq.JTokenType.Integer)
-                    {
-                        int number = val.ToObject<int>();
-                        return sum + number;
-                    }
-                    else
-                    {
-                        Console.WriteLine(val.Type);
-                    }
-                }
-                else
-                {
-                    Console.WriteLine("Something!");
                 }
             }
-            return sum;
+            return false;
+        }
+
+        private int addNumbers(int sum, dynamic json)
+        {
+            int ret = 0;
+            if (json is Newtonsoft.Json.Linq.JObject)
+            {
+                if (containsRed(json))
+                {
+                    return 0;
+                }
+                foreach (var child in json.Children())
+                {
+                    ret += addNumbers(sum, child);
+                }
+
+            }
+            else if (json is Newtonsoft.Json.Linq.JArray)
+            {
+                var arr = json as Newtonsoft.Json.Linq.JArray;
+                foreach (var item in arr)
+                {
+                    ret += addNumbers(sum, item);
+                }
+            }
+            else if (json is Newtonsoft.Json.Linq.JProperty)
+            {
+                var prop = json as Newtonsoft.Json.Linq.JProperty;
+                if (prop.Value is Newtonsoft.Json.Linq.JValue)
+                {
+                    var val = prop.Value as Newtonsoft.Json.Linq.JValue;
+                    if (val.Type == Newtonsoft.Json.Linq.JTokenType.Integer)
+                    {
+                        int n = val.ToObject<int>();
+                        ret += n;
+                    }
+                }
+
+                if (prop.Value is Newtonsoft.Json.Linq.JObject || prop.Value is Newtonsoft.Json.Linq.JArray)
+                {
+                    foreach (var child in prop.Value.Children())
+                    {
+                        ret += addNumbers(sum, child);
+                    }
+                }
+            }
+            else if (json is Newtonsoft.Json.Linq.JValue)
+            {
+                var val = json as Newtonsoft.Json.Linq.JValue;
+                if (val.Type == Newtonsoft.Json.Linq.JTokenType.Integer)
+                {
+                    int n = val.ToObject<int>();
+                    ret += n;
+                }
+            }
+            else
+            {
+                Console.WriteLine("Something!");
+            }
+            return sum + ret;
         }
 
         public override string getSolutionPart1()
@@ -968,7 +999,26 @@ namespace AdventOfCode.days
         {
             dynamic json = Newtonsoft.Json.JsonConvert.DeserializeObject(input);
             int sum = addNumbers(0, json);
-            
+
+            List<string> jsonTests = new List<string>()
+            {
+                "[1,2,3]",
+                "[1,{\"c\":\"red\",\"b\":2},3]",
+                "{\"d\":\"red\",\"e\":[1,2,3,4],\"f\":5}",
+                "[1,\"red\",5]",
+                "{\"c\":[\"red\", 1],\"c\":1}"
+            };
+
+            List<int> results = new List<int>();
+            foreach (string s in jsonTests)
+            {
+                dynamic j = Newtonsoft.Json.JsonConvert.DeserializeObject(s);
+                results.Add(addNumbers(0, j));
+            }
+            for (int i = 0; i < jsonTests.Count; i++)
+            {
+                Console.WriteLine(jsonTests[i] + " - result: " + results[i]);
+            }
             return sum.ToString();
         }
     }
