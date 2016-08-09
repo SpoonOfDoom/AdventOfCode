@@ -957,9 +957,12 @@ namespace AdventOfCode.days
 
                 if (prop.Value is Newtonsoft.Json.Linq.JObject || prop.Value is Newtonsoft.Json.Linq.JArray)
                 {
-                    foreach (var child in prop.Value.Children())
+                    if (!(prop.Value is Newtonsoft.Json.Linq.JObject && containsRed(prop.Value)))
                     {
-                        ret += addNumbers(sum, child);
+                        foreach (var child in prop.Value.Children())
+                        {
+                            ret += addNumbers(sum, child);
+                        }
                     }
                 }
             }
@@ -999,26 +1002,6 @@ namespace AdventOfCode.days
         {
             dynamic json = Newtonsoft.Json.JsonConvert.DeserializeObject(input);
             int sum = addNumbers(0, json);
-
-            List<string> jsonTests = new List<string>()
-            {
-                "[1,2,3]",
-                "[1,{\"c\":\"red\",\"b\":2},3]",
-                "{\"d\":\"red\",\"e\":[1,2,3,4],\"f\":5}",
-                "[1,\"red\",5]",
-                "{\"c\":[\"red\", 1],\"c\":1}"
-            };
-
-            List<int> results = new List<int>();
-            foreach (string s in jsonTests)
-            {
-                dynamic j = Newtonsoft.Json.JsonConvert.DeserializeObject(s);
-                results.Add(addNumbers(0, j));
-            }
-            for (int i = 0; i < jsonTests.Count; i++)
-            {
-                Console.WriteLine(jsonTests[i] + " - result: " + results[i]);
-            }
             return sum.ToString();
         }
     }
