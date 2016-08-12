@@ -1005,4 +1005,43 @@ namespace AdventOfCode.days
             return sum.ToString();
         }
     }
+
+    public class Day13 : Day
+    {
+        const int number = 13;
+        Dictionary<string, int> neighbourStats = new Dictionary<string, int>();
+        private HashSet<string> guests = new HashSet<string>();
+        Regex regLine = new Regex(@"(\w+) .+ (gain|lose) (\d+) .+ (\w+)\.");
+
+        public Day13() : base(number) { }
+
+        private void parseLine(Dictionary<string, int> dict, HashSet<string>guestList, string line)
+        {
+            var groups = regLine.Match(line).Groups;
+            string combo = groups[1].Value + "-" + groups[4].Value;
+            int happiness = groups[3].Value.ToInt();
+            if (groups[2].Value == "lose")
+            {
+                happiness *= -1;
+            }
+            guestList.Add(groups[1].Value);
+            dict.Add(combo, happiness);
+        }
+
+        public override string getSolutionPart1()
+        {
+            foreach (string line in inputLines)
+            {
+                parseLine(neighbourStats, guests, line);
+            }
+
+            
+            return base.getSolutionPart1();
+        }
+
+        public override string getSolutionPart2()
+        {
+            return base.getSolutionPart2();
+        }
+    }
 }
