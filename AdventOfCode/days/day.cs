@@ -1018,7 +1018,7 @@ namespace AdventOfCode.days
         private void parseLine(Dictionary<string, int> dict, HashSet<string>guestList, string line)
         {
             var groups = regLine.Match(line).Groups;
-            string combo = groups[1].Value + "-" + groups[4].Value;
+            string combo = groups[1].Value + groups[4].Value;
             int happiness = groups[3].Value.ToInt();
             if (groups[2].Value == "lose")
             {
@@ -1028,6 +1028,39 @@ namespace AdventOfCode.days
             dict.Add(combo, happiness);
         }
 
+        private int calculateHappiness(List<string> people)
+        {
+            int sum = 0;
+            for (int i = 0; i < people.Count; i++)
+            {
+                int l = i - 1 < 0 ? people.Count - 1 : i - 1;
+                int r = i + 1 >= people.Count ? 0 : i + 1;
+
+                sum += neighbourStats[people[i] + people[l]];
+                sum += neighbourStats[people[i] + people[r]];
+            }
+            return sum;
+        }
+
+        private int getHappiness(List<string> people, List<string> guestsRemaining )
+        {
+            if (guestsRemaining.Count > 0)
+            {
+                List<int> results = new List<int>();
+                foreach (string s in guestsRemaining)
+                {
+                    List<string> p = new List<string>(people) {s};
+                    results.Add(getHappiness(p, guestsRemaining.Where(g => g != s).ToList()));
+                }
+                return results.Max();
+            }
+            else
+            {
+                return calculateHappiness(people);
+            }
+            
+        }
+        
         public override string getSolutionPart1()
         {
             foreach (string line in inputLines)
@@ -1035,8 +1068,14 @@ namespace AdventOfCode.days
                 parseLine(neighbourStats, guests, line);
             }
 
+            List<int> results = new List<int>();
+
+            foreach (string guest in guests)
+            {
+                results.Add(getHappiness(new List<string>() {guest}, guests.Where(g => g != guest).ToList()));
+            }
             
-            return base.getSolutionPart1();
+            return results.Max().ToString();
         }
 
         public override string getSolutionPart2()
