@@ -1080,7 +1080,20 @@ namespace AdventOfCode.days
 
         public override string getSolutionPart2()
         {
-            return base.getSolutionPart2();
+            foreach (string guest in guests)
+            {
+                neighbourStats.Add(guest + "Me", 0);
+                neighbourStats.Add("Me" + guest, 0);
+            }
+
+            List<int> results = new List<int>();
+            guests.Add("Me");
+            foreach (string guest in guests)
+            {
+                results.Add(getHappiness(new List<string>() { guest }, guests.Where(g => g != guest).ToList()));
+            }
+
+            return results.Max().ToString();
         }
     }
 }
