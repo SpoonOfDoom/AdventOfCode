@@ -1096,4 +1096,67 @@ namespace AdventOfCode.days
             return results.Max().ToString();
         }
     }
+
+    public class Day14 : Day
+    {
+        struct Reindeer
+        {
+            public string Name;
+            public int Speed;
+            public int RunTime;
+            public int RestTime;
+
+            public int DistanceRun(int time)
+            {
+                int distance = 0;
+
+                while (time > 0)
+                {
+                    distance += Speed * Math.Min(RunTime, time);
+                    time -= RunTime;
+
+                    time -= RestTime;
+                }
+                return distance;
+            }
+        }
+
+        const int number = 14;
+        
+        public Day14() : base(number) { }
+
+        Regex regLine = new Regex(@"(\w+) .+ (\d+) km\/s for (\d+) seconds.+ (\d+)");
+        private List<Reindeer> reindeers = new List<Reindeer>();
+
+        private Reindeer parseLine(string line)
+        {
+            var groups = regLine.Match(line).Groups;
+
+            return new Reindeer()
+            {
+                Name = groups[1].Value,
+                Speed = groups[2].Value.ToInt(),
+                RunTime = groups[3].Value.ToInt(),
+                RestTime = groups[4].Value.ToInt()
+            };
+        }
+
+        public override string getSolutionPart1()
+        {
+            foreach (string line in inputLines)
+            {
+                reindeers.Add(parseLine(line));
+            }
+            int raceTime = 2503;
+            int biggestDistance = int.MinValue;
+
+            biggestDistance = reindeers.Select(r => r.DistanceRun(raceTime)).Max();
+            return biggestDistance.ToString();
+        }
+
+        public override string getSolutionPart2()
+        {
+            return base.getSolutionPart2();
+        }
+    }
 }
