@@ -30,7 +30,7 @@ namespace AdventOfCode
             try
             {
                 sw.Start();
-                solution1 = d.getSolutionPart1().ToString();
+                solution1 = d.GetSolutionPart1().ToString();
                 sw.Stop();
                 totalTime += sw.Elapsed;
             }
@@ -43,7 +43,7 @@ namespace AdventOfCode
             try
             {
                 sw.Restart();
-                solution2 = d.getSolutionPart2().ToString();
+                solution2 = d.GetSolutionPart2().ToString();
                 sw.Stop();
                 totalTime += sw.Elapsed;
             }

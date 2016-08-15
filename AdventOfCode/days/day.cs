@@ -1,7 +1,6 @@
 ﻿using AdventOfCode.Extensions;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -36,20 +35,21 @@ namespace AdventOfCode.days
     {
         protected string input;
         protected List<string> inputLines;
-        public int Number;
-        
-        public Day(int number)
+        public readonly int Number;
+
+        protected Day(int number)
         {
             this.Number = number;
             this.getInput();
         }
 
-        public Day(int number, string input)
+        protected Day(int number, string input)
         {
             if (string.IsNullOrEmpty(input))
             {
                 throw new InputEmptyException();
             }
+            this.Number = number;
             this.input = input;
         }
 
@@ -57,18 +57,17 @@ namespace AdventOfCode.days
         /// Input will be entered in a seperate method so that it can be collapsed individually (for bigger inputs)
         /// </summary>
         /// <returns></returns>
-
-        public void getInput()
+        private void getInput()
         {
             this.input = File.ReadAllText("input\\day" + this.Number + ".txt");
             this.inputLines = File.ReadAllLines("input\\day" + this.Number + ".txt").ToList();
         }
 
-        public virtual string getSolutionPart1()
+        public virtual string GetSolutionPart1()
         {
             throw new NotImplementedException();
         }
-        public virtual string getSolutionPart2()
+        public virtual string GetSolutionPart2()
         {
             throw new NotImplementedException();
         }
@@ -76,11 +75,9 @@ namespace AdventOfCode.days
 
     public class Day1 : Day
     {
-        const int number = 1;
+        public Day1() : base(1) { }
 
-        public Day1() : base(number) { }
-
-        public override string getSolutionPart1()
+        public override string GetSolutionPart1()
         {
             int floor = 0;
 
@@ -90,7 +87,7 @@ namespace AdventOfCode.days
             return floor.ToString();
         }
 
-        public override string getSolutionPart2()
+        public override string GetSolutionPart2()
         {
             int floor = 0;
             int i;
@@ -115,8 +112,7 @@ namespace AdventOfCode.days
 
     public class Day2 : Day
     {
-        const int number = 2;
-        public Day2() : base(number) { }
+        public Day2() : base(2) { }
 
         private int getSurface(string dimensions)
         {
@@ -140,7 +136,7 @@ namespace AdventOfCode.days
             return 2 * smallest[0] + 2 * smallest[1] + dim[0] * dim[1] * dim[2];
         }
 
-        public override string getSolutionPart1()
+        public override string GetSolutionPart1()
         {
             int sum = 0;
             foreach (string line in inputLines)
@@ -150,7 +146,7 @@ namespace AdventOfCode.days
             return sum.ToString();
         }
 
-        public override string getSolutionPart2()
+        public override string GetSolutionPart2()
         {
             int sum = 0;
             foreach (string line in inputLines)
@@ -163,13 +159,9 @@ namespace AdventOfCode.days
 
     public class Day3 : Day
     {
-        const int number = 3;
-
-        public Day3() : base(number) { }
-
+        public Day3() : base(3) { }
         
-
-        public override string getSolutionPart1()
+        public override string GetSolutionPart1()
         {
             HashSet<string> hashset = new HashSet<string>();
             int x = 0;
@@ -198,7 +190,7 @@ namespace AdventOfCode.days
             return hashset.Count.ToString();
         }
 
-        public override string getSolutionPart2()
+        public override string GetSolutionPart2()
         {
             HashSet<string> hashset = new HashSet<string>();
             int x1 = 0;
@@ -269,9 +261,7 @@ namespace AdventOfCode.days
 
     public class Day4 : Day
     {
-        const int number = 4;
-        public Day4() : base(number) { }
-        public Day4(string input) : base(number, input) { }
+        public Day4() : base(4) { }
         
         static System.Security.Cryptography.MD5 md5 = System.Security.Cryptography.MD5.Create();
         static StringBuilder sb = new StringBuilder();
@@ -308,12 +298,12 @@ namespace AdventOfCode.days
 
             return i;
         }
-        public override string getSolutionPart1()
+        public override string GetSolutionPart1()
         {
             return getNumberToMatch("00000").ToString();
         }
 
-        public override string getSolutionPart2()
+        public override string GetSolutionPart2()
         {
             return getNumberToMatch("000000").ToString();
         }
@@ -323,9 +313,7 @@ namespace AdventOfCode.days
 
     public class Day5 : Day
     {
-        const int number = 5;
-        public Day5() : base(number) { }
-        public Day5(string input) : base(number, input) { }
+        public Day5() : base(5) { }
         
         private bool isNice(string myString)
         {
@@ -365,13 +353,13 @@ namespace AdventOfCode.days
             return regexBetween.IsMatch(myString) && regexPair.IsMatch(myString);
         }
 
-        public override string getSolutionPart1()
+        public override string GetSolutionPart1()
         {
             int niceCount = inputLines.Count(x => isNice(x));
             return niceCount.ToString();
         }
 
-        public override string getSolutionPart2()
+        public override string GetSolutionPart2()
         {
             int niceCount = inputLines.Count(x => isNice2(x));
             return niceCount.ToString();
@@ -380,8 +368,7 @@ namespace AdventOfCode.days
 
     public class Day6 : Day
     {
-        const int number = 6;
-        public Day6() : base(number) { }
+        public Day6() : base(6) { }
 
         private bool[,] lightsBool = new bool[1000, 1000];
         private int[,] lightsInt = new int[1000, 1000];
@@ -425,7 +412,6 @@ namespace AdventOfCode.days
 
                         default:
                             throw new Exception("Instruction action not parsed properly");
-                            break;
                     }
                 }
             }
@@ -454,13 +440,12 @@ namespace AdventOfCode.days
 
                         default:
                             throw new Exception("Instruction action not parsed properly");
-                            break;
                     }
                 }
             }
         }
 
-        public override string getSolutionPart1()
+        public override string GetSolutionPart1()
         {
             foreach (string line in inputLines)
             {
@@ -476,7 +461,7 @@ namespace AdventOfCode.days
             return lightCount.ToString();
         }
 
-        public override string getSolutionPart2()
+        public override string GetSolutionPart2()
         {
             foreach (string line in inputLines)
             {
@@ -494,8 +479,7 @@ namespace AdventOfCode.days
 
     public class Day7 : Day
     {
-        const int number = 7;
-        public Day7() : base(number) { }
+        public Day7() : base(7) { }
 
         Dictionary<string, int> wires = new Dictionary<string, int>();
         Dictionary<string, string> instructions = new Dictionary<string, string>();
@@ -578,7 +562,7 @@ namespace AdventOfCode.days
             }
         }
 
-        public override string getSolutionPart1()
+        public override string GetSolutionPart1()
         {
             foreach (string line in inputLines) //For easy access, first parse the instructions into input and output parts
             {
@@ -594,7 +578,7 @@ namespace AdventOfCode.days
             return solution.ToString();
         }
 
-        public override string getSolutionPart2()
+        public override string GetSolutionPart2()
         {
             instructions["b"] = instructionSolved["a"].ToString();
             instructionSolved.Clear();
@@ -605,10 +589,9 @@ namespace AdventOfCode.days
 
     public class Day8 : Day
     {
-        const int number = 8;
-        public Day8() : base(number) { }
+        public Day8() : base(8) { }
 
-        private int getMemoryCharacters(string text)
+        private static int getMemoryCharacters(string text)
         {
             text = text.Replace("\\\\", "1");
             text = Regex.Replace(text, @"\\x..", "1");
@@ -616,13 +599,13 @@ namespace AdventOfCode.days
             return text.Length - 2;
         }
 
-        private int getEncodedCharacters(string text)
+        private static int getEncodedCharacters(string text)
         {
             text = text.Replace("\\", "\\\\");
             text = text.Replace("\"", "\\\"");
             return text.Length + 2;
         }
-        public override string getSolutionPart1()
+        public override string GetSolutionPart1()
         {
             int sumChars = 0;
             int sumMemoryChars = 0;
@@ -636,7 +619,7 @@ namespace AdventOfCode.days
             return (sumChars - sumMemoryChars).ToString();
         }
 
-        public override string getSolutionPart2()
+        public override string GetSolutionPart2()
         {
             int sumChars = 0;
             int sumEncodedChars = 0;
@@ -653,9 +636,7 @@ namespace AdventOfCode.days
 
     public class Day9 : Day
     {
-        const int number = 9;
-
-        public Day9() : base(number) { }
+        public Day9() : base(9) { }
 
         struct Route
         {
@@ -701,7 +682,7 @@ namespace AdventOfCode.days
             
         }
 
-        public override string getSolutionPart1()
+        public override string GetSolutionPart1()
         {
             Regex regLine = new Regex(@"(\w+) to (\w+) = (\d+)");
             
@@ -728,7 +709,7 @@ namespace AdventOfCode.days
             return distances.Min().ToString();
         }
 
-        public override string getSolutionPart2()
+        public override string GetSolutionPart2()
         {
             List<int> distances = new List<int>();
             foreach (var start in cities)
@@ -741,7 +722,7 @@ namespace AdventOfCode.days
 
     public class Day10 : Day
     {
-        private const int number = 10;
+        public Day10() : base(10) { }
 
         private string getNewSequence(string sequence)
         {
@@ -773,10 +754,8 @@ namespace AdventOfCode.days
             }
             return sb.ToString();
         }
-
-        public Day10() : base(number) { }
-
-        public override string getSolutionPart1()
+        
+        public override string GetSolutionPart1()
         {
             string result = input;
             for (int i = 0; i < 40; i++)
@@ -786,7 +765,7 @@ namespace AdventOfCode.days
             return result.Length.ToString();
         }
 
-        public override string getSolutionPart2()
+        public override string GetSolutionPart2()
         {
             string result = input;
             for (int i = 0; i < 50; i++)
@@ -799,11 +778,11 @@ namespace AdventOfCode.days
 
     public class Day11 : Day
     {
-        const int number = 11;
-        string result1 = null;
-        public Day11() : base(number) { }
+        public Day11() : base(11) { }
 
-        private string iteratePassword(string password)
+        string result1 = null;
+        
+        private static string iteratePassword(string password)
         {
             StringBuilder sb = new StringBuilder(password);
 
@@ -827,7 +806,7 @@ namespace AdventOfCode.days
             return sb.ToString();
         }
 
-        private bool isValidPassword(string password)
+        private static bool isValidPassword(string password)
         {
             Regex regPair = new Regex(@"(\w)\1");
 
@@ -862,7 +841,7 @@ namespace AdventOfCode.days
             return false;
         }
 
-        public override string getSolutionPart1()
+        public override string GetSolutionPart1()
         {
             string password = input;
 
@@ -874,7 +853,7 @@ namespace AdventOfCode.days
             return password;
         }
 
-        public override string getSolutionPart2()
+        public override string GetSolutionPart2()
         {
             string password = iteratePassword(result1);
 
@@ -888,10 +867,9 @@ namespace AdventOfCode.days
 
     public class Day12 : Day
     {
-        const int number = 12;
-        public Day12() : base(number) { }
+        public Day12() : base(12) { }
 
-        private bool containsRed(dynamic json)
+        private static bool containsRed(dynamic json)
         {
             foreach (var child in json.Children())
             {
@@ -919,7 +897,7 @@ namespace AdventOfCode.days
             return false;
         }
 
-        private int addNumbers(int sum, dynamic json)
+        private static int addNumbers(int sum, dynamic json)
         {
             int ret = 0;
             if (json is Newtonsoft.Json.Linq.JObject)
@@ -982,7 +960,7 @@ namespace AdventOfCode.days
             return sum + ret;
         }
 
-        public override string getSolutionPart1()
+        public override string GetSolutionPart1()
         {
             Regex regNumbers = new Regex(@"(-?\d+)");
 
@@ -996,9 +974,8 @@ namespace AdventOfCode.days
             }
             return sum.ToString();
         }
-
-
-        public override string getSolutionPart2()
+        
+        public override string GetSolutionPart2()
         {
             dynamic json = Newtonsoft.Json.JsonConvert.DeserializeObject(input);
             int sum = addNumbers(0, json);
@@ -1008,13 +985,12 @@ namespace AdventOfCode.days
 
     public class Day13 : Day
     {
-        const int number = 13;
+        public Day13() : base(13) { }
+
         Dictionary<string, int> neighbourStats = new Dictionary<string, int>();
         private HashSet<string> guests = new HashSet<string>();
         Regex regLine = new Regex(@"(\w+) .+ (gain|lose) (\d+) .+ (\w+)\.");
-
-        public Day13() : base(number) { }
-
+        
         private void parseLine(Dictionary<string, int> dict, HashSet<string>guestList, string line)
         {
             var groups = regLine.Match(line).Groups;
@@ -1061,7 +1037,7 @@ namespace AdventOfCode.days
             
         }
         
-        public override string getSolutionPart1()
+        public override string GetSolutionPart1()
         {
             foreach (string line in inputLines)
             {
@@ -1078,7 +1054,7 @@ namespace AdventOfCode.days
             return results.Max().ToString();
         }
 
-        public override string getSolutionPart2()
+        public override string GetSolutionPart2()
         {
             foreach (string guest in guests)
             {
@@ -1099,6 +1075,8 @@ namespace AdventOfCode.days
 
     public class Day14 : Day
     {
+        public Day14() : base(14) { }
+
         class Reindeer
         {
             public string Name;
@@ -1149,11 +1127,7 @@ namespace AdventOfCode.days
             }
         }
 
-        const int number = 14;
-        
-        public Day14() : base(number) { }
-
-        Regex regLine = new Regex(@"(\w+) .+ (\d+) km\/s for (\d+) seconds.+ (\d+)");
+        readonly Regex regLine = new Regex(@"(\w+) .+ (\d+) km\/s for (\d+) seconds.+ (\d+)");
         private List<Reindeer> reindeers = new List<Reindeer>();
 
         private Reindeer parseLine(string line)
@@ -1173,7 +1147,7 @@ namespace AdventOfCode.days
             };
         }
 
-        private void iterateList(List<Reindeer> reindeerList)
+        private static void iterateList(List<Reindeer> reindeerList)
         {
             foreach (Reindeer reindeer in reindeerList)
             {
@@ -1186,7 +1160,7 @@ namespace AdventOfCode.days
             }
         }
 
-        public override string getSolutionPart1()
+        public override string GetSolutionPart1()
         {
             foreach (string line in inputLines)
             {
@@ -1199,7 +1173,7 @@ namespace AdventOfCode.days
             return biggestDistance.ToString();
         }
 
-        public override string getSolutionPart2()
+        public override string GetSolutionPart2()
         {
             int raceTime = 2503;
 
