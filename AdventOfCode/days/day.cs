@@ -9,26 +9,12 @@ using System.Text.RegularExpressions;
 namespace AdventOfCode.days
 {
     /// <summary>
-    /// Shared functions etc.
-    /// </summary>
-    public static class Util
-    {
-
-    }
-    
-    /// <summary>
     /// Exception for the case of an empty input string.
     /// </summary>
     public class InputEmptyException : Exception
     {
-        const string defaultMessage = "The input string is null or empty.";
+        private const string defaultMessage = "The input string is null or empty.";
         public  InputEmptyException() : base(defaultMessage) { }
-        public  InputEmptyException(string message) : base(message) { }
-        public  InputEmptyException(string message, Exception inner) : base(message, inner) { }
-        protected  InputEmptyException(
-          System.Runtime.Serialization.SerializationInfo info,
-          System.Runtime.Serialization.StreamingContext context) : base(info, context)
-        { }
     }
 
     public abstract class Day
@@ -39,8 +25,8 @@ namespace AdventOfCode.days
 
         protected Day(int number)
         {
-            this.Number = number;
-            this.getInput();
+            Number = number;
+            getInput();
         }
 
         protected Day(int number, string input)
@@ -49,7 +35,7 @@ namespace AdventOfCode.days
             {
                 throw new InputEmptyException();
             }
-            this.Number = number;
+            Number = number;
             this.input = input;
         }
 
@@ -59,8 +45,8 @@ namespace AdventOfCode.days
         /// <returns></returns>
         private void getInput()
         {
-            this.input = File.ReadAllText("input\\day" + this.Number + ".txt");
-            this.inputLines = File.ReadAllLines("input\\day" + this.Number + ".txt").ToList();
+            input = File.ReadAllText("input\\day" + Number + ".txt");
+            inputLines = File.ReadAllLines("input\\day" + Number + ".txt").ToList();
         }
 
         public virtual string GetSolutionPart1()
@@ -307,15 +293,13 @@ namespace AdventOfCode.days
         {
             return getNumberToMatch("000000").ToString();
         }
-
-        
     }
 
     public class Day5 : Day
     {
         public Day5() : base(5) { }
         
-        private bool isNice(string myString)
+        private static bool isNice(string myString)
         {
             if (myString.Contains("ab") || myString.Contains("cd") || myString.Contains("pq") || myString.Contains("xy"))
             {
@@ -334,7 +318,7 @@ namespace AdventOfCode.days
                 }
 
 
-                if (c.ToString().IndexOfAny(new char[] { 'a', 'e', 'i', 'o', 'u'}) >= 0)
+                if (c.ToString().IndexOfAny(new[] { 'a', 'e', 'i', 'o', 'u'}) >= 0)
                 {
                     vowelCount++;
                 }
@@ -345,7 +329,7 @@ namespace AdventOfCode.days
             return doubleLetter && vowelCount >= 3;
         }
 
-        private bool isNice2(string myString)
+        private static bool isNice2(string myString)
         {
             Regex regexBetween = new Regex(@"(\w)\w\1");
             Regex regexPair = new Regex(@"(\w\w)\w*\1");
@@ -452,11 +436,10 @@ namespace AdventOfCode.days
                 executeInstruction(line);
             }
 
-            int lightCount = 0;
             var test = from bool item in lightsBool
                        where item
                        select item;
-            lightCount = test.Count();
+            var lightCount = test.Count();
 
             return lightCount.ToString();
         }
@@ -468,10 +451,9 @@ namespace AdventOfCode.days
                 executeInstruction2(line);
             }
 
-            int lightCount = 0;
             var test = from int item in lightsInt
                        select item;
-            lightCount = test.Sum();
+            var lightCount = test.Sum();
 
             return lightCount.ToString();
         }
@@ -481,13 +463,13 @@ namespace AdventOfCode.days
     {
         public Day7() : base(7) { }
 
-        Dictionary<string, int> wires = new Dictionary<string, int>();
-        Dictionary<string, string> instructions = new Dictionary<string, string>();
-        Dictionary<string, int> instructionSolved = new Dictionary<string, int>();
+        private Dictionary<string, int> wires = new Dictionary<string, int>();
+        private Dictionary<string, string> instructions = new Dictionary<string, string>();
+        private Dictionary<string, int> instructionSolved = new Dictionary<string, int>();
 
-        Regex regNot = new Regex(@"^NOT (\w+)");
-        Regex regShift = new Regex(@"(\w+) (R|L)SHIFT (\d+)");
-        Regex regAndOr = new Regex(@"(\w+) (AND|OR) (\w+)");
+        private Regex regNot = new Regex(@"^NOT (\w+)");
+        private Regex regShift = new Regex(@"(\w+) (R|L)SHIFT (\d+)");
+        private Regex regAndOr = new Regex(@"(\w+) (AND|OR) (\w+)");
 
         private int getValue(string wire)
         {
@@ -569,10 +551,10 @@ namespace AdventOfCode.days
                 Regex regLine = new Regex(@"((\w|\d| )+) -> (\w+)");
                 var groups = regLine.Match(line).Groups;
 
-                string input = groups[1].Value;
+                string inputValue = groups[1].Value;
                 string output = groups[3].Value;
 
-                instructions[output] = input;
+                instructions[output] = inputValue;
             }
             var solution = getValue("a");
             return solution.ToString();
@@ -640,21 +622,21 @@ namespace AdventOfCode.days
 
         struct Route
         {
-            public string city1;
-            public string city2;
-            public int distance;
+            public string City1;
+            public string City2;
+            public int Distance;
         }
 
-        List<Route> Routes = new List<Route>();
-        HashSet<string> cities = new HashSet<string>();
+        private List<Route> routes = new List<Route>();
+        private HashSet<string> cities = new HashSet<string>();
 
         private int getDistance(string start, int distance, List<string> targets, bool longest = false)
         {
             if (targets.Count == 1)
             {
-                return distance + Routes
-                                    .Where(r => r.city1 == start && r.city2 == targets.Single() || r.city2 == start && r.city1 == targets.Single())
-                                    .Select(r => r.distance)
+                return distance + routes
+                                    .Where(r => r.City1 == start && r.City2 == targets.Single() || r.City2 == start && r.City1 == targets.Single())
+                                    .Select(r => r.Distance)
                                     .Single();
             }
 
@@ -665,7 +647,7 @@ namespace AdventOfCode.days
                 distances.Add(
                     getDistance(
                         target,
-                        Routes.Where(r => r.city1 == start && r.city2 == target || r.city2 == start && r.city1 == target).Select(r => r.distance).Single(),
+                        routes.Where(r => r.City1 == start && r.City2 == target || r.City2 == start && r.City1 == target).Select(r => r.Distance).Single(),
                         targets.Where(t => t != target).ToList(),
                         longest
                         )
@@ -692,13 +674,13 @@ namespace AdventOfCode.days
                 var groups = regLine.Match(line).Groups;
                 Route r = new Route
                 {
-                    city1 = groups[1].Value,
-                    city2 = groups[2].Value,
-                    distance = groups[3].Value.ToInt()
+                    City1 = groups[1].Value,
+                    City2 = groups[2].Value,
+                    Distance = groups[3].Value.ToInt()
                 };
                 cities.Add(groups[1].Value);
                 cities.Add(groups[2].Value);
-                Routes.Add(r);
+                routes.Add(r);
             }
             
             List<int> distances = new List<int>();
@@ -780,7 +762,7 @@ namespace AdventOfCode.days
     {
         public Day11() : base(11) { }
 
-        string result1 = null;
+        private string result1;
         
         private static string iteratePassword(string password)
         {
@@ -816,7 +798,7 @@ namespace AdventOfCode.days
                 return false;
             }
 
-            if (password.IndexOfAny(new char[] { 'i', 'o', 'l' }) >= 0)
+            if (password.IndexOfAny(new[] { 'i', 'o', 'l' }) >= 0)
             {
                 return false;
             }
@@ -987,9 +969,9 @@ namespace AdventOfCode.days
     {
         public Day13() : base(13) { }
 
-        Dictionary<string, int> neighbourStats = new Dictionary<string, int>();
+        private Dictionary<string, int> neighbourStats = new Dictionary<string, int>();
         private HashSet<string> guests = new HashSet<string>();
-        Regex regLine = new Regex(@"(\w+) .+ (gain|lose) (\d+) .+ (\w+)\.");
+        private Regex regLine = new Regex(@"(\w+) .+ (gain|lose) (\d+) .+ (\w+)\.");
         
         private void parseLine(Dictionary<string, int> dict, HashSet<string>guestList, string line)
         {
@@ -1129,6 +1111,7 @@ namespace AdventOfCode.days
 
         readonly Regex regLine = new Regex(@"(\w+) .+ (\d+) km\/s for (\d+) seconds.+ (\d+)");
         private List<Reindeer> reindeers = new List<Reindeer>();
+        private const int raceTime = 2503;
 
         private Reindeer parseLine(string line)
         {
@@ -1166,17 +1149,14 @@ namespace AdventOfCode.days
             {
                 reindeers.Add(parseLine(line));
             }
-            int raceTime = 2503;
-            int biggestDistance = int.MinValue;
+            
 
-            biggestDistance = reindeers.Select(r => r.DistanceRun(raceTime)).Max();
+            var biggestDistance = reindeers.Select(r => r.DistanceRun(raceTime)).Max();
             return biggestDistance.ToString();
         }
 
         public override string GetSolutionPart2()
         {
-            int raceTime = 2503;
-
             for (int i = 0; i < raceTime; i++)
             {
                 iterateList(reindeers);
