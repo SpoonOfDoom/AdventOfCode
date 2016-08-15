@@ -47,7 +47,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="days\day.cs" />
+    <Compile Include="Days\day.cs" />
+    <Compile Include="Days\Day1.cs" />
+    <Compile Include="Days\Day10.cs" />
+    <Compile Include="Days\Day11.cs" />
+    <Compile Include="Days\Day12.cs" />
+    <Compile Include="Days\Day13.cs" />
+    <Compile Include="Days\Day14.cs" />
+    <Compile Include="Days\Day2.cs" />
+    <Compile Include="Days\Day3.cs" />
+    <Compile Include="Days\Day4.cs" />
+    <Compile Include="Days\Day5.cs" />
+    <Compile Include="Days\Day6.cs" />
+    <Compile Include="Days\Day7.cs" />
+    <Compile Include="Days\Day8.cs" />
+    <Compile Include="Days\Day9.cs" />
+    <Compile Include="Days\InputEmptyException.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
