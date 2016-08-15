@@ -1099,12 +1099,17 @@ namespace AdventOfCode.days
 
     public class Day14 : Day
     {
-        struct Reindeer
+        class Reindeer
         {
             public string Name;
             public int Speed;
             public int RunTime;
             public int RestTime;
+            public int Distance;
+            public int Score;
+
+            public bool IsResting;
+            public int Second;
 
             public int DistanceRun(int time)
             {
@@ -1118,6 +1123,29 @@ namespace AdventOfCode.days
                     time -= RestTime;
                 }
                 return distance;
+            }
+
+            public void Iterate()
+            {
+                if (IsResting)
+                {
+                    Second++;
+                    if (Second >= RestTime)
+                    {
+                        IsResting = false;
+                        Second = 0;
+                    }
+                }
+                else
+                {
+                    Second++;
+                    Distance += Speed;
+                    if (Second >= RunTime)
+                    {
+                        IsResting = true;
+                        Second = 0;
+                    }
+                }
             }
         }
 
@@ -1137,8 +1165,25 @@ namespace AdventOfCode.days
                 Name = groups[1].Value,
                 Speed = groups[2].Value.ToInt(),
                 RunTime = groups[3].Value.ToInt(),
-                RestTime = groups[4].Value.ToInt()
+                RestTime = groups[4].Value.ToInt(),
+                Score = 0,
+                Distance = 0,
+                IsResting = false,
+                Second = 0
             };
+        }
+
+        private void iterateList(List<Reindeer> reindeerList)
+        {
+            foreach (Reindeer reindeer in reindeerList)
+            {
+                reindeer.Iterate();
+            }
+            var d = reindeerList.Max(reindeer => reindeer.Distance);
+            foreach (var reindeer in reindeerList.Where(r => r.Distance == d))
+            {
+                reindeer.Score++;
+            }
         }
 
         public override string getSolutionPart1()
@@ -1156,7 +1201,15 @@ namespace AdventOfCode.days
 
         public override string getSolutionPart2()
         {
-            return base.getSolutionPart2();
+            int raceTime = 2503;
+
+            for (int i = 0; i < raceTime; i++)
+            {
+                iterateList(reindeers);
+            }
+
+            int winningScore = reindeers.Max(r => r.Score);
+            return winningScore.ToString();
         }
     }
 }
