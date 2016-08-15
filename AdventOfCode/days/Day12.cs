@@ -1,5 +1,7 @@
 using System;
 using System.Text.RegularExpressions;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace AdventOfCode.Days
 {
@@ -11,21 +13,21 @@ namespace AdventOfCode.Days
         {
             foreach (var child in json.Children())
             {
-                if (child is Newtonsoft.Json.Linq.JProperty)
+                if (child is JProperty)
                 {
-                    var c = child as Newtonsoft.Json.Linq.JProperty;
-                    if (c.Value is Newtonsoft.Json.Linq.JValue)
+                    var c = child as JProperty;
+                    if (c.Value is JValue)
                     {
-                        var val = c.Value as Newtonsoft.Json.Linq.JValue;
+                        var val = c.Value as JValue;
                         if (val.Value.ToString() == "red")
                         {
                             return true;
                         }
                     }
                 }
-                else if (child is Newtonsoft.Json.Linq.JValue)
+                else if (child is JValue)
                 {
-                    var c = child as Newtonsoft.Json.Linq.JValue;
+                    var c = child as JValue;
                     if (c.Value.ToString() == "red")
                     {
                         return true;
@@ -38,7 +40,7 @@ namespace AdventOfCode.Days
         private static int addNumbers(int sum, dynamic json)
         {
             int ret = 0;
-            if (json is Newtonsoft.Json.Linq.JObject)
+            if (json is JObject)
             {
                 if (containsRed(json))
                 {
@@ -50,30 +52,30 @@ namespace AdventOfCode.Days
                 }
 
             }
-            else if (json is Newtonsoft.Json.Linq.JArray)
+            else if (json is JArray)
             {
-                var arr = json as Newtonsoft.Json.Linq.JArray;
+                var arr = json as JArray;
                 foreach (var item in arr)
                 {
                     ret += addNumbers(sum, item);
                 }
             }
-            else if (json is Newtonsoft.Json.Linq.JProperty)
+            else if (json is JProperty)
             {
-                var prop = json as Newtonsoft.Json.Linq.JProperty;
-                if (prop.Value is Newtonsoft.Json.Linq.JValue)
+                var prop = json as JProperty;
+                if (prop.Value is JValue)
                 {
-                    var val = prop.Value as Newtonsoft.Json.Linq.JValue;
-                    if (val.Type == Newtonsoft.Json.Linq.JTokenType.Integer)
+                    var val = prop.Value as JValue;
+                    if (val.Type == JTokenType.Integer)
                     {
                         int n = val.ToObject<int>();
                         ret += n;
                     }
                 }
 
-                if (prop.Value is Newtonsoft.Json.Linq.JObject || prop.Value is Newtonsoft.Json.Linq.JArray)
+                if (prop.Value is JObject || prop.Value is JArray)
                 {
-                    if (!(prop.Value is Newtonsoft.Json.Linq.JObject && containsRed(prop.Value)))
+                    if (!(prop.Value is JObject && containsRed(prop.Value)))
                     {
                         foreach (var child in prop.Value.Children())
                         {
@@ -82,10 +84,10 @@ namespace AdventOfCode.Days
                     }
                 }
             }
-            else if (json is Newtonsoft.Json.Linq.JValue)
+            else if (json is JValue)
             {
-                var val = json as Newtonsoft.Json.Linq.JValue;
-                if (val.Type == Newtonsoft.Json.Linq.JTokenType.Integer)
+                var val = json as JValue;
+                if (val.Type == JTokenType.Integer)
                 {
                     int n = val.ToObject<int>();
                     ret += n;
@@ -115,7 +117,7 @@ namespace AdventOfCode.Days
         
         public override string GetSolutionPart2()
         {
-            dynamic json = Newtonsoft.Json.JsonConvert.DeserializeObject(input);
+            dynamic json = JsonConvert.DeserializeObject(input);
             int sum = addNumbers(0, json);
             return sum.ToString();
         }
