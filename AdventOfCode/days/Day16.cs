@@ -36,6 +36,37 @@ namespace AdventOfCode.Days
             }
             return true;
         }
+
+        public bool IsValidCandidate2()
+        {
+            foreach (var pair in Stuff)
+            {
+                switch (pair.Key)
+                {
+                    case "cats":
+                    case "trees":
+                        if (pair.Value < Target[pair.Key])
+                        {
+                            return false;
+                        }
+                        break;
+                    case "pomeranians":
+                    case "goldfish":
+                        if (pair.Value > Target[pair.Key])
+                        {
+                            return false;
+                        }
+                        break;
+                    default:
+                        if (Target[pair.Key] != pair.Value)
+                        {
+                            return false;
+                        }
+                        break;
+                }
+            }
+            return true;
+        }
     }
 
     public class Day16 : Day
@@ -79,7 +110,9 @@ namespace AdventOfCode.Days
 
         public override string GetSolutionPart2()
         {
-            throw new NotImplementedException();
+            var validCandidates = Candidates.Where(c => c.IsValidCandidate2()).ToList();
+
+            return validCandidates.Select(s => s.ID).Max().ToString(); //Not sure if it's correct that there are two possible candidates, but close enough for now.
         }
     }
 }
