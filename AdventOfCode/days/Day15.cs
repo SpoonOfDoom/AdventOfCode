@@ -85,10 +85,18 @@ namespace AdventOfCode.Days
             return i;
         }
 
-        private int getScore(Cookie cookie, List<Ingredient> remainingIngredients)
+        private int getScore(Cookie cookie, List<Ingredient> remainingIngredients, bool calories = false)
         {
+            if (calories && cookie.TotalCalories > 500) //No need to keep trying combinations if we're already over 500 calories.
+            {
+                return 0;
+            }
             if (cookie.TotalAmount == 100)
             {
+                if (calories && cookie.TotalCalories != 500)
+                {
+                    return 0;
+                }
                 return cookie.GetScore();
             }
 
@@ -100,7 +108,7 @@ namespace AdventOfCode.Days
                     Cookie c = new Cookie(cookie);
 
                     c.AddIngredient(ingredient.Name, 100 - c.TotalAmount);
-                    scores.Add(getScore(c, remainingIngredients.Where(ing => ing != ingredient).ToList()));
+                    scores.Add(getScore(c, remainingIngredients.Where(ing => ing != ingredient).ToList(), calories));
                 }
                 else
                 {
@@ -109,7 +117,7 @@ namespace AdventOfCode.Days
                         Cookie c = new Cookie(cookie);
 
                         c.AddIngredient(ingredient.Name, i);
-                        scores.Add(getScore(c, remainingIngredients.Where(ing => ing != ingredient).ToList()));
+                        scores.Add(getScore(c, remainingIngredients.Where(ing => ing != ingredient).ToList(), calories));
                     }
                 }
             }
@@ -131,7 +139,10 @@ namespace AdventOfCode.Days
 
         public override string GetSolutionPart2()
         {
-            return string.Empty;
+            Cookie c = new Cookie();
+
+            var score = getScore(c, ingredients, true);
+            return score.ToString();
         }
     }
 }
