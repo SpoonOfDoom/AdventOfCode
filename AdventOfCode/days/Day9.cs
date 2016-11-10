@@ -19,7 +19,7 @@ namespace AdventOfCode.Days
         private List<Route> routes = new List<Route>();
         private HashSet<string> cities = new HashSet<string>();
 
-        private int getDistance(string start, int distance, List<string> targets, bool longest = false)
+        private int GetDistance(string start, int distance, List<string> targets, bool longest = false)
         {
             if (targets.Count == 1)
             {
@@ -34,7 +34,7 @@ namespace AdventOfCode.Days
             foreach (var target in targets)
             {
                 distances.Add(
-                    getDistance(
+                    GetDistance(
                         target,
                         routes.Where(r => r.City1 == start && r.City2 == target || r.City2 == start && r.City1 == target).Select(r => r.Distance).Single(),
                         targets.Where(t => t != target).ToList(),
@@ -75,7 +75,7 @@ namespace AdventOfCode.Days
             List<int> distances = new List<int>();
             foreach (var start in cities)
             {
-                distances.Add(getDistance(start, 0, cities.Where(t => t != start).ToList()));
+                distances.Add(GetDistance(start, 0, cities.Where(t => t != start).ToList()));
             }
             return distances.Min().ToString();
         }
@@ -85,7 +85,7 @@ namespace AdventOfCode.Days
             List<int> distances = new List<int>();
             foreach (var start in cities)
             {
-                distances.Add(getDistance(start, 0, cities.Where(t => t != start).ToList(), true));
+                distances.Add(GetDistance(start, 0, cities.Where(t => t != start).ToList(), true));
             }
             return distances.Max().ToString();
         }

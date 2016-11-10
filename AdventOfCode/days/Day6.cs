@@ -14,30 +14,30 @@ namespace AdventOfCode.Days
 
         private struct Instruction
         {
-            public string action;
-            public int x1, x2, y1, y2;
+            public string Action;
+            public int X1, X2, Y1, Y2;
 
             public Instruction(string instruction)
             {
                 Regex reg = new Regex(@"(toggle|turn o(n|ff)) (\d+),(\d+) through (\d+),(\d+)");
                 var groups = reg.Match(instruction).Groups;
 
-                action = groups[1].Value;
-                x1 = groups[3].Value.ToInt();
-                y1 = groups[4].Value.ToInt();
-                x2 = groups[5].Value.ToInt();
-                y2 = groups[6].Value.ToInt();
+                Action = groups[1].Value;
+                X1 = groups[3].Value.ToInt();
+                Y1 = groups[4].Value.ToInt();
+                X2 = groups[5].Value.ToInt();
+                Y2 = groups[6].Value.ToInt();
             }
         }
-        private void executeInstruction(string text)
+        private void ExecuteInstruction(string text)
         {
             Instruction i = new Instruction(text);
 
-            for (int x = i.x1; x <= i.x2; x++)
+            for (int x = i.X1; x <= i.X2; x++)
             {
-                for (int y = i.y1; y <= i.y2; y++)
+                for (int y = i.Y1; y <= i.Y2; y++)
                 {
-                    switch (i.action)
+                    switch (i.Action)
                     {
                         case "turn on":
                             lightsBool[x, y] = true;
@@ -56,15 +56,15 @@ namespace AdventOfCode.Days
             }
         }
 
-        private void executeInstruction2(string text)
+        private void ExecuteInstruction2(string text)
         {
             Instruction i = new Instruction(text);
 
-            for (int x = i.x1; x <= i.x2; x++)
+            for (int x = i.X1; x <= i.X2; x++)
             {
-                for (int y = i.y1; y <= i.y2; y++)
+                for (int y = i.Y1; y <= i.Y2; y++)
                 {
-                    switch (i.action)
+                    switch (i.Action)
                     {
                         case "turn on":
                             lightsInt[x, y]++;
@@ -88,7 +88,7 @@ namespace AdventOfCode.Days
         {
             foreach (string line in inputLines)
             {
-                executeInstruction(line);
+                ExecuteInstruction(line);
             }
 
             var test = from bool item in lightsBool
@@ -103,7 +103,7 @@ namespace AdventOfCode.Days
         {
             foreach (string line in inputLines)
             {
-                executeInstruction2(line);
+                ExecuteInstruction2(line);
             }
 
             var test = from int item in lightsInt

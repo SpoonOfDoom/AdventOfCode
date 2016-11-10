@@ -6,7 +6,7 @@ namespace AdventOfCode
 {
     class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
             Day d;
             Stopwatch sw = new Stopwatch();
@@ -23,12 +23,12 @@ namespace AdventOfCode
             }
             
 
-            string solution1, solution2 = "";
+            string solution1, solution2;
             TimeSpan totalTime = new TimeSpan();
             try
             {
                 sw.Start();
-                solution1 = d.GetSolutionPart1().ToString();
+                solution1 = d.GetSolutionPart1();
                 sw.Stop();
                 totalTime += sw.Elapsed;
             }
@@ -41,7 +41,7 @@ namespace AdventOfCode
             try
             {
                 sw.Restart();
-                solution2 = d.GetSolutionPart2().ToString();
+                solution2 = d.GetSolutionPart2();
                 sw.Stop();
                 totalTime += sw.Elapsed;
             }

@@ -14,14 +14,14 @@ namespace AdventOfCode.Days
         protected Day(int number)
         {
             Number = number;
-            getInput();
+            GetInput();
         }
 
         /// <summary>
         /// Input will be entered in a seperate method so that it can be collapsed individually (for bigger inputs)
         /// </summary>
         /// <returns></returns>
-        private void getInput()
+        private void GetInput()
         {
             input = File.ReadAllText("input\\day" + Number + ".txt");
             inputLines = File.ReadAllLines("input\\day" + Number + ".txt").ToList();

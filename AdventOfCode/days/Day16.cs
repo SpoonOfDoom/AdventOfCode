@@ -1,5 +1,4 @@
 using AdventOfCode.Extensions;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -22,7 +21,7 @@ namespace AdventOfCode.Days
             { "perfumes", 1 }
         };
 
-        public int ID;
+        public int Id;
         public Dictionary<string, int> Stuff = new Dictionary<string, int>();
 
         public bool IsValidCandidate()
@@ -76,13 +75,13 @@ namespace AdventOfCode.Days
         private Regex regLine = new Regex(@"Sue (\d+): (.+)");
         private List<Sue> Candidates = new List<Sue>();
 
-        private Sue parseLine(string line)
+        private Sue ParseLine(string line)
         {
             Sue s = new Sue();
 
             var groups = regLine.Match(line).Groups;
 
-            s.ID = groups[1].Value.ToInt();
+            s.Id = groups[1].Value.ToInt();
 
             var things = groups[2].Value.Split(',');
 
@@ -99,20 +98,20 @@ namespace AdventOfCode.Days
         {
             foreach (var line in inputLines)
             {
-                var sue = parseLine(line);
+                var sue = ParseLine(line);
                 Candidates.Add(sue);
             }
 
             var validCandidates = Candidates.Where(c => c.IsValidCandidate()).ToList();
 
-            return validCandidates.Select(s => s.ID).Single().ToString();
+            return validCandidates.Select(s => s.Id).Single().ToString();
         }
 
         public override string GetSolutionPart2()
         {
             var validCandidates = Candidates.Where(c => c.IsValidCandidate2()).ToList();
 
-            return validCandidates.Select(s => s.ID).Max().ToString(); //Not sure if it's correct that there are two possible candidates, but close enough for now.
+            return validCandidates.Select(s => s.Id).Max().ToString(); //Not sure if it's correct that there are two possible candidates, but close enough for now.
         }
     }
 }

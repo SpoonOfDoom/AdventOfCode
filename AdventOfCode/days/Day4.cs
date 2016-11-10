@@ -10,7 +10,7 @@ namespace AdventOfCode.Days
         static StringBuilder sb = new StringBuilder();
         
 
-        private static string getHash(string input)
+        private static string GetHash(string input)
         {
             // step 1, calculate MD5 hash from input
             byte[] inputBytes = Encoding.ASCII.GetBytes(input);
@@ -25,13 +25,13 @@ namespace AdventOfCode.Days
             return sb.ToString();
         }
 
-        private int getNumberToMatch(string hashStart)
+        private int GetNumberToMatch(string hashStart)
         {
             string hash = "";
             int i = 0;
             while (!hash.StartsWith(hashStart))
             {
-                hash = getHash(input + i);
+                hash = GetHash(input + i);
                 if (hash.StartsWith(hashStart))
                 {
                     break;
@@ -43,12 +43,12 @@ namespace AdventOfCode.Days
         }
         public override string GetSolutionPart1()
         {
-            return getNumberToMatch("00000").ToString();
+            return GetNumberToMatch("00000").ToString();
         }
 
         public override string GetSolutionPart2()
         {
-            return getNumberToMatch("000000").ToString();
+            return GetNumberToMatch("000000").ToString();
         }
     }
 }

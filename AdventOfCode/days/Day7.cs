@@ -8,7 +8,6 @@ namespace AdventOfCode.Days
     {
         public Day7() : base(7) { }
 
-        private Dictionary<string, int> wires = new Dictionary<string, int>();
         private Dictionary<string, string> instructions = new Dictionary<string, string>();
         private Dictionary<string, int> instructionSolved = new Dictionary<string, int>();
 
@@ -16,7 +15,7 @@ namespace AdventOfCode.Days
         private Regex regShift = new Regex(@"(\w+) (R|L)SHIFT (\d+)");
         private Regex regAndOr = new Regex(@"(\w+) (AND|OR) (\w+)");
 
-        private int getValue(string wire)
+        private int GetValue(string wire)
         {
             if (wire.IsNumeric())
             {
@@ -27,62 +26,62 @@ namespace AdventOfCode.Days
             {
                 return instructionSolved[wire];
             }
-            string input = instructions[wire];
+            string wireInput = instructions[wire];
 
-            if (input.IsNumeric())
+            if (wireInput.IsNumeric())
             {
-                instructionSolved[wire] = input.ToInt();
-                return input.ToInt();
+                instructionSolved[wire] = wireInput.ToInt();
+                return wireInput.ToInt();
             }
             else
             {
-                if (regNot.IsMatch(input))
+                if (regNot.IsMatch(wireInput))
                 {
-                    string w = regNot.Match(input).Groups[1].Value;
-                    int ret = ~getValue(w);
+                    string w = regNot.Match(wireInput).Groups[1].Value;
+                    int ret = ~GetValue(w);
                     instructionSolved[wire] = ret;
                     return ret;
                 }
-                else if (regShift.IsMatch(input))
+                else if (regShift.IsMatch(wireInput))
                 {
-                    var groups = regShift.Match(input).Groups;
+                    var groups = regShift.Match(wireInput).Groups;
                     string val1 = groups[1].Value;
                     string val2 = groups[3].Value;
 
                     if (groups[2].Value == "R")
                     {
-                        int ret = getValue(val1) >> getValue(val2);
+                        int ret = GetValue(val1) >> GetValue(val2);
                         instructionSolved[wire] = ret;
                         return ret;
                     }
                     else
                     {
-                        int ret = getValue(val1) << getValue(val2);
+                        int ret = GetValue(val1) << GetValue(val2);
                         instructionSolved[wire] = ret;
                         return ret;
                     }
                 }
-                else if (regAndOr.IsMatch(input))
+                else if (regAndOr.IsMatch(wireInput))
                 {
-                    var groups = regAndOr.Match(input).Groups;
+                    var groups = regAndOr.Match(wireInput).Groups;
                     string val1 = groups[1].Value;
                     string val2 = groups[3].Value;
                     if (groups[2].Value == "AND")
                     {
-                        int ret = getValue(val1) & getValue(val2);
+                        int ret = GetValue(val1) & GetValue(val2);
                         instructionSolved[wire] = ret;
                         return ret;
                     }
                     else
                     {
-                        int ret = getValue(val1) | getValue(val2);
+                        int ret = GetValue(val1) | GetValue(val2);
                         instructionSolved[wire] = ret;
                         return ret;
                     }
                 }
                 else
                 {
-                    int ret = getValue(input);
+                    int ret = GetValue(wireInput);
                     instructionSolved[wire] = ret;
                     return ret;
                 }
@@ -101,7 +100,7 @@ namespace AdventOfCode.Days
 
                 instructions[output] = inputValue;
             }
-            var solution = getValue("a");
+            var solution = GetValue("a");
             return solution.ToString();
         }
 
@@ -109,7 +108,7 @@ namespace AdventOfCode.Days
         {
             instructions["b"] = instructionSolved["a"].ToString();
             instructionSolved.Clear();
-            var solution = getValue("a");
+            var solution = GetValue("a");
             return solution.ToString();
         }
     }

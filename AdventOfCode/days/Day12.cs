@@ -9,7 +9,7 @@ namespace AdventOfCode.Days
     {
         public Day12() : base(12) { }
 
-        private static bool containsRed(dynamic json)
+        private static bool ContainsRed(dynamic json)
         {
             foreach (var child in json.Children())
             {
@@ -37,18 +37,18 @@ namespace AdventOfCode.Days
             return false;
         }
 
-        private static int addNumbers(int sum, dynamic json)
+        private static int AddNumbers(int sum, dynamic json)
         {
             int ret = 0;
             if (json is JObject)
             {
-                if (containsRed(json))
+                if (ContainsRed(json))
                 {
                     return 0;
                 }
                 foreach (var child in json.Children())
                 {
-                    ret += addNumbers(sum, child);
+                    ret += AddNumbers(sum, child);
                 }
 
             }
@@ -57,7 +57,7 @@ namespace AdventOfCode.Days
                 var arr = json as JArray;
                 foreach (var item in arr)
                 {
-                    ret += addNumbers(sum, item);
+                    ret += AddNumbers(sum, item);
                 }
             }
             else if (json is JProperty)
@@ -75,11 +75,11 @@ namespace AdventOfCode.Days
 
                 if (prop.Value is JObject || prop.Value is JArray)
                 {
-                    if (!(prop.Value is JObject && containsRed(prop.Value)))
+                    if (!(prop.Value is JObject && ContainsRed(prop.Value)))
                     {
                         foreach (var child in prop.Value.Children())
                         {
-                            ret += addNumbers(sum, child);
+                            ret += AddNumbers(sum, child);
                         }
                     }
                 }
@@ -118,7 +118,7 @@ namespace AdventOfCode.Days
         public override string GetSolutionPart2()
         {
             dynamic json = JsonConvert.DeserializeObject(input);
-            int sum = addNumbers(0, json);
+            int sum = AddNumbers(0, json);
             return sum.ToString();
         }
     }

@@ -13,7 +13,7 @@ namespace AdventOfCode.Days
         private HashSet<string> guests = new HashSet<string>();
         private Regex regLine = new Regex(@"(\w+) .+ (gain|lose) (\d+) .+ (\w+)\.");
         
-        private void parseLine(Dictionary<string, int> dict, HashSet<string>guestList, string line)
+        private void ParseLine(Dictionary<string, int> dict, HashSet<string>guestList, string line)
         {
             var groups = regLine.Match(line).Groups;
             string combo = groups[1].Value + groups[4].Value;
@@ -26,7 +26,7 @@ namespace AdventOfCode.Days
             dict.Add(combo, happiness);
         }
 
-        private int calculateHappiness(List<string> people)
+        private int CalculateHappiness(List<string> people)
         {
             int sum = 0;
             for (int i = 0; i < people.Count; i++)
@@ -40,7 +40,7 @@ namespace AdventOfCode.Days
             return sum;
         }
 
-        private int getHappiness(List<string> people, List<string> guestsRemaining )
+        private int GetHappiness(List<string> people, List<string> guestsRemaining )
         {
             if (guestsRemaining.Count > 0)
             {
@@ -48,13 +48,13 @@ namespace AdventOfCode.Days
                 foreach (string s in guestsRemaining)
                 {
                     List<string> p = new List<string>(people) {s};
-                    results.Add(getHappiness(p, guestsRemaining.Where(g => g != s).ToList()));
+                    results.Add(GetHappiness(p, guestsRemaining.Where(g => g != s).ToList()));
                 }
                 return results.Max();
             }
             else
             {
-                return calculateHappiness(people);
+                return CalculateHappiness(people);
             }
             
         }
@@ -63,14 +63,14 @@ namespace AdventOfCode.Days
         {
             foreach (string line in inputLines)
             {
-                parseLine(neighbourStats, guests, line);
+                ParseLine(neighbourStats, guests, line);
             }
 
             List<int> results = new List<int>();
 
             foreach (string guest in guests)
             {
-                results.Add(getHappiness(new List<string>() {guest}, guests.Where(g => g != guest).ToList()));
+                results.Add(GetHappiness(new List<string>() {guest}, guests.Where(g => g != guest).ToList()));
             }
             
             return results.Max().ToString();
@@ -88,7 +88,7 @@ namespace AdventOfCode.Days
             guests.Add("Me");
             foreach (string guest in guests)
             {
-                results.Add(getHappiness(new List<string>() { guest }, guests.Where(g => g != guest).ToList()));
+                results.Add(GetHappiness(new List<string>() { guest }, guests.Where(g => g != guest).ToList()));
             }
 
             return results.Max().ToString();

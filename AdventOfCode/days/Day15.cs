@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using AdventOfCode.Days;
 using AdventOfCode.Extensions;
 
 namespace AdventOfCode.Days
@@ -69,7 +68,7 @@ namespace AdventOfCode.Days
         private Regex regLine = new Regex(@"^(\w+)[^0-9-]+(-?\d+)[^0-9-]+(-?\d+)[^0-9-]+(-?\d+)[^0-9-]+(-?\d+)[^0-9-]+(-?\d+)");
         private List<Ingredient> ingredients = new List<Ingredient>();
 
-        private Ingredient parseLine(string line)
+        private Ingredient ParseLine(string line)
         {
             var groups = regLine.Match(line).Groups;
             var i = new Ingredient
@@ -85,7 +84,7 @@ namespace AdventOfCode.Days
             return i;
         }
 
-        private int getScore(Cookie cookie, List<Ingredient> remainingIngredients, bool calories = false)
+        private static int GetScore(Cookie cookie, List<Ingredient> remainingIngredients, bool calories = false)
         {
             if (calories && cookie.TotalCalories > 500) //No need to keep trying combinations if we're already over 500 calories.
             {
@@ -108,7 +107,7 @@ namespace AdventOfCode.Days
                     Cookie c = new Cookie(cookie);
 
                     c.AddIngredient(ingredient.Name, 100 - c.TotalAmount);
-                    scores.Add(getScore(c, remainingIngredients.Where(ing => ing != ingredient).ToList(), calories));
+                    scores.Add(GetScore(c, remainingIngredients.Where(ing => ing != ingredient).ToList(), calories));
                 }
                 else
                 {
@@ -117,7 +116,7 @@ namespace AdventOfCode.Days
                         Cookie c = new Cookie(cookie);
 
                         c.AddIngredient(ingredient.Name, i);
-                        scores.Add(getScore(c, remainingIngredients.Where(ing => ing != ingredient).ToList(), calories));
+                        scores.Add(GetScore(c, remainingIngredients.Where(ing => ing != ingredient).ToList(), calories));
                     }
                 }
             }
@@ -128,12 +127,12 @@ namespace AdventOfCode.Days
         {
             foreach (string line in inputLines)
             {
-                ingredients.Add(parseLine(line));
+                ingredients.Add(ParseLine(line));
             }
             
             Cookie c = new Cookie();
 
-            var score = getScore(c, ingredients);
+            var score = GetScore(c, ingredients);
             return score.ToString();
         }
 
@@ -141,7 +140,7 @@ namespace AdventOfCode.Days
         {
             Cookie c = new Cookie();
 
-            var score = getScore(c, ingredients, true);
+            var score = GetScore(c, ingredients, true);
             return score.ToString();
         }
     }

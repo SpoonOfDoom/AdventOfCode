@@ -6,7 +6,7 @@ namespace AdventOfCode.Days
     {
         public Day8() : base(8) { }
 
-        private static int getMemoryCharacters(string text)
+        private static int GetMemoryCharacters(string text)
         {
             text = text.Replace("\\\\", "1");
             text = Regex.Replace(text, @"\\x..", "1");
@@ -14,7 +14,7 @@ namespace AdventOfCode.Days
             return text.Length - 2;
         }
 
-        private static int getEncodedCharacters(string text)
+        private static int GetEncodedCharacters(string text)
         {
             text = text.Replace("\\", "\\\\");
             text = text.Replace("\"", "\\\"");
@@ -28,7 +28,7 @@ namespace AdventOfCode.Days
             foreach (string line in inputLines)
             {
                 sumChars += line.Length;
-                sumMemoryChars += getMemoryCharacters(line);
+                sumMemoryChars += GetMemoryCharacters(line);
             }
 
             return (sumChars - sumMemoryChars).ToString();
@@ -42,7 +42,7 @@ namespace AdventOfCode.Days
             foreach (string line in inputLines)
             {
                 sumChars += line.Length;
-                sumEncodedChars += getEncodedCharacters(line);
+                sumEncodedChars += GetEncodedCharacters(line);
             }
 
             return (sumEncodedChars - sumChars).ToString();

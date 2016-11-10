@@ -12,7 +12,9 @@ namespace AdventOfCode.Days
 
         class Reindeer
         {
+#pragma warning disable 414
             public string Name;
+#pragma warning restore 414
             public int Speed;
             public int RunTime;
             public int RestTime;
@@ -64,7 +66,7 @@ namespace AdventOfCode.Days
         private List<Reindeer> reindeers = new List<Reindeer>();
         private const int raceTime = 2503;
 
-        private Reindeer parseLine(string line)
+        private Reindeer ParseLine(string line)
         {
             var groups = regLine.Match(line).Groups;
 
@@ -81,7 +83,7 @@ namespace AdventOfCode.Days
             };
         }
 
-        private static void iterateList(List<Reindeer> reindeerList)
+        private static void IterateList(List<Reindeer> reindeerList)
         {
             foreach (Reindeer reindeer in reindeerList)
             {
@@ -98,7 +100,7 @@ namespace AdventOfCode.Days
         {
             foreach (string line in inputLines)
             {
-                reindeers.Add(parseLine(line));
+                reindeers.Add(ParseLine(line));
             }
             
 
@@ -110,7 +112,7 @@ namespace AdventOfCode.Days
         {
             for (int i = 0; i < raceTime; i++)
             {
-                iterateList(reindeers);
+                IterateList(reindeers);
             }
 
             int winningScore = reindeers.Max(r => r.Score);

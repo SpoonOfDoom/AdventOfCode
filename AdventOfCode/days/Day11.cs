@@ -9,7 +9,7 @@ namespace AdventOfCode.Days
 
         private string result1;
         
-        private static string iteratePassword(string password)
+        private static string IteratePassword(string password)
         {
             StringBuilder sb = new StringBuilder(password);
 
@@ -33,7 +33,7 @@ namespace AdventOfCode.Days
             return sb.ToString();
         }
 
-        private static bool isValidPassword(string password)
+        private static bool IsValidPassword(string password)
         {
             Regex regPair = new Regex(@"(\w)\1");
 
@@ -72,9 +72,9 @@ namespace AdventOfCode.Days
         {
             string password = input;
 
-            while (!isValidPassword(password))
+            while (!IsValidPassword(password))
             {
-                password = iteratePassword(password);
+                password = IteratePassword(password);
             }
             result1 = password;
             return password;
@@ -82,11 +82,11 @@ namespace AdventOfCode.Days
 
         public override string GetSolutionPart2()
         {
-            string password = iteratePassword(result1);
+            string password = IteratePassword(result1);
 
-            while (!isValidPassword(password))
+            while (!IsValidPassword(password))
             {
-                password = iteratePassword(password);
+                password = IteratePassword(password);
             }
             return password;
         }
