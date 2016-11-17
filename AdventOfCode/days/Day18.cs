@@ -11,10 +11,10 @@ namespace AdventOfCode.Days
     {
         public Day18() : base(18) { }
         
-        private bool[,] grid = new bool[100, 100];
 
-        private void PopulateInitialGrid()
+        private bool[,] PopulateInitialGrid(bool cornersOn = false)
         {
+            var grid = new bool[100,100];
             for (int i = 0; i < inputLines.Count; i++)
             {
                 string line = inputLines[i];
@@ -30,6 +30,14 @@ namespace AdventOfCode.Days
                     }
                 }
             }
+            if (cornersOn)
+            {
+                grid[0, 0] = true;
+                grid[0, 99] = true;
+                grid[99, 0] = true;
+                grid[99, 99] = true;
+            }
+            return grid;
         }
 
         private List<bool> GetNeighbours(bool[,] state, int x, int y)
@@ -88,9 +96,7 @@ namespace AdventOfCode.Days
 
             //A light which is on stays on when 2 or 3 neighbors are on, and turns off otherwise.
             //A light which is off turns on if exactly 3 neighbors are on, and stays off otherwise.
-
             
-
             if (state[x,y] == true)
             {
                 var neighbours = GetNeighbours(state, x, y).Where(n => n == true);
@@ -103,7 +109,7 @@ namespace AdventOfCode.Days
             }
         }
 
-        private bool[,] CalculateNewState(bool[,] oldState)
+        private bool[,] CalculateNewState(bool[,] oldState, bool cornersOn = false)
         {
             bool [,] newGrid = new bool[100,100];
 
@@ -113,6 +119,14 @@ namespace AdventOfCode.Days
                 {
                     newGrid[x, y] = ShouldLightBeOn(oldState, x, y);
                 }
+            }
+
+            if (cornersOn)
+            {
+                newGrid[0, 0] = true;
+                newGrid[0, 99] = true;
+                newGrid[99, 0] = true;
+                newGrid[99, 99] = true;
             }
             return newGrid;
         }
@@ -140,14 +154,12 @@ namespace AdventOfCode.Days
 
         public override string GetSolutionPart1()
         {
-            PopulateInitialGrid();
+            var grid = PopulateInitialGrid();
             for (int i = 0; i < 100; i++)
             {
                 grid = CalculateNewState(grid);
-                PrintGrid(grid);
-                Thread.Sleep(500);
             }
-            //In your grid of 100x100 lights, given your initial configuration, how many lights are on after 100 steps?
+
             int count = 0;
             foreach (bool b in grid)
             {
@@ -161,7 +173,22 @@ namespace AdventOfCode.Days
 
         public override string GetSolutionPart2()
         {
-            throw new NotImplementedException();
+            var grid = PopulateInitialGrid(cornersOn: true);
+            
+            for (int i = 0; i < 100; i++)
+            {
+                grid = CalculateNewState(grid, cornersOn:true);
+            }
+
+            int count = 0;
+            foreach (bool b in grid)
+            {
+                if (b == true)
+                {
+                    count++;
+                }
+            }
+            return count.ToString();
         }
     }
 }
