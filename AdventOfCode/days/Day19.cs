@@ -1,12 +1,11 @@
 using System;
-using AdventOfCode.Extensions;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading;
 using Priority_Queue;
+// ReSharper disable FieldCanBeMadeReadOnly.Local
 
 namespace AdventOfCode.Days
 {
@@ -32,6 +31,8 @@ namespace AdventOfCode.Days
         private HashSet<MyNode> closedList = new HashSet<MyNode>();
 
         private List<string> medicineAtoms = new List<string>();
+
+        private Stopwatch searchWatch = new Stopwatch();
 
         private void ParseLines()
         {
@@ -99,7 +100,6 @@ namespace AdventOfCode.Days
         {
             var retList = new List<string>();
             
-            StringBuilder b = new StringBuilder(molecule);
             while (molecule.Length > 0)
             {
                 string atom;
@@ -133,15 +133,23 @@ namespace AdventOfCode.Days
                 length = Math.Min(atoms.Count, medicineAtoms.Count);
                 lengthDifference = Math.Abs(atoms.Count - medicineAtoms.Count);
             }
-
+            int chainBonus = 0;
             for (int i = 0; i < length; i++)
             {
                 if (atoms[i] != medicineAtoms[i])
                 {
-                    diffCount++;
+                    diffCount++; //todo: Chainbonus for matching atoms in a row!
+                    diffCount -= chainBonus;
+                    chainBonus = 0;
+                }
+                else
+                {
+                    chainBonus+=2;
                 }
             }
-            return diffCount + (lengthDifference*2);
+
+            int priority = diffCount + (lengthDifference*2);
+            return priority;
         }
 
         private int GetHeuristicFor(string molecule, string target)
@@ -173,6 +181,7 @@ namespace AdventOfCode.Days
 
         private int GetRoute(string start, string target)
         {
+            searchWatch.Start();
             MyNode node = new MyNode()
             {
                 Cost = 0,
@@ -195,6 +204,10 @@ namespace AdventOfCode.Days
 
                 closedList.Add(current);
                 var newNodes = ExpandNode(current);
+                Console.Clear();
+                Console.WriteLine("Open list: {0}", openList.Count);
+                Console.WriteLine("Closed list: {0}", closedList.Count);
+                Console.WriteLine("Time: {0}:{1}:{2}.{3}", searchWatch.Elapsed.Hours, searchWatch.Elapsed.Minutes, searchWatch.Elapsed.Seconds, searchWatch.Elapsed.Milliseconds);
                 foreach (var n in newNodes)
                 {
                     if (openList.Contains(n) && openList.Any(x => x.TentativeCost > n.TentativeCost))
@@ -208,7 +221,7 @@ namespace AdventOfCode.Days
                     }
                     else
                     {
-                        Debug.WriteLine("Node {0} already in closedList", n.Text);
+                        Console.WriteLine("Node {0} already in closedList", n.Text);
                     }
                 }
             }
