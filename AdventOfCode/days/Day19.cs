@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using Priority_Queue;
 // ReSharper disable FieldCanBeMadeReadOnly.Local
 
@@ -117,12 +118,12 @@ namespace AdventOfCode.Days
             return retList;
         }
 
-        private int CompareMolecules(string a)
+        private int CompareMolecules(List<string> atoms)
         {
             int diffCount = 0;
             int length;
             int lengthDifference = 0;
-            var atoms = GetAtoms(a);
+            //var atoms = GetAtoms(a);
 
             if (atoms.Count == medicineAtoms.Count)
             {
@@ -138,9 +139,20 @@ namespace AdventOfCode.Days
             {
                 if (atoms[i] != medicineAtoms[i])
                 {
-                    diffCount++; //todo: Chainbonus for matching atoms in a row!
+                    diffCount += 2;
                     diffCount -= chainBonus;
                     chainBonus = 0;
+                    if (!replacements.ContainsKey(atoms[i]))
+                    {
+                        diffCount+=10; //atom is wrong here and cannot be replaced at all, so priority takes a big hit
+                    }
+                    else
+                    {
+                        if (replacements[atoms[i]].Any(r => r.StartsWith(medicineAtoms[i])))
+                        {
+                            diffCount--; //atom is wrong here, but can be replaced into the right one, so priority is a bit better
+                        }
+                    }
                 }
                 else
                 {
@@ -148,13 +160,30 @@ namespace AdventOfCode.Days
                 }
             }
 
-            int priority = diffCount + (lengthDifference*2);
+            int priority = diffCount;
+            if (medicineAtoms.Count - atoms.Count == 1)
+            {
+                priority -= 10;
+            }
+            else if (atoms.Count > medicineAtoms.Count)
+            {
+                priority += 100000000; //Can't replace atoms to become less
+            }
+            else
+            {
+                priority += (lengthDifference*10);
+            }
             return priority;
         }
 
-        private int GetHeuristicFor(string molecule, string target)
+        private int GetHeuristicFor(string molecule)
         {
-            return molecule == target ? 0 : CompareMolecules(molecule);
+            var atoms = GetAtoms(molecule);
+            if (atoms.Count > medicineAtoms.Count)
+            {
+                return 999999999;
+            }
+            return molecule == medicineMolecule ? 0 : CompareMolecules(atoms);
         }
 
         private HashSet<MyNode> ExpandNode(MyNode node)
@@ -168,10 +197,14 @@ namespace AdventOfCode.Days
 
             foreach (string newMolecule in newMolecules)
             {
+                if (GetAtoms(newMolecule).Count > medicineAtoms.Count)
+                {
+                    continue; //Don't even add them to the openList, they're impossible anyway
+                }
                 var newNode = new MyNode()
                 {
                     Cost = node.Cost + 1,
-                    Heuristic = GetHeuristicFor(newMolecule, medicineMolecule),
+                    Heuristic = GetHeuristicFor(newMolecule),
                     Text = newMolecule
                 };
                 newNodes.Add(newNode);
@@ -185,14 +218,15 @@ namespace AdventOfCode.Days
             MyNode node = new MyNode()
             {
                 Cost = 0,
-                Heuristic = GetHeuristicFor(start, target),
+                Heuristic = GetHeuristicFor(start),
                 Text = start
             };
             
             openList.Enqueue(node, 0);
 
-
-
+            TimeSpan? timeTo1000 = null;
+            TimeSpan? timeTo2000 = null;
+            bool useParallel = false;
             while (openList.Count > 0)
             {
                 MyNode current = openList.Dequeue();
@@ -203,27 +237,77 @@ namespace AdventOfCode.Days
                 }
 
                 closedList.Add(current);
+                if (closedList.Count == 1000 && !timeTo1000.HasValue)
+                {
+                    timeTo1000 = searchWatch.Elapsed;
+                }
+                if (closedList.Count == 2000 && !timeTo2000.HasValue)
+                {
+                    timeTo2000 = searchWatch.Elapsed;
+                }
                 var newNodes = ExpandNode(current);
+                
                 Console.Clear();
                 Console.WriteLine("Open list: {0}", openList.Count);
                 Console.WriteLine("Closed list: {0}", closedList.Count);
-                Console.WriteLine("Time: {0}:{1}:{2}.{3}", searchWatch.Elapsed.Hours, searchWatch.Elapsed.Minutes, searchWatch.Elapsed.Seconds, searchWatch.Elapsed.Milliseconds);
-                foreach (var n in newNodes)
+                if (openList.Count > 0) Console.WriteLine("First tentative cost: {0}", openList.First.TentativeCost);
+                if (timeTo1000.HasValue)
                 {
-                    if (openList.Contains(n) && openList.Any(x => x.TentativeCost > n.TentativeCost))
-                    {
-                        openList.UpdatePriority(n, n.TentativeCost);
-                        continue;
-                    }
-                    if (!closedList.Contains(n))
-                    {
-                        openList.Enqueue(n, n.TentativeCost);
-                    }
-                    else
-                    {
-                        Console.WriteLine("Node {0} already in closedList", n.Text);
-                    }
+                    Console.WriteLine("Time to 1000 closed: {0}", timeTo1000);
                 }
+                if (timeTo2000.HasValue)
+                {
+                    Console.WriteLine("Time to 2000 closed: {0}", timeTo2000);
+                }
+                Console.WriteLine("Time: {0}:{1}:{2}.{3}", searchWatch.Elapsed.Hours, searchWatch.Elapsed.Minutes, searchWatch.Elapsed.Seconds, searchWatch.Elapsed.Milliseconds);
+                
+                Parallel.ForEach(newNodes, (n) =>
+                {
+                    lock (openList)
+                    {
+                        if (openList.Any(x => x.Text == n.Text && x.TentativeCost > n.TentativeCost))
+                        {
+                            openList.UpdatePriority(n, n.TentativeCost);
+                        }
+                        else
+                        {
+                            if (closedList.All(x => x.Text != n.Text))
+                            {
+                                if (n.Heuristic == 999999999)
+                                {
+                                    closedList.Add(n);
+                                }
+                                else
+                                {
+                                    openList.Enqueue(n, n.TentativeCost);
+                                }
+                            }
+                        }
+                    }
+                });
+                //foreach (var n in newNodes)
+                //{
+                //    if (openList.Any(x => x.Text == n.Text && x.TentativeCost > n.TentativeCost))
+                //    {
+                //        openList.UpdatePriority(n, n.TentativeCost);
+                //        continue;
+                //    }
+                //    if (closedList.All(x => x.Text != n.Text))
+                //    {
+                //        if (n.Heuristic == 999999999)
+                //        {
+                //            closedList.Add(n);
+                //        }
+                //        else
+                //        {
+                //            openList.Enqueue(n, n.TentativeCost);
+                //        }
+                //    }
+                //    else
+                //    {
+                //        Debug.WriteLine("Node {0} already in closedList", n.Text);
+                //    }
+                //}
             }
             return -1;
         }
