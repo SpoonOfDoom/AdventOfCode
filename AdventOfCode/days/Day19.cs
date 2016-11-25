@@ -18,6 +18,8 @@ namespace AdventOfCode.Days
             public int Cost { get; set; }
             public int Heuristic { get; set; }
             public int TentativeCost => Cost + Heuristic;
+
+            public List<string> Atoms = new List<string>();
         }
 
         public Day19() : base(19) { }
@@ -74,7 +76,7 @@ namespace AdventOfCode.Days
 
             if (matches.Count > 0)
             {
-                for (int i = 0; i < matches.Count; i++)
+                Parallel.For(0, matches.Count, i =>
                 {
                     int start = matches[i].Index;
                     int length = matches[i].Value.Length;
@@ -82,17 +84,39 @@ namespace AdventOfCode.Days
                     string beginning = molecule.Substring(0, start);
                     string end = molecule.Substring(start + length);
 
-                    foreach (string replacement in rep)
+                    lock (retSet)
                     {
-                        builder.Clear();
-                        
-                        builder.Append(beginning);
-                        builder.Append(replacement);
-                        builder.Append(end);
+                        foreach (string replacement in rep)
+                        {
+                            builder.Clear();
 
-                        retSet.Add(builder.ToString());
+                            builder.Append(beginning);
+                            builder.Append(replacement);
+                            builder.Append(end);
+
+                            retSet.Add(builder.ToString());
+                        }
                     }
-                }
+                });
+                //for (int i = 0; i < matches.Count; i++)
+                //{
+                //    int start = matches[i].Index;
+                //    int length = matches[i].Value.Length;
+
+                //    string beginning = molecule.Substring(0, start);
+                //    string end = molecule.Substring(start + length);
+
+                //    foreach (string replacement in rep)
+                //    {
+                //        builder.Clear();
+                        
+                //        builder.Append(beginning);
+                //        builder.Append(replacement);
+                //        builder.Append(end);
+
+                //        retSet.Add(builder.ToString());
+                //    }
+                //}
             }
             return retSet;
         }
@@ -161,17 +185,14 @@ namespace AdventOfCode.Days
             }
 
             int priority = diffCount;
-            if (medicineAtoms.Count - atoms.Count == 1)
-            {
-                priority -= 10;
-            }
-            else if (atoms.Count > medicineAtoms.Count)
+            if (atoms.Count > medicineAtoms.Count)
             {
                 priority += 100000000; //Can't replace atoms to become less
             }
             else
             {
-                priority += (lengthDifference*10);
+                priority += (int)Math.Pow(lengthDifference, 2);
+                //priority += (lengthDifference*10);
             }
             return priority;
         }
@@ -215,7 +236,7 @@ namespace AdventOfCode.Days
         private int GetRoute(string start, string target)
         {
             searchWatch.Start();
-            MyNode node = new MyNode()
+            var node = new MyNode()
             {
                 Cost = 0,
                 Heuristic = GetHeuristicFor(start),
@@ -224,12 +245,12 @@ namespace AdventOfCode.Days
             
             openList.Enqueue(node, 0);
 
+            TimeSpan? timeTo500 = null;
             TimeSpan? timeTo1000 = null;
             TimeSpan? timeTo2000 = null;
-            bool useParallel = false;
             while (openList.Count > 0)
             {
-                MyNode current = openList.Dequeue();
+                var current = openList.Dequeue();
 
                 if (current.Text == target)
                 {
@@ -237,6 +258,10 @@ namespace AdventOfCode.Days
                 }
 
                 closedList.Add(current);
+                if (closedList.Count == 500 && !timeTo500.HasValue)
+                {
+                    timeTo500 = searchWatch.Elapsed;
+                }
                 if (closedList.Count == 1000 && !timeTo1000.HasValue)
                 {
                     timeTo1000 = searchWatch.Elapsed;
@@ -251,6 +276,10 @@ namespace AdventOfCode.Days
                 Console.WriteLine("Open list: {0}", openList.Count);
                 Console.WriteLine("Closed list: {0}", closedList.Count);
                 if (openList.Count > 0) Console.WriteLine("First tentative cost: {0}", openList.First.TentativeCost);
+                if (timeTo500.HasValue)
+                {
+                    Console.WriteLine("Time to 500 closed: {0}", timeTo500);
+                }
                 if (timeTo1000.HasValue)
                 {
                     Console.WriteLine("Time to 1000 closed: {0}", timeTo1000);
@@ -263,51 +292,23 @@ namespace AdventOfCode.Days
                 
                 Parallel.ForEach(newNodes, (n) =>
                 {
-                    lock (openList)
+                    if (openList.Any(x => x.Text == n.Text && x.TentativeCost > n.TentativeCost))
                     {
-                        if (openList.Any(x => x.Text == n.Text && x.TentativeCost > n.TentativeCost))
+                        openList.UpdatePriority(n, n.TentativeCost);
+                    }
+                    else
+                    {
+                        if (closedList.Any(x => x.Text == n.Text)) return;
+                        if (n.Heuristic == 999999999)
                         {
-                            openList.UpdatePriority(n, n.TentativeCost);
+                            closedList.Add(n);
                         }
                         else
                         {
-                            if (closedList.All(x => x.Text != n.Text))
-                            {
-                                if (n.Heuristic == 999999999)
-                                {
-                                    closedList.Add(n);
-                                }
-                                else
-                                {
-                                    openList.Enqueue(n, n.TentativeCost);
-                                }
-                            }
+                            openList.Enqueue(n, n.TentativeCost);
                         }
                     }
                 });
-                //foreach (var n in newNodes)
-                //{
-                //    if (openList.Any(x => x.Text == n.Text && x.TentativeCost > n.TentativeCost))
-                //    {
-                //        openList.UpdatePriority(n, n.TentativeCost);
-                //        continue;
-                //    }
-                //    if (closedList.All(x => x.Text != n.Text))
-                //    {
-                //        if (n.Heuristic == 999999999)
-                //        {
-                //            closedList.Add(n);
-                //        }
-                //        else
-                //        {
-                //            openList.Enqueue(n, n.TentativeCost);
-                //        }
-                //    }
-                //    else
-                //    {
-                //        Debug.WriteLine("Node {0} already in closedList", n.Text);
-                //    }
-                //}
             }
             return -1;
         }
