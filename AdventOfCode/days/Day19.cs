@@ -27,6 +27,7 @@ namespace AdventOfCode.Days
         private Regex replacementRegex = new Regex(@"^(\w+) => (\w+)$");
         
         private Dictionary<string, HashSet<string>> replacements = new Dictionary<string, HashSet<string>>();
+        private Dictionary<string, HashSet<string>> replacementsReverse = new Dictionary<string, HashSet<string>>();
         private string medicineMolecule;
         private HashSet<string> possibleMolecules = new HashSet<string>();
 
@@ -56,9 +57,21 @@ namespace AdventOfCode.Days
                     medicineMolecule = line;
                 }
             }
+
+            foreach (var rule in replacements)
+            {
+                foreach (string molecule in rule.Value)
+                {
+                    if (!replacementsReverse.ContainsKey(molecule))
+                    {
+                        replacementsReverse[molecule] = new HashSet<string>();
+                    }
+                    replacementsReverse[molecule].Add(rule.Key);
+                }
+            }
         }
 
-        private HashSet<string> GetReplacementsFor(string atom, string molecule = null, StringBuilder builder = null)
+        private HashSet<string> GetReplacementsFor(string atom, string molecule = null, bool reverse = false, StringBuilder builder = null)
         {
             if (builder == null)
             {
@@ -69,7 +82,7 @@ namespace AdventOfCode.Days
                 molecule = medicineMolecule;
             }
             var retSet = new HashSet<string>();
-            var rep = replacements[atom];
+            var rep = reverse ? replacementsReverse[atom] : replacements[atom];
             Regex regex = new Regex(atom);
             
             var matches = regex.Matches(molecule);
@@ -144,56 +157,9 @@ namespace AdventOfCode.Days
 
         private int CompareMolecules(List<string> atoms)
         {
-            int diffCount = 0;
-            int length;
-            int lengthDifference = 0;
-            //var atoms = GetAtoms(a);
-
-            if (atoms.Count == medicineAtoms.Count)
-            {
-                length = atoms.Count;
-            }
-            else
-            {
-                length = Math.Min(atoms.Count, medicineAtoms.Count);
-                lengthDifference = Math.Abs(atoms.Count - medicineAtoms.Count);
-            }
-            int chainBonus = 0;
-            for (int i = 0; i < length; i++)
-            {
-                if (atoms[i] != medicineAtoms[i])
-                {
-                    diffCount += 2;
-                    diffCount -= chainBonus;
-                    chainBonus = 0;
-                    if (!replacements.ContainsKey(atoms[i]))
-                    {
-                        diffCount+=10; //atom is wrong here and cannot be replaced at all, so priority takes a big hit
-                    }
-                    else
-                    {
-                        if (replacements[atoms[i]].Any(r => r.StartsWith(medicineAtoms[i])))
-                        {
-                            diffCount--; //atom is wrong here, but can be replaced into the right one, so priority is a bit better
-                        }
-                    }
-                }
-                else
-                {
-                    chainBonus+=2;
-                }
-            }
-
-            int priority = diffCount;
-            if (atoms.Count > medicineAtoms.Count)
-            {
-                priority += 100000000; //Can't replace atoms to become less
-            }
-            else
-            {
-                priority += (int)Math.Pow(lengthDifference, 2);
-                //priority += (lengthDifference*10);
-            }
+            int priority = 0;
+            priority += (int) Math.Pow(atoms.Count, 2);
+            
             return priority;
         }
 
@@ -204,24 +170,20 @@ namespace AdventOfCode.Days
             {
                 return 999999999;
             }
-            return molecule == medicineMolecule ? 0 : CompareMolecules(atoms);
+            return molecule == "e" ? 0 : CompareMolecules(atoms);
         }
 
         private HashSet<MyNode> ExpandNode(MyNode node)
         {
             HashSet<MyNode> newNodes = new HashSet<MyNode>();
             HashSet<string> newMolecules = new HashSet<string>();
-            foreach (string atom in replacements.Keys)
+            foreach (string atom in replacementsReverse.Keys)
             {
-                newMolecules.UnionWith(GetReplacementsFor(atom, node.Text));
+                newMolecules.UnionWith(GetReplacementsFor(atom, node.Text, true));
             }
 
             foreach (string newMolecule in newMolecules)
             {
-                if (GetAtoms(newMolecule).Count > medicineAtoms.Count)
-                {
-                    continue; //Don't even add them to the openList, they're impossible anyway
-                }
                 var newNode = new MyNode()
                 {
                     Cost = node.Cost + 1,
@@ -327,7 +289,7 @@ namespace AdventOfCode.Days
         public override string GetSolutionPart2()
         {
             medicineAtoms = GetAtoms(medicineMolecule);
-            int result = GetRoute("e", medicineMolecule);
+            int result = GetRoute(medicineMolecule, "e");
             return result.ToString();
         }
     }
