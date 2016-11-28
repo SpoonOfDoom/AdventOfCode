@@ -12,7 +12,7 @@ namespace AdventOfCode
             Stopwatch sw = new Stopwatch();
             try
             {
-                d = new Day19();
+                d = new Day20();
             }
             catch (InputEmptyException ex)
             {
