@@ -158,8 +158,17 @@ namespace AdventOfCode.Days
         private int CompareMolecules(List<string> atoms)
         {
             int priority = 0;
-            priority += (int) Math.Pow(atoms.Count, 2);
-            
+            priority += (int) Math.Pow(atoms.Count, 3);
+            int replacementPotential = 0;
+            string atomString = string.Join("", atoms);
+            foreach (string s in replacementsReverse.Keys)
+            {
+                if (atomString.Contains(s))
+                {
+                    replacementPotential += s.Length;
+                }
+            }
+            priority -= replacementPotential;
             return priority;
         }
 
