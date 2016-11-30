@@ -12,6 +12,7 @@ namespace AdventOfCode.Days
 
         private Dictionary<int,int> housePresents = new Dictionary<int, int>();
         private int targetPresentCount = 36000000;
+        private int lowestPossible;
 
         private static bool IsDivisible(int number, int divider)
         {
@@ -39,6 +40,63 @@ namespace AdventOfCode.Days
             return numbers.Sum(i => i*10);
         }
 
+        private bool SearchHouse(int low, int high, ref int lowestFound, int level = 0)
+        {
+            if (lowestFound < low)
+            {
+                return false;
+            }
+            if (lowestFound < high)
+            {
+                high = lowestFound;
+            }
+            int mid = (low + high)/2;
+            if (lowestFound < mid)
+            {
+                return SearchHouse(low, lowestFound, ref lowestFound, level + 1);
+            }
+            if (housePresents.ContainsKey(mid))
+            {
+                 //dirty, dirty, temporary hack
+                if (high == low+1)
+                {
+                    
+                    mid = mid + 1;
+                    if (housePresents.ContainsKey(mid))
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    return false;
+                }
+                
+            }
+            
+            int presentCount = CalculateHousePresents(mid);
+            housePresents[mid] = presentCount;
+            if (presentCount >= targetPresentCount)
+            {
+                lowestFound = Math.Min(lowestFound, mid);
+                SearchHouse(1, mid, ref lowestFound, level + 1);
+                
+            }
+            else
+            {
+                if (lowestFound < int.MaxValue)
+                {
+                    SearchHouse(low, mid, ref lowestFound, level + 1);
+                }
+                else
+                {
+                    SearchHouse(mid, high, ref lowestFound, level + 1);
+                    SearchHouse(low, mid, ref lowestFound, level + 1);
+                }
+            }
+            return true;
+        }
+
         private int GetFirstTargetHouse()
         {
             int currentStart = 1;
@@ -54,31 +112,40 @@ namespace AdventOfCode.Days
                     break;
                 }
             }
-            currentStart = targetPresentCount/100;
+            lowestPossible = currentStart;
+            //currentStart = targetPresentCount/100;
             int maxPresentsFound = 0;
             Stopwatch sw = new Stopwatch();
             sw.Start();
-            while (!found)
+            int lowestFound = int.MaxValue;
+            found = SearchHouse(currentStart, targetPresentCount/10, ref lowestFound);
+
+            if (found)
             {
-                Console.Clear();
-                Console.WriteLine("Current start: {0}", currentStart);
-                var candidates = Enumerable.Range(currentStart, batchSize);
-                Console.WriteLine("Max presents found: {0}", maxPresentsFound);
-                Console.WriteLine("Difference to target: {0}", targetPresentCount - maxPresentsFound);
-                Console.WriteLine("Time: {0}", sw.Elapsed);
-                Parallel.ForEach(candidates, house =>
-                {
-                    int presents = CalculateHousePresents(house);
-                    maxPresentsFound = Math.Max(presents, maxPresentsFound);
-
-                    if (presents >= targetPresentCount)
-                    {
-                        found = true;
-                    }
-                });
-
-                currentStart += batchSize;
+                return housePresents.Where(x => x.Value >= targetPresentCount).Select(x => x.Key).Min();
             }
+
+            //while (!found)
+            //{
+            //    Console.Clear();
+            //    Console.WriteLine("Current start: {0}", currentStart);
+            //    var candidates = Enumerable.Range(currentStart, batchSize);
+            //    Console.WriteLine("Max presents found: {0}", maxPresentsFound);
+            //    Console.WriteLine("Difference to target: {0}", targetPresentCount - maxPresentsFound);
+            //    Console.WriteLine("Time: {0}", sw.Elapsed);
+            //    Parallel.ForEach(candidates, house =>
+            //    {
+            //        int presents = CalculateHousePresents(house);
+            //        maxPresentsFound = Math.Max(presents, maxPresentsFound);
+
+            //        if (presents >= targetPresentCount)
+            //        {
+            //            found = true;
+            //        }
+            //    });
+
+            //    currentStart += batchSize;
+            //}
             return -1;
         }
         
