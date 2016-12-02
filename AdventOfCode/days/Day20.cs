@@ -278,7 +278,7 @@ namespace AdventOfCode.Days
 		    var houses = new Dictionary<int, int>();
 		    int maxPresents = int.MinValue;
 			int target = targetPresentCount;
-			int presentsPerElf = 10;
+			int presentsPerElf = 11;
 			for (int i = 1; i < targetPresentCount; i++)
 			{
 				var visitedHouses = Enumerable.Range(1, 50).Select(x => x*i).ToList();
