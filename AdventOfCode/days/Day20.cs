@@ -273,6 +273,36 @@ namespace AdventOfCode.Days
 		    return -1;
 	    }
 
+	    private static int DoItAgain()
+	    {
+		    var houses = new Dictionary<int, int>();
+		    int maxPresents = int.MinValue;
+			int target = targetPresentCount;
+			int presentsPerElf = 10;
+			for (int i = 1; i < targetPresentCount; i++)
+			{
+				var visitedHouses = Enumerable.Range(1, 50).Select(x => x*i).ToList();
+				foreach (int house in visitedHouses)
+				{
+					if (!houses.ContainsKey(house))
+					{
+						houses[house] = 0;
+					}
+					houses[house] += i*presentsPerElf;
+				}
+				if (houses[i] >= target)
+				{
+					return i;
+				}
+				if (houses[i] > maxPresents)
+				{
+					maxPresents = houses[i];
+				}
+				Console.Write($"i: {i} - houses count: {houses.Count} - max present count: {maxPresents}\r");
+			}
+			return -1;
+		}
+
 		private static int GetFirstTargetHouse()
         {
             var currentStart = 1;
@@ -425,14 +455,15 @@ namespace AdventOfCode.Days
         
         public override string GetSolutionPart1()
         {
-            //int result = GetFirstTargetHouse();
-            int result = DoIt();
-            return result.ToString();
+	        return "Skipping this - solution was: 831600";
+			int result = DoIt();
+			return result.ToString();
         }
 
         public override string GetSolutionPart2()
         {
-            return base.GetSolutionPart2();
+	        int result = DoItAgain();
+            return result.ToString();
         }
     }
 }
