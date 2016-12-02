@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace AdventOfCode.Days
@@ -10,11 +11,14 @@ namespace AdventOfCode.Days
     {
         public Day20() : base(20) { }
 
-        private Dictionary<int,int> housePresents = new Dictionary<int, int>();
-		private HashSet<string> startedSarches = new HashSet<string>();
-        private int targetPresentCount = 36000000;
-        private int lowestPossible;
-		int lowestFound = int.MaxValue;
+        private static Dictionary<int,int> housePresents = new Dictionary<int, int>();
+		private static HashSet<string> startedSarches = new HashSet<string>();
+	    private const int targetPresentCount = 36000000;
+	    private static int lowestPossible;
+	    private static int lowestChecked = int.MinValue + 1;
+	    private static int highestChecked = int.MaxValue - 1;
+		private static int lowestFound = int.MaxValue;
+		private static IEnumerable<int> uncheckedNumbers;
 
 		private static bool IsDivisible(int number, int divider)
         {
@@ -23,11 +27,10 @@ namespace AdventOfCode.Days
 
         private static IEnumerable<int> GetDivisors(int number)
         {
-            var candidates = Enumerable.Range(1, number);
-            return candidates.Where(x => IsDivisible(number, x));
+            return Enumerable.Range(1, number).Where(x => number%x == 0);
         }
 
-        private int CalculateHousePresents(int houseNumber)
+        private static int CalculateHousePresents(int houseNumber)
         {
             var divisors = GetDivisors(houseNumber);
             int presents = divisors.Sum(divisor => divisor*10);
@@ -125,36 +128,41 @@ namespace AdventOfCode.Days
             return true;
         }
 
-	    private bool FoundLowest(int candidate)
+	    private static bool FoundLowest(int candidate)
 	    {
 		    var checkedHouses = housePresents.Keys.Where(k => k >= lowestPossible && k <= candidate);
 		    var availableHouses = Enumerable.Range(lowestPossible, candidate);
 		    return Equals(checkedHouses, availableHouses);
 	    }
 
-	    private int GetLowestChecked()
+	    private static int GetLowestChecked()
 	    {
 		    var list = housePresents.Keys.ToList();
 			list.Sort();
-		    int result = lowestPossible;
-		    for (int i = 1; i < list.Count; i++)
-		    {
-			    if (list[i-1] == list[i]-1)
-			    {
-				    result = list[i];
-			    }
-			    else
-			    {
-				    return result;
-			    }
-		    }
-		    return result;
+		    var numbers = Enumerable.Range(Math.Max(lowestChecked, 1), Math.Min(lowestFound, targetPresentCount));
+		    return numbers.Except(list).First() -1;
+		    //int result = lowestPossible;
+		    //for (int i = 1; i < list.Count; i++)
+		    //{
+			   // if (list[i-1] == list[i]-1)
+			   // {
+				  //  result = list[i];
+			   // }
+			   // else
+			   // {
+				  //  return result;
+			   // }
+		    //}
+		    //return result;
 	    }
 
-		private int GetHighestChecked()
+		private static int GetHighestChecked()
 		{
 			var list = housePresents.Keys.ToList();
 			list.Sort();
+			//var numbers = Enumerable.Range(Math.Max(0, lowestFound), Math.Min(highestChecked, targetPresentCount));
+			//var test = numbers.Except(list).ToList();
+			//var lastNumber = test.Max();
 			int result = lowestFound;
 			int start = list.IndexOf(lowestFound);
 			for (int i = start - 1; i >= 0; i--)
@@ -171,11 +179,83 @@ namespace AdventOfCode.Days
 			return result;
 		}
 
-		private int GetFirstTargetHouse()
+	    private static IEnumerable<int> GetUncheckedNumbers()
+	    {
+		    var numbers = Enumerable.Range(lowestChecked, highestChecked);
+		    var checkedNumbers = housePresents.Keys.ToList();
+		    return numbers.Except(checkedNumbers);
+	    }
+
+		private static bool CheckHighOnly(ref int low, ref int high, out int lowestChecked, out int highestChecked, ref bool found)
+		{
+			int c2 = CalculateHousePresents(high);
+			lowestChecked = GetLowestChecked();
+			highestChecked = GetHighestChecked();
+			
+			if (c2 >= targetPresentCount && high < lowestFound)
+			{
+				lowestFound = high;
+				high = lowestFound;
+				low = lowestChecked;
+				found = FoundLowest(lowestFound);
+				return true;
+			}
+			return false;
+		}
+
+		private static bool CheckLowOnly(ref int low, ref int high, out int lowestChecked, out int highestChecked, ref bool found)
+		{
+			int c1 = CalculateHousePresents(low);
+			lowestChecked = GetLowestChecked();
+			highestChecked = GetHighestChecked();
+
+			if (c1 >= targetPresentCount && low < lowestFound)
+			{
+				lowestFound = low;
+				high = lowestFound;
+				low = lowestChecked;
+				found = FoundLowest(lowestFound);
+				return true;
+			}
+			return false;
+		}
+
+		private static bool CheckHighAndLow(ref int low, ref int high, ref bool found)
+	    {
+			int c1 = housePresents.ContainsKey(low) ? -1 : CalculateHousePresents(low);
+			int c2 = housePresents.ContainsKey(high) ? -1 : CalculateHousePresents(high);
+
+		    if (c1 != -1 || c2 != -1)
+		    {
+				lowestChecked = GetLowestChecked();
+				highestChecked = GetHighestChecked();
+
+
+				if (c1 != -1 && (c1 >= targetPresentCount && low < lowestFound))
+				{
+					lowestFound = low;
+					high = lowestFound;
+					low = lowestChecked;
+					found = FoundLowest(lowestFound);
+					return true;
+				}
+				if (c2 != -1 && (c2 >= targetPresentCount && high < lowestFound))
+				{
+					lowestFound = high;
+					high = lowestFound;
+					low = lowestChecked;
+					found = FoundLowest(lowestFound);
+					return true;
+				}
+			}
+			
+		    return false;
+	    }
+
+		private static int GetFirstTargetHouse()
         {
-            int currentStart = 1;
-            const int batchSize = 1000;
-            bool found = false;
+            var currentStart = 1;
+            var found = false;
 
             for (int i = 0; i < targetPresentCount; i++)
             {
@@ -187,65 +267,58 @@ namespace AdventOfCode.Days
                 }
             }
             lowestPossible = currentStart;
+	        lowestChecked = lowestPossible;
+	        highestChecked = targetPresentCount;
             //currentStart = targetPresentCount/100;
-            int maxPresentsFound = 0;
-            Stopwatch sw = new Stopwatch();
+            //int maxPresentsFound = 0;
+            var sw = new Stopwatch();
             sw.Start();
             
 	        int low = lowestPossible;
 	        int high = targetPresentCount;
 
-	        CalculateHousePresents(targetPresentCount);
+	        CheckHighAndLow(ref low, ref high, ref found);
 	        var count = CalculateHousePresents(lowestPossible);
 			
 	        if (count >= targetPresentCount)
 	        {
 		        found = FoundLowest(lowestPossible);
 	        }
-	        int lowestChecked = GetLowestChecked();
-	        int highestChecked = GetHighestChecked();
-
+	        lowestChecked = GetLowestChecked();
+	        highestChecked = GetHighestChecked();
+	        int mid, c1, c2, presentCount;
+	        TimeSpan? timeTo1000 = null;
+	        TimeSpan? timeTo10000 = null;
+	        bool highLow = false;
+	        int helpInt = 0;
 			while (!found)
 	        {
-		        int mid = (low + high)/2;
+				mid = (low + high)/2;
 		        if (low == high-1 || low == high)
 		        {
 			        if (housePresents.ContainsKey(mid))
 			        {
 				        mid++;
-				        if (housePresents.ContainsKey(mid))
-				        {
-					        low = lowestChecked + 1;
-					        high = highestChecked - 1;
-							mid = (low + high) / 2;
-							int c1 = CalculateHousePresents(low);
-							int c2 = CalculateHousePresents(high);
-					        lowestChecked = GetLowestChecked();
-					        highestChecked = GetHighestChecked();
-
-					        if (c1 >= targetPresentCount && low < lowestFound)
-					        {
-						        lowestFound = low;
-						        high = lowestFound;
-						        low = lowestChecked;
-						        found = FoundLowest(lowestFound);
-						        continue;
-					        }
-					        if (c2 >= targetPresentCount && high < lowestFound)
-					        {
-						        lowestFound = high;
-						        high = lowestFound;
-						        low = lowestChecked;
-						        found = FoundLowest(lowestFound);
-						        continue;
-					        }
-
-				        }
-
 					}
-
 				}
-		        int presentCount = CalculateHousePresents(mid);
+				if (housePresents.ContainsKey(mid))
+				{
+					if (highLow)
+					{
+						high = highestChecked - 1;
+					}
+					else
+					{
+						low = lowestChecked + 1;
+					}
+					highLow = !highLow;
+					mid = (low + high) / 2;
+					if (CheckHighAndLow(ref low, ref high, ref found))
+					{
+						continue;
+					}
+				}
+				presentCount = CalculateHousePresents(mid);
 				lowestChecked = GetLowestChecked();
 				highestChecked = GetHighestChecked();
 				if (presentCount >= targetPresentCount)
@@ -254,17 +327,50 @@ namespace AdventOfCode.Days
 			        {
 						highestChecked = GetHighestChecked();
 						lowestFound = mid;
-				        high = mid;
-				        low = lowestChecked;
+				        high = mid-1;
+				        low = lowestChecked+1;
+				        CheckHighAndLow(ref low, ref high, ref found);
 				        found = FoundLowest(lowestFound);
+			        }
+			        else
+			        {
+				        Console.WriteLine("");
 			        }
 		        }
 		        else
 		        {
-			        low = mid;
-		        }
+			        low = mid+1;
+					CheckHighAndLow(ref low, ref high, ref found);
+				}
+				//CheckHighAndLow(ref low, ref high, out lowestChecked, out highestChecked, ref found);
 				
-			}
+				Console.Clear();
+		        Console.WriteLine("Lowest found: {0}", lowestFound);
+		        Console.WriteLine("Lowest checked: {0}", lowestChecked);
+		        Console.WriteLine("Highest checked: {0}", highestChecked);
+		        Console.WriteLine("Checked numbers: {0}", housePresents.Count);
+		        Console.WriteLine("Time: {0}", sw.Elapsed);
+		        if (housePresents.Count >= 1000 && !timeTo1000.HasValue)
+		        {
+					timeTo1000 = sw.Elapsed;
+				}
+				if (housePresents.Count >= 10000 && !timeTo10000.HasValue)
+		        {
+					timeTo10000 = sw.Elapsed;
+				}
+		        Console.WriteLine("Time to 1000: {0}", timeTo1000);
+		        Console.WriteLine("Time to 10000: {0}", timeTo10000);
+		        if (lowestFound < 2300000 && helpInt == 0)
+		        {
+					uncheckedNumbers = GetUncheckedNumbers();
+				}
+		  //      if (uncheckedNumbers != null)
+		  //      {
+				//	Console.WriteLine("Unchecked numbers between lowest and highest: {0}", uncheckedNumbers.Count());
+				//}
+		        helpInt++;
+		        helpInt = helpInt%100;
+	        }
 			//found = SearchHouse(currentStart, targetPresentCount, ref lowestFound);
 			//found = SearchHouse(currentStart, lowestFound, ref lowestFound);
 			//if (found)
@@ -298,7 +404,7 @@ namespace AdventOfCode.Days
         
         public override string GetSolutionPart1()
         {
-            var result = GetFirstTargetHouse();
+            int result = GetFirstTargetHouse();
             return result.ToString();
         }
 
