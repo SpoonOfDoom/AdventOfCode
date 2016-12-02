@@ -30,6 +30,7 @@ namespace AdventOfCode.Days
             return Enumerable.Range(1, number).Where(x => number%x == 0);
         }
 
+
         private static int CalculateHousePresents(int houseNumber)
         {
             var divisors = GetDivisors(houseNumber);
@@ -252,6 +253,26 @@ namespace AdventOfCode.Days
 		    return false;
 	    }
 
+	    private static int DoIt()
+	    {
+		    int presentCount = 0;
+		    IEnumerable<int> elves;
+		    for (int i = 1; i < targetPresentCount; i++)
+		    {
+			    elves = GetDivisors(i);
+			    presentCount = elves.Sum(e => e*10);
+
+			    if (presentCount >= targetPresentCount)
+			    {
+				    Console.WriteLine();
+				    Console.WriteLine("Finished!");
+				    return i;
+			    }
+			    Console.Write($"i: {i}\r");
+		    }
+		    return -1;
+	    }
+
 		private static int GetFirstTargetHouse()
         {
             var currentStart = 1;
@@ -404,7 +425,8 @@ namespace AdventOfCode.Days
         
         public override string GetSolutionPart1()
         {
-            int result = GetFirstTargetHouse();
+            //int result = GetFirstTargetHouse();
+            int result = DoIt();
             return result.ToString();
         }
 
