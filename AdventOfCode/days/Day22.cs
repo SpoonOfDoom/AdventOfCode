@@ -6,9 +6,9 @@ using AdventOfCode2016.Tools;
 
 namespace AdventOfCode.Days
 {
-    public class Day21 : Day
+    public class Day22 : Day
     {
-        public Day21() : base(21) { }
+        public Day22() : base(22) { }
 
         static Dictionary<Spell, int> SpellCost = new Dictionary<Spell, int>
                                                   {
@@ -377,7 +377,7 @@ namespace AdventOfCode.Days
             var startState = new GameState {Boss = boss, Player = player, ActiveEffects = new List<Effect>(), Cost = 0, Turn = 0, Actions = new List<object>()};
             var goalState = new GameState {Boss = new Combatant {Hitpoints = 0} };
 
-            var result = new AStar().GetMinimumCost(startState, goalState, verbose: true); //1824
+            var result = new AStar().GetMinimumCost(startState, goalState); //1824
             return result.ToString();
         }
 
@@ -389,7 +389,7 @@ namespace AdventOfCode.Days
             var startState = new GameState { Boss = boss, Player = player, ActiveEffects = new List<Effect>(), Cost = 0, Turn = 0, Actions = new List<object>(), Hardmode = true };
             var goalState = new GameState { Boss = new Combatant { Hitpoints = 0 } };
 
-            var result = new AStar().GetMinimumCost(startState, goalState, verbose: true);
+            var result = new AStar().GetMinimumCost(startState, goalState); //1937
             return result.ToString();
         }
     }
