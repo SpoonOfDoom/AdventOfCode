@@ -154,6 +154,8 @@ namespace AdventOfCode.Days
                 }
                 set { throw new NotImplementedException(); } }
 
+            public bool Hardmode = false;
+
             public GameState Clone()
             {
                 var boss = new Combatant {Hitpoints = Boss.Hitpoints, Mana = Boss.Mana};
@@ -171,7 +173,7 @@ namespace AdventOfCode.Days
                 }
                 int cost = this.Cost;
 
-                var clonedState = new GameState {Player = player, Boss = boss, ActiveEffects = activeEffects, Turn = Turn, Cost = cost, Actions = actions};
+                var clonedState = new GameState {Player = player, Boss = boss, ActiveEffects = activeEffects, Turn = Turn, Cost = cost, Actions = actions, Hardmode = this.Hardmode};
                 return clonedState;
             }
 
@@ -253,6 +255,10 @@ namespace AdventOfCode.Days
                         newState.BossPunch();
                     }
 
+                    if (Hardmode)
+                    {
+                        newState.Player.Hitpoints--;
+                    }
                     if (newState.Player.Hitpoints <= 0)
                     {
                         continue;
@@ -371,13 +377,20 @@ namespace AdventOfCode.Days
             var startState = new GameState {Boss = boss, Player = player, ActiveEffects = new List<Effect>(), Cost = 0, Turn = 0, Actions = new List<object>()};
             var goalState = new GameState {Boss = new Combatant {Hitpoints = 0} };
 
-            var result = new AStar().GetMinimumCost(startState, goalState, verbose: true);
-            return base.GetSolutionPart1();
+            var result = new AStar().GetMinimumCost(startState, goalState, verbose: true); //1824
+            return result.ToString();
         }
 
         public override string GetSolutionPart2()
         {
-            return base.GetSolutionPart2();
+            var boss = new Combatant { Hitpoints = BossStartHP, Mana = 0 };
+            var player = new Combatant { Hitpoints = 50, Mana = 500 };
+
+            var startState = new GameState { Boss = boss, Player = player, ActiveEffects = new List<Effect>(), Cost = 0, Turn = 0, Actions = new List<object>(), Hardmode = true };
+            var goalState = new GameState { Boss = new Combatant { Hitpoints = 0 } };
+
+            var result = new AStar().GetMinimumCost(startState, goalState, verbose: true);
+            return result.ToString();
         }
     }
 }
