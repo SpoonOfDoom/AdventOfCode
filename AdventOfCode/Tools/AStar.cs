@@ -107,7 +107,7 @@ namespace AdventOfCode2016.Tools
                     {
                         if (openQueue.Single(x => x.Equals(newNode)).Cost > newNode.Cost)
                         {
-                            openQueue.UpdatePriority(newNode, newNode.GetTentativeCost(goalState));
+                            openQueue.UpdatePriority(openQueue.Single(x => x.Equals(newNode)), newNode.GetTentativeCost(goalState));
                         }
                     }
                     else
