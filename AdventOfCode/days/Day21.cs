@@ -324,7 +324,25 @@ namespace AdventOfCode.Days
         private List<Item> InitialiseShopItems()
         {
             var shopItems = new List<Item>();
-            //todo: fill items
+            shopItems.Add(new Item {Type = Item.ItemType.Weapon, Name = "abc", Cost = 123, Damage = 1, Armor = 2});
+            shopItems.Add(new Item { Type = Item.ItemType.Weapon, Name = "Dagger", Cost = 8, Damage = 4, Armor = 0 });
+            shopItems.Add(new Item { Type = Item.ItemType.Weapon, Name = "Shortsword", Cost = 10, Damage = 5, Armor = 0 });
+            shopItems.Add(new Item { Type = Item.ItemType.Weapon, Name = "Warhammer", Cost = 25, Damage = 6, Armor = 0 });
+            shopItems.Add(new Item { Type = Item.ItemType.Weapon, Name = "Longsword", Cost = 40, Damage = 7, Armor = 0 });
+            shopItems.Add(new Item { Type = Item.ItemType.Weapon, Name = "Greataxe", Cost = 74, Damage = 8, Armor = 0 });
+
+            shopItems.Add(new Item { Type = Item.ItemType.Armor, Name = "Leather", Cost = 13, Damage = 0, Armor = 1 });
+            shopItems.Add(new Item { Type = Item.ItemType.Armor, Name = "Chainmail", Cost = 31, Damage = 0, Armor = 2 });
+            shopItems.Add(new Item { Type = Item.ItemType.Armor, Name = "Splintmail", Cost = 53, Damage = 0, Armor = 3 });
+            shopItems.Add(new Item { Type = Item.ItemType.Armor, Name = "Bandedmail", Cost = 75, Damage = 0, Armor = 4 });
+            shopItems.Add(new Item { Type = Item.ItemType.Armor, Name = "Platemail", Cost = 102, Damage = 0, Armor = 5 });
+
+            shopItems.Add(new Item { Type = Item.ItemType.Ring, Name = "Damage +1", Cost = 25, Damage = 1, Armor = 0 });
+            shopItems.Add(new Item { Type = Item.ItemType.Ring, Name = "Damage +2", Cost = 50, Damage = 2, Armor = 0 });
+            shopItems.Add(new Item { Type = Item.ItemType.Ring, Name = "Damage +3", Cost = 100, Damage = 3, Armor = 0 });
+            shopItems.Add(new Item { Type = Item.ItemType.Ring, Name = "Defense +1", Cost = 20, Damage = 0, Armor = 1 });
+            shopItems.Add(new Item { Type = Item.ItemType.Ring, Name = "Defense +2", Cost = 40, Damage = 0, Armor = 2 });
+            shopItems.Add(new Item { Type = Item.ItemType.Ring, Name = "Defense +3", Cost = 80, Damage = 0, Armor = 3 });
             return shopItems;
         }
         
