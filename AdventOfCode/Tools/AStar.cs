@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using Priority_Queue;
 
@@ -14,10 +13,9 @@ namespace AdventOfCode2016.Tools
         string VerboseInfo { get; }
 
         HashSet<ExpandAction> ExpandNode();
-        bool Equals(ISearchNode goalState);
+        bool Equals(ISearchNode goalState); //For checking if node is already in openQueue or closedSet
         bool IsGoalState(ISearchNode gameState); //Goal state ist not necessarily equal in every way
         float GetHeuristic(ISearchNode goalState);
-        float GetTentativeCost(ISearchNode goalState);
     }
 
     public struct ExpandAction
@@ -48,7 +46,6 @@ namespace AdventOfCode2016.Tools
             }
             Stopwatch searchWatch = new Stopwatch();
             searchWatch.Start();
-            List<ExpandAction> actions = new List<ExpandAction>();
             openQueue = new SimplePriorityQueue<ISearchNode>();
             closedSet = new HashSet<ISearchNode>();
 
@@ -57,10 +54,6 @@ namespace AdventOfCode2016.Tools
             while (openQueue.Count > 0)
             {
                 step++;
-                if (openQueue.Count < 10 && closedSet.Count > 10)
-                {
-                    Console.WriteLine("WTF");
-                }
                 ISearchNode current = openQueue.Dequeue();
 
                 if (current.IsGoalState(current))
@@ -74,23 +67,7 @@ namespace AdventOfCode2016.Tools
 
                 if (verbose)
                 {
-                    Console.SetCursorPosition(0,0);
-                    Console.WriteLine("Open list: {0}", openQueue.Count);
-                    Console.WriteLine("Closed list: {0}", closedSet.Count);
-                    if (openQueue.Count > 0)
-                    {
-                        Console.WriteLine("First cost until now: {0}", openQueue.First.Cost);
-                        Console.WriteLine("First tentative cost: {0}", openQueue.First.GetTentativeCost(goalState));
-                    }
-                    else
-                    {
-                        Console.WriteLine();
-                        Console.WriteLine();
-                    }
-                    Console.WriteLine($"Step: {step}");
-                    Console.WriteLine("Time: {0}:{1}:{2}.{3}", searchWatch.Elapsed.Hours, searchWatch.Elapsed.Minutes, searchWatch.Elapsed.Seconds, searchWatch.Elapsed.Milliseconds);
-
-                    Console.WriteLine(current.VerboseInfo);
+                    OutputVerboseInfo(goalState, searchWatch, step, current);
                 }
 
                 foreach (ExpandAction expandAction in expandActions)
@@ -107,17 +84,38 @@ namespace AdventOfCode2016.Tools
                     {
                         if (openQueue.Single(x => x.Equals(newNode)).Cost > newNode.Cost)
                         {
-                            openQueue.UpdatePriority(openQueue.Single(x => x.Equals(newNode)), newNode.GetTentativeCost(goalState));
+                            openQueue.UpdatePriority(openQueue.Single(x => x.Equals(newNode)), newNode.Cost + newNode.GetHeuristic(goalState));
                         }
                     }
                     else
                     {
-                        openQueue.Enqueue(newNode, newNode.GetTentativeCost(goalState));
+                        openQueue.Enqueue(newNode, newNode.Cost + newNode.GetHeuristic(goalState));
                     }
                 }
             }
 
             return null;
+        }
+
+        private void OutputVerboseInfo(ISearchNode goalState, Stopwatch searchWatch, long step, ISearchNode current)
+        {
+            Console.SetCursorPosition(0, 0);
+            Console.WriteLine("Open list: {0}   ", openQueue.Count);
+            Console.WriteLine("Closed list: {0}   ", closedSet.Count);
+            if (openQueue.Count > 0)
+            {
+                Console.WriteLine("First cost until now: {0}   ", openQueue.First.Cost);
+                Console.WriteLine("First tentative cost: {0}   ", openQueue.First.Cost + openQueue.First.GetHeuristic(goalState));
+            }
+            else
+            {
+                Console.WriteLine();
+                Console.WriteLine();
+            }
+            Console.WriteLine($"Step: {step}   ");
+            Console.WriteLine("Time: {0}:{1}:{2}.{3}   ", searchWatch.Elapsed.Hours, searchWatch.Elapsed.Minutes, searchWatch.Elapsed.Seconds, searchWatch.Elapsed.Milliseconds);
+
+            Console.WriteLine(current.VerboseInfo);
         }
     }
 }
