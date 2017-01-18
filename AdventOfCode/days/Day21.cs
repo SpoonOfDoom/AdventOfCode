@@ -1,13 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using AdventOfCode.Extensions;
-using AdventOfCode2016.Tools;
-// ReSharper disable InconsistentNaming
-// ReSharper disable SuggestVarOrType_Elsewhere
-// ReSharper disable SuggestVarOrType_SimpleTypes
-// ReSharper disable SuggestVarOrType_BuiltInTypes
 
 namespace AdventOfCode.Days
 {
@@ -16,8 +10,10 @@ namespace AdventOfCode.Days
         public Day21() : base(21) { }
 
         
-        static int BossStartHP, BossDamage, BossArmor;
-        private int lowestFightResult = int.MaxValue;
+        private int BossStartHP, BossDamage, BossArmor;
+        private List<int> losingCosts = new List<int>();
+        private List<int> winningCosts = new List<int>();
+
         public class Item : IComparable<Item>
         {
             public enum ItemType
@@ -63,7 +59,7 @@ namespace AdventOfCode.Days
 
         class Combatant
         {
-            public int Hitpoints = 50;
+            public int Hitpoints = 100;
 
             public Item Weapon;
             public Item ArmorItem;
@@ -151,403 +147,7 @@ namespace AdventOfCode.Days
             }
         }
 
-        class GameState : ISearchNode
-        {
-            public Combatant Player;
-            public Combatant Boss;
-            public bool IsShopkeeperBeingABigOleDickhole = false;
-
-            private int? FightResult = null;
-            
-            public int Cost { get; set; }
-
-            public List<object> Actions { get; set; }
-            public List<Item> ShopItems = new List<Item>();
-
-
-            public string VerboseInfo => $"Fight result: {FightResult}     \nPlayer Total cost: {Player.TotalCost}     \n{PrintItemList()}     ";
-
-            private string PrintItemList()
-            {
-                StringBuilder sb = new StringBuilder();
-                sb.Append($"Weapon: {Player.Weapon}    \n");
-                sb.Append(Player.ArmorItem != null ? $"Armor: {Player.ArmorItem}     \n" : "Armor: none     \n");
-                sb.Append(Player.ArmorItem != null ? $"Ring1: {Player.Ring1}     \n" : "Ring1: none     \n");
-                sb.Append(Player.ArmorItem != null ? $"Ring2: {Player.Ring2}     \n" : "Ring2: none     \n");
-                return sb.ToString();
-            }
-            private GameState Clone()
-            {
-                var boss = Boss.Clone();
-                var player = Player.Clone();
-                
-                var actions = new List<object>();
-                foreach (object action in Actions)
-                {
-                    actions.Add(action);
-                }
-
-                int cost = Cost;
-
-                var shopItems = new List<Item>();
-                foreach (Item item in ShopItems)
-                {
-                    shopItems.Add(item.Clone());
-                }
-
-                var clonedState = new GameState {Player = player, Boss = boss, Cost = cost, Actions = actions, ShopItems = shopItems};
-                return clonedState;
-            }
-
-            public void PlayerPunch(ref int bossHitpoints)
-            {
-                int damage = Player.TotalStrength;
-
-                damage = Math.Max(1, damage - Boss.TotalArmor);
-                
-                bossHitpoints -= damage;
-            }
-            
-            public void BossPunch(ref int playerHitpoints)
-            {
-                int damage = BossDamage;
-                
-                damage = Math.Max(1, damage - Player.TotalArmor);
-                
-                playerHitpoints -= damage;
-            }
-
-            void EquipItem(Item item, int targetSlot)
-            {
-                switch (item.Type)
-                {
-                    case Item.ItemType.Weapon:
-                        Player.Weapon = item;
-                        break;
-                    case Item.ItemType.Armor:
-                        Player.ArmorItem = item;
-                        break;
-                    case Item.ItemType.Ring:
-                        if (targetSlot == 1)
-                        {
-                            Player.Ring1 = item;
-                        }
-                        else
-                        {
-                            Player.Ring2 = item;
-                        }
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-            }
-
-            public int SimulateFight()
-            {
-                if (FightResult.HasValue)
-                {
-                    return FightResult.Value;
-                }
-                bool playerTurn = true;
-                int bossHitpoints = Boss.Hitpoints;
-                int playerHitpoints = Player.Hitpoints;
-                while (bossHitpoints > 0 && playerHitpoints > 0)
-                {
-                    if (playerTurn)
-                    {
-                        PlayerPunch(ref bossHitpoints);
-                    }
-                    else
-                    {
-                        BossPunch(ref playerHitpoints);
-                    }
-                    playerTurn = !playerTurn;
-                }
-
-                int result = bossHitpoints - playerHitpoints;
-                return result;
-            }
-
-            Item GetNextBestItemFromShop(Item.ItemType itemType)
-            {
-                var newItem = ShopItems.FirstOrDefault(item => item.Type == itemType);
-                ShopItems.Remove(newItem);
-                return newItem;
-            }
-            
-            public HashSet<ExpandAction> ExpandNode()
-            {
-                var actions = new HashSet<ExpandAction>();
-                int slot = 1;
-                Item.ItemType[] options = {
-                                              Item.ItemType.Weapon,
-                                              Item.ItemType.Armor,
-                                              Item.ItemType.Ring,
-                                              Item.ItemType.Ring,
-                                          };
-                foreach (var option in options)
-                {
-                    if (IsShopkeeperBeingABigOleDickhole)
-                    {
-                        if (Player.Weapon == null && option != Item.ItemType.Weapon)
-                        {
-                            continue;
-                        }
-                        GameState newState = Clone();
-                        Item worseItem = newState.GetNextBestItemFromShop(option);
-                        
-                        if (worseItem == null)
-                        {
-                            continue;
-                        }
-
-                        newState.EquipItem(worseItem, slot);
-
-                        newState.FightResult = newState.SimulateFight();
-                        int downgradeCost = GetDowngradeCost(worseItem, slot);
-                        if (option == Item.ItemType.Ring)
-                        {
-                            slot++;
-                        }
-                        actions.Add(new ExpandAction { action = option, cost = downgradeCost, result = newState });
-                    }
-                    else
-                    {
-                        if (Player.Weapon == null && option != Item.ItemType.Weapon)
-                        {
-                            continue;
-                        }
-                        GameState newState = Clone();
-                        Item betterItem = newState.GetNextBestItemFromShop(option);
-
-
-                        if (betterItem == null)
-                        {
-                            continue;
-                        }
-
-                        newState.EquipItem(betterItem, slot);
-
-                        newState.FightResult = newState.SimulateFight();
-                        int upgradeCost = GetUpgradeCost(betterItem, slot);
-                        if (option == Item.ItemType.Ring)
-                        {
-                            slot++;
-                        }
-                        actions.Add(new ExpandAction { action = option, cost = upgradeCost, result = newState });
-                    }
-                    
-                }
-                return actions;
-            }
-
-            
-            public bool Equals(ISearchNode goalState)
-            {
-                var state = (GameState) goalState;
-                bool equals = state.Player.Equals(Player);
-                return equals;
-            }
-
-            public float GetHeuristic(ISearchNode goalState)
-            {
-                if (IsGoalState(goalState))
-                {
-                    return 0;
-                }
-                return 1;
-                float priority = 0;
-                priority += GetCheapestUpgradeCost().Item2;
-                return priority;
-            }
-
-            public int GetUpgradeCost(Item.ItemType type, int slot)
-            {
-                int upgradeCost = int.MinValue;
-                switch (type)
-                {
-                    case Item.ItemType.Weapon:
-                        upgradeCost = ShopItems.First(item => item.Type == Item.ItemType.Weapon).Cost - Player.Weapon.Cost;
-                        break;
-                    case Item.ItemType.Armor:
-                        upgradeCost = ShopItems.First(item => item.Type == Item.ItemType.Armor).Cost - (Player.ArmorItem?.Cost ?? 0);
-                        break;
-                    case Item.ItemType.Ring:
-                        if (slot == 1)
-                        {
-                            upgradeCost = ShopItems.First(item => item.Type == Item.ItemType.Ring).Cost - (Player.Ring1?.Cost ?? 0);
-                        }
-                        else
-                        {
-                            upgradeCost = ShopItems.First(item => item.Type == Item.ItemType.Ring).Cost - (Player.Ring2?.Cost ?? 0);
-                        }
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException(nameof(type), type, null);
-                }
-                return upgradeCost;
-            }
-
-            public int GetDowngradeCost(Item.ItemType type, int slot)
-            {
-                int downgradeCost;
-                switch (type)
-                {
-                    case Item.ItemType.Weapon:
-                        downgradeCost = Player.Weapon.Cost - ShopItems.First(item => item.Type == Item.ItemType.Weapon).Cost;
-                        break;
-                    case Item.ItemType.Armor:
-                        downgradeCost = (Player.ArmorItem?.Cost ?? 0) - ShopItems.First(item => item.Type == Item.ItemType.Armor).Cost;
-                        break;
-                    case Item.ItemType.Ring:
-                        if (slot == 1)
-                        {
-                            downgradeCost = (Player.Ring1?.Cost ?? 0) - ShopItems.First(item => item.Type == Item.ItemType.Ring).Cost;
-                        }
-                        else
-                        {
-                            downgradeCost = (Player.Ring2?.Cost ?? 0) - ShopItems.First(item => item.Type == Item.ItemType.Ring).Cost;
-                        }
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException(nameof(type), type, null);
-                }
-                return downgradeCost;
-            }
-
-            public int GetUpgradeCost(Item compareItem, int slot)
-            {
-                int upgradeCost = int.MinValue;
-                switch (compareItem.Type)
-                {
-                    case Item.ItemType.Weapon:
-                        upgradeCost = compareItem.Cost - (Player.Weapon?.Cost ?? 0);
-                        break;
-                    case Item.ItemType.Armor:
-                        upgradeCost = compareItem.Cost - (Player.ArmorItem?.Cost ?? 0);
-                        break;
-                    case Item.ItemType.Ring:
-                        if (slot == 1)
-                        {
-                            upgradeCost = compareItem.Cost - (Player.Ring1?.Cost ?? 0);
-                        }
-                        else
-                        {
-                            upgradeCost = compareItem.Cost - (Player.Ring2?.Cost ?? 0);
-                        }
-                        
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-                return upgradeCost;
-            }
-
-            public int GetDowngradeCost(Item compareItem, int slot)
-            {
-                int downgradeCost = int.MinValue;
-                switch (compareItem.Type)
-                {
-                    case Item.ItemType.Weapon:
-                        downgradeCost = (Player.Weapon?.Cost ?? 0) - compareItem.Cost;
-                        break;
-                    case Item.ItemType.Armor:
-                        downgradeCost = (Player.ArmorItem?.Cost ?? 0) - compareItem.Cost;
-                        break;
-                    case Item.ItemType.Ring:
-                        if (slot == 1)
-                        {
-                            downgradeCost = (Player.Ring1?.Cost ?? 0) - compareItem.Cost;
-                        }
-                        else
-                        {
-                            downgradeCost = (Player.Ring2?.Cost ?? 0) - compareItem.Cost;
-                        }
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-                return downgradeCost;
-            }
-
-            Tuple<Item.ItemType, int> GetCheapestUpgradeCost()
-            {
-                int minCost = int.MaxValue;
-                Item.ItemType cheapestType = Item.ItemType.Weapon;
-                int slot = 1;
-                Item.ItemType[] options = {
-                                              Item.ItemType.Weapon,
-                                              Item.ItemType.Armor,
-                                              Item.ItemType.Ring,
-                                              Item.ItemType.Ring,
-                                          };
-                foreach (Item.ItemType itemType in options)
-                {
-                    if (ShopItems.Any(item => item.Type == itemType))
-                    {
-                        var cost = GetUpgradeCost(itemType, slot);
-                        if (cost < minCost)
-                        {
-                            minCost = cost;
-                            cheapestType = itemType;
-                        }
-                        if (itemType == Item.ItemType.Ring)
-                        {
-                            slot++;
-                        }
-                    }
-                    
-                }
-                return Tuple.Create(cheapestType, minCost);
-            }
-
-            Tuple<Item.ItemType, int> GetCheapestDowngradeCost()
-            {
-                int minCost = int.MaxValue;
-                Item.ItemType cheapestType = Item.ItemType.Weapon;
-                int slot = 1;
-                Item.ItemType[] options = {
-                                              Item.ItemType.Weapon,
-                                              Item.ItemType.Armor,
-                                              Item.ItemType.Ring,
-                                              Item.ItemType.Ring,
-                                          };
-                foreach (Item.ItemType itemType in options)
-                {
-                    if (ShopItems.Any(item => item.Type == itemType))
-                    {
-                        var cost = GetDowngradeCost(itemType, slot);
-                        if (cost < minCost)
-                        {
-                            minCost = cost;
-                            cheapestType = itemType;
-                        }
-                        if (itemType == Item.ItemType.Ring)
-                        {
-                            slot++;
-                        }
-                    }
-
-                }
-                return Tuple.Create(cheapestType, minCost);
-            }
-
-            public bool IsGoalState(ISearchNode gameState)
-            {
-                if (IsShopkeeperBeingABigOleDickhole)
-                {
-                    return SimulateFight() > 0;
-                }
-                else
-                {
-                    if (Player.Weapon == null) //edge case for start state
-                    {
-                        return false;
-                    }
-                    return SimulateFight() <= 0;
-                }
-            }
-        }
+        
 
         private List<Item> InitialiseShopItems()
         {
@@ -576,7 +176,47 @@ namespace AdventOfCode.Days
 
             return shopItems;
         }
-        
+
+        private void PlayerPunch(ref int bossHitpoints, Combatant Player, Combatant Boss)
+        {
+            int damage = Player.TotalStrength;
+
+            damage = Math.Max(1, damage - Boss.TotalArmor);
+
+            bossHitpoints -= damage;
+        }
+
+        private void BossPunch(ref int playerHitpoints, Combatant Player, Combatant Boss)
+        {
+            int damage = BossDamage;
+
+            damage = Math.Max(1, damage - Player.TotalArmor);
+
+            playerHitpoints -= damage;
+        }
+
+        private int SimulateFight(Combatant Boss, Combatant Player)
+        {
+            bool playerTurn = true;
+            int bossHitpoints = Boss.Hitpoints;
+            int playerHitpoints = Player.Hitpoints;
+            while (bossHitpoints > 0 && playerHitpoints > 0)
+            {
+                if (playerTurn)
+                {
+                    PlayerPunch(ref bossHitpoints, Player, Boss);
+                }
+                else
+                {
+                    BossPunch(ref playerHitpoints, Player, Boss);
+                }
+                playerTurn = !playerTurn;
+            }
+
+            int result = bossHitpoints - playerHitpoints;
+            return result;
+        }
+
         public override string GetSolutionPart1()
         {
             for (int i = 0; i < inputLines.Count; i++)
@@ -596,33 +236,16 @@ namespace AdventOfCode.Days
                     BossArmor = number;
                 }
             }
-            
-            
-            var bossWeapon = new Item() {Damage = BossDamage};
-            var bossArmor = new Item() {Armor = BossArmor};
-            var boss = new Combatant { Hitpoints = BossStartHP, Weapon = bossWeapon, ArmorItem = bossArmor};
-            var player = new Combatant {Hitpoints = 100};
 
-            var startState = new GameState {Boss = boss, Player = player, Cost = 0, Actions = new List<object>(), ShopItems = InitialiseShopItems()};
-            
-            var goalState = new GameState();
-
-            var result = new AStar().GetMinimumCost(startState, goalState, verbose:true);
-            return result.ToString(); //91
-        }
-
-        public override string GetSolutionPart2()
-        {
             var bossWeapon = new Item() { Damage = BossDamage };
             var bossArmor = new Item() { Armor = BossArmor };
             var boss = new Combatant { Hitpoints = BossStartHP, Weapon = bossWeapon, ArmorItem = bossArmor };
-            //var player = new Combatant { Hitpoints = 100 };
             var initialItems = InitialiseShopItems();
 
             var possiblePlayerCombos = new List<Combatant>();
             foreach (Item weapon in initialItems.Where(i => i.Type == Item.ItemType.Weapon))
             {
-                Combatant c = new Combatant {Hitpoints = 100, Weapon = weapon};
+                Combatant c = new Combatant { Hitpoints = 100, Weapon = weapon };
                 possiblePlayerCombos.Add(c);
 
                 Combatant cWithoutArmor = c.Clone();
@@ -662,14 +285,10 @@ namespace AdventOfCode.Days
                 }
             }
             Console.WriteLine($"Possible combos: {possiblePlayerCombos.Count}");
-
-            List<int> losingCosts = new List<int>();
-            List<int> winningCosts = new List<int>();
-
+            
             foreach (Combatant p in possiblePlayerCombos)
             {
-                GameState state = new GameState {Boss = boss, Player = p};
-                int fightResult = state.SimulateFight();
+                int fightResult = SimulateFight(boss, p);
                 if (fightResult > 0)
                 {
                     losingCosts.Add(p.TotalCost);
@@ -681,7 +300,12 @@ namespace AdventOfCode.Days
                 }
             }
 
-            int winner = winningCosts.Min();
+            int result = winningCosts.Min();
+            return result.ToString(); //91
+        }
+
+        public override string GetSolutionPart2()
+        {
             int result = losingCosts.Max();
             return result.ToString(); //158
         }
