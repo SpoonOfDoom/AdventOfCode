@@ -66,77 +66,15 @@ namespace AdventOfCode.Days
             public Item Ring1;
             public Item Ring2;
 
-            public int TotalCost
-            {
-                get { return (Weapon?.Cost ?? 0) + (ArmorItem?.Cost ?? 0) + (Ring1?.Cost ?? 0) + (Ring2?.Cost ?? 0); }
-            }
+            public int TotalCost => (Weapon?.Cost ?? 0) + (ArmorItem?.Cost ?? 0) + (Ring1?.Cost ?? 0) + (Ring2?.Cost ?? 0);
 
-            public int TotalStrength
-            {
-                get { return (Weapon?.Damage ?? 0) + (Ring1?.Damage ?? 0) + (Ring2?.Damage ?? 0); }
-            }
+            public int TotalStrength => (Weapon?.Damage ?? 0) + (Ring1?.Damage ?? 0) + (Ring2?.Damage ?? 0);
 
-            public int TotalArmor
-            {
-                get { return (ArmorItem?.Armor ?? 0) + (Ring1?.Armor ?? 0) + (Ring2?.Armor ?? 0); }
-            }
-            
-            public bool Equals(Combatant otherCombatant)
-            {
-                bool weapon = Weapon != null && otherCombatant.Weapon != null && Weapon.Equals(otherCombatant.Weapon);
-                if (!weapon)
-                {
-                    return false;
-                }
-
-                bool armor = (ArmorItem == null && otherCombatant.ArmorItem == null) || (ArmorItem != null && otherCombatant.ArmorItem != null && ArmorItem.Equals(otherCombatant.ArmorItem));
-                if (!armor)
-                {
-                    return false;
-                }
-                List<Item> Rings = new List<Item>();
-                List<Item> otherRings = new List<Item>();
-                if (Ring1 != null)
-                {
-                    Rings.Add(Ring1);
-                }
-                if (Ring2 != null)
-                {
-                    Rings.Add(Ring2);
-                }
-
-                if (otherCombatant.Ring1 != null)
-                {
-                    otherRings.Add(otherCombatant.Ring1);
-                }
-                if (otherCombatant.Ring2 != null)
-                {
-                    otherRings.Add(otherCombatant.Ring2);
-                }
-                Rings.Sort();
-                otherRings.Sort();
-
-                if (Rings.Count != otherRings.Count)
-                {
-                    return false;
-                }
-                if (Rings.Count == 0)
-                {
-                    return true;
-                }
-                for (int i = 0; i < Rings.Count; i++)
-                {
-                    if (!Rings[i].Equals(otherRings[i]))
-                    {
-                        return false;
-                    }
-                }
-                return true;
-            }
+            public int TotalArmor => (ArmorItem?.Armor ?? 0) + (Ring1?.Armor ?? 0) + (Ring2?.Armor ?? 0);
 
             public Combatant Clone()
             {
-                var armorItem = ArmorItem?.Clone(); //works if null?
+                var armorItem = ArmorItem?.Clone();
                 var weapon = Weapon?.Clone();
                 var ring1 = Ring1?.Clone();
                 var ring2 = Ring2?.Clone();
@@ -146,9 +84,7 @@ namespace AdventOfCode.Days
                 return combatant;
             }
         }
-
         
-
         private List<Item> InitialiseShopItems()
         {
             var shopItems = new List<Item>
@@ -176,39 +112,28 @@ namespace AdventOfCode.Days
 
             return shopItems;
         }
-
-        private void PlayerPunch(ref int bossHitpoints, Combatant Player, Combatant Boss)
-        {
-            int damage = Player.TotalStrength;
-
-            damage = Math.Max(1, damage - Boss.TotalArmor);
-
-            bossHitpoints -= damage;
-        }
-
-        private void BossPunch(ref int playerHitpoints, Combatant Player, Combatant Boss)
-        {
-            int damage = BossDamage;
-
-            damage = Math.Max(1, damage - Player.TotalArmor);
-
-            playerHitpoints -= damage;
-        }
-
-        private int SimulateFight(Combatant Boss, Combatant Player)
+        
+        private int SimulateFight(Combatant boss, Combatant player)
         {
             bool playerTurn = true;
-            int bossHitpoints = Boss.Hitpoints;
-            int playerHitpoints = Player.Hitpoints;
+            
+            int playerHitpoints = player.Hitpoints;
+            int playerTotalStrength = player.TotalStrength;
+            int playerTotalArmor = player.TotalArmor;
+
+            int bossHitpoints = boss.Hitpoints;
+            int bossTotalArmor = boss.TotalArmor;
+            int bossTotalStrength = boss.TotalStrength;
+
             while (bossHitpoints > 0 && playerHitpoints > 0)
             {
                 if (playerTurn)
                 {
-                    PlayerPunch(ref bossHitpoints, Player, Boss);
+                    bossHitpoints -= Math.Max(1, playerTotalStrength - bossTotalArmor);
                 }
                 else
                 {
-                    BossPunch(ref playerHitpoints, Player, Boss);
+                    playerHitpoints -= Math.Max(1, bossTotalStrength - playerTotalArmor);
                 }
                 playerTurn = !playerTurn;
             }
