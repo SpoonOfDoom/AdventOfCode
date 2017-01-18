@@ -64,8 +64,6 @@ namespace AdventOfCode.Days
         class Combatant
         {
             public int Hitpoints = 50;
-            //public int Mana = 500;
-            public int Armor = 0;
 
             public Item Weapon;
             public Item ArmorItem;
@@ -147,7 +145,7 @@ namespace AdventOfCode.Days
                 var ring1 = Ring1?.Clone();
                 var ring2 = Ring2?.Clone();
 
-                Combatant combatant = new Combatant {Hitpoints = Hitpoints, Armor = Armor, ArmorItem = armorItem, Weapon = weapon, Ring1 = ring1, Ring2 = ring2};
+                Combatant combatant = new Combatant {Hitpoints = Hitpoints, ArmorItem = armorItem, Weapon = weapon, Ring1 = ring1, Ring2 = ring2};
 
                 return combatant;
             }
@@ -157,6 +155,7 @@ namespace AdventOfCode.Days
         {
             public Combatant Player;
             public Combatant Boss;
+            public bool IsShopkeeperBeingABigOleDickhole = false;
 
             private int? FightResult = null;
             
@@ -218,7 +217,7 @@ namespace AdventOfCode.Days
                 playerHitpoints -= damage;
             }
 
-            void BuyItem(Item item, int targetSlot)
+            void EquipItem(Item item, int targetSlot)
             {
                 switch (item.Type)
                 {
@@ -243,7 +242,7 @@ namespace AdventOfCode.Days
                 }
             }
 
-            int SimulateFight()
+            public int SimulateFight()
             {
                 if (FightResult.HasValue)
                 {
@@ -275,7 +274,7 @@ namespace AdventOfCode.Days
                 ShopItems.Remove(newItem);
                 return newItem;
             }
-
+            
             public HashSet<ExpandAction> ExpandNode()
             {
                 var actions = new HashSet<ExpandAction>();
@@ -288,28 +287,56 @@ namespace AdventOfCode.Days
                                           };
                 foreach (var option in options)
                 {
-                    if (Player.Weapon == null && option != Item.ItemType.Weapon)
+                    if (IsShopkeeperBeingABigOleDickhole)
                     {
-                        continue;
-                    }
-                    GameState newState = Clone();
-                    Item betterItem = newState.GetNextBestItemFromShop(option);
-                    
+                        if (Player.Weapon == null && option != Item.ItemType.Weapon)
+                        {
+                            continue;
+                        }
+                        GameState newState = Clone();
+                        Item worseItem = newState.GetNextBestItemFromShop(option);
+                        
+                        if (worseItem == null)
+                        {
+                            continue;
+                        }
 
-                    if (betterItem == null)
+                        newState.EquipItem(worseItem, slot);
+
+                        newState.FightResult = newState.SimulateFight();
+                        int downgradeCost = GetDowngradeCost(worseItem, slot);
+                        if (option == Item.ItemType.Ring)
+                        {
+                            slot++;
+                        }
+                        actions.Add(new ExpandAction { action = option, cost = downgradeCost, result = newState });
+                    }
+                    else
                     {
-                        continue;
+                        if (Player.Weapon == null && option != Item.ItemType.Weapon)
+                        {
+                            continue;
+                        }
+                        GameState newState = Clone();
+                        Item betterItem = newState.GetNextBestItemFromShop(option);
+
+
+                        if (betterItem == null)
+                        {
+                            continue;
+                        }
+
+                        newState.EquipItem(betterItem, slot);
+
+                        newState.FightResult = newState.SimulateFight();
+                        int upgradeCost = GetUpgradeCost(betterItem, slot);
+                        if (option == Item.ItemType.Ring)
+                        {
+                            slot++;
+                        }
+                        actions.Add(new ExpandAction { action = option, cost = upgradeCost, result = newState });
                     }
                     
-                    newState.BuyItem(betterItem, slot);
-                    
-                    newState.FightResult = newState.SimulateFight();
-                    int upgradeCost = GetUpgradeCost(betterItem, slot);
-                    if (option == Item.ItemType.Ring)
-                    {
-                        slot++;
-                    }
-                    actions.Add(new ExpandAction { action = option, cost = upgradeCost, result = newState });
                 }
                 return actions;
             }
@@ -328,6 +355,7 @@ namespace AdventOfCode.Days
                 {
                     return 0;
                 }
+                return 1;
                 float priority = 0;
                 priority += GetCheapestUpgradeCost().Item2;
                 return priority;
@@ -360,6 +388,33 @@ namespace AdventOfCode.Days
                 return upgradeCost;
             }
 
+            public int GetDowngradeCost(Item.ItemType type, int slot)
+            {
+                int downgradeCost;
+                switch (type)
+                {
+                    case Item.ItemType.Weapon:
+                        downgradeCost = Player.Weapon.Cost - ShopItems.First(item => item.Type == Item.ItemType.Weapon).Cost;
+                        break;
+                    case Item.ItemType.Armor:
+                        downgradeCost = (Player.ArmorItem?.Cost ?? 0) - ShopItems.First(item => item.Type == Item.ItemType.Armor).Cost;
+                        break;
+                    case Item.ItemType.Ring:
+                        if (slot == 1)
+                        {
+                            downgradeCost = (Player.Ring1?.Cost ?? 0) - ShopItems.First(item => item.Type == Item.ItemType.Ring).Cost;
+                        }
+                        else
+                        {
+                            downgradeCost = (Player.Ring2?.Cost ?? 0) - ShopItems.First(item => item.Type == Item.ItemType.Ring).Cost;
+                        }
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(type), type, null);
+                }
+                return downgradeCost;
+            }
+
             public int GetUpgradeCost(Item compareItem, int slot)
             {
                 int upgradeCost = int.MinValue;
@@ -386,6 +441,33 @@ namespace AdventOfCode.Days
                         throw new ArgumentOutOfRangeException();
                 }
                 return upgradeCost;
+            }
+
+            public int GetDowngradeCost(Item compareItem, int slot)
+            {
+                int downgradeCost = int.MinValue;
+                switch (compareItem.Type)
+                {
+                    case Item.ItemType.Weapon:
+                        downgradeCost = (Player.Weapon?.Cost ?? 0) - compareItem.Cost;
+                        break;
+                    case Item.ItemType.Armor:
+                        downgradeCost = (Player.ArmorItem?.Cost ?? 0) - compareItem.Cost;
+                        break;
+                    case Item.ItemType.Ring:
+                        if (slot == 1)
+                        {
+                            downgradeCost = (Player.Ring1?.Cost ?? 0) - compareItem.Cost;
+                        }
+                        else
+                        {
+                            downgradeCost = (Player.Ring2?.Cost ?? 0) - compareItem.Cost;
+                        }
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+                return downgradeCost;
             }
 
             Tuple<Item.ItemType, int> GetCheapestUpgradeCost()
@@ -419,13 +501,51 @@ namespace AdventOfCode.Days
                 return Tuple.Create(cheapestType, minCost);
             }
 
+            Tuple<Item.ItemType, int> GetCheapestDowngradeCost()
+            {
+                int minCost = int.MaxValue;
+                Item.ItemType cheapestType = Item.ItemType.Weapon;
+                int slot = 1;
+                Item.ItemType[] options = {
+                                              Item.ItemType.Weapon,
+                                              Item.ItemType.Armor,
+                                              Item.ItemType.Ring,
+                                              Item.ItemType.Ring,
+                                          };
+                foreach (Item.ItemType itemType in options)
+                {
+                    if (ShopItems.Any(item => item.Type == itemType))
+                    {
+                        var cost = GetDowngradeCost(itemType, slot);
+                        if (cost < minCost)
+                        {
+                            minCost = cost;
+                            cheapestType = itemType;
+                        }
+                        if (itemType == Item.ItemType.Ring)
+                        {
+                            slot++;
+                        }
+                    }
+
+                }
+                return Tuple.Create(cheapestType, minCost);
+            }
+
             public bool IsGoalState(ISearchNode gameState)
             {
-                if (Player.Weapon == null) //edge case for start state
+                if (IsShopkeeperBeingABigOleDickhole)
                 {
-                    return false;
+                    return SimulateFight() > 0;
                 }
-                return SimulateFight() <= 0;
+                else
+                {
+                    if (Player.Weapon == null) //edge case for start state
+                    {
+                        return false;
+                    }
+                    return SimulateFight() <= 0;
+                }
             }
         }
 
@@ -493,7 +613,77 @@ namespace AdventOfCode.Days
 
         public override string GetSolutionPart2()
         {
-            return base.GetSolutionPart2();
+            var bossWeapon = new Item() { Damage = BossDamage };
+            var bossArmor = new Item() { Armor = BossArmor };
+            var boss = new Combatant { Hitpoints = BossStartHP, Weapon = bossWeapon, ArmorItem = bossArmor };
+            //var player = new Combatant { Hitpoints = 100 };
+            var initialItems = InitialiseShopItems();
+
+            var possiblePlayerCombos = new List<Combatant>();
+            foreach (Item weapon in initialItems.Where(i => i.Type == Item.ItemType.Weapon))
+            {
+                Combatant c = new Combatant {Hitpoints = 100, Weapon = weapon};
+                possiblePlayerCombos.Add(c);
+
+                Combatant cWithoutArmor = c.Clone();
+                foreach (Item ring1 in initialItems.Where(i => i.Type == Item.ItemType.Ring))
+                {
+                    Combatant c3 = cWithoutArmor.Clone();
+                    c3.Ring1 = ring1;
+                    possiblePlayerCombos.Add(c3);
+
+                    foreach (Item ring2 in initialItems.Where(i => i.Type == Item.ItemType.Ring && !i.Equals(ring1)))
+                    {
+                        Combatant c4 = c3.Clone();
+                        c4.Ring2 = ring2;
+                        possiblePlayerCombos.Add(c4);
+                    }
+                }
+
+                foreach (Item armor in initialItems.Where(i => i.Type == Item.ItemType.Armor))
+                {
+                    Combatant c2 = c.Clone();
+                    c2.ArmorItem = armor;
+                    possiblePlayerCombos.Add(c2);
+
+                    foreach (Item ring1 in initialItems.Where(i => i.Type == Item.ItemType.Ring))
+                    {
+                        Combatant c3 = c2.Clone();
+                        c3.Ring1 = ring1;
+                        possiblePlayerCombos.Add(c3);
+
+                        foreach (Item ring2 in initialItems.Where(i => i.Type == Item.ItemType.Ring && !i.Equals(ring1)))
+                        {
+                            Combatant c4 = c3.Clone();
+                            c4.Ring2 = ring2;
+                            possiblePlayerCombos.Add(c4);
+                        }
+                    }
+                }
+            }
+            Console.WriteLine($"Possible combos: {possiblePlayerCombos.Count}");
+
+            List<int> losingCosts = new List<int>();
+            List<int> winningCosts = new List<int>();
+
+            foreach (Combatant p in possiblePlayerCombos)
+            {
+                GameState state = new GameState {Boss = boss, Player = p};
+                int fightResult = state.SimulateFight();
+                if (fightResult > 0)
+                {
+                    losingCosts.Add(p.TotalCost);
+                }
+
+                else
+                {
+                    winningCosts.Add(p.TotalCost);
+                }
+            }
+
+            int winner = winningCosts.Min();
+            int result = losingCosts.Max();
+            return result.ToString(); //158
         }
     }
 }
