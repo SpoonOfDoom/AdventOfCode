@@ -115,7 +115,15 @@ namespace AdventOfCode.Days
 
         public override string GetSolutionPart2()
         {
-            return base.GetSolutionPart2();
+            Registers["a"] = 1;
+            Registers["b"] = 0;
+            int nextInstruction = 0;
+
+            while (nextInstruction >= 0 && nextInstruction < InstructionSet.Count)
+            {
+                nextInstruction += ExecuteInstruction(InstructionSet[nextInstruction]);
+            }
+            return Registers["b"].ToString(); //334
         }
     }
 }
