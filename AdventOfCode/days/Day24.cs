@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using AdventOfCode.Extensions;
 using AdventOfCode2016.Tools;
 
@@ -235,11 +236,11 @@ namespace AdventOfCode.Days
             }
             else
             {
-                if ((totalWeight/3) - combo.Sum() > presents.Sum())
-                {
-                    //not enough presents left to reach target weight
-                    return;
-                }
+                //if ((totalWeight/3) - combo.Sum() > presents.Sum())
+                //{
+                //    //not enough presents left to reach target weight
+                //    return;
+                //}
                 foreach (int present in presents)
                 {
                     List<int> newCombo = new List<int>(combo);
@@ -260,27 +261,51 @@ namespace AdventOfCode.Days
         {
             HashSet<Tuple<HashSet<int>, HashSet<int>, HashSet<int>>> ret = new HashSet<Tuple<HashSet<int>, HashSet<int>, HashSet<int>>>();
             List<HashSet<int>> possibleBags = possiblePresentBags.OrderBy(p => p.Count).Select(p => new HashSet<int>(p)).ToList();
-            for (int i = 0; i < possibleBags.Count; i++)
-            {
-                HashSet<int> bag = possibleBags[i];
-                List<HashSet<int>> remainingList = possibleBags.GetRange(i + 1, possibleBags.Count - (i + 1))
-                    .Where(set => !set.Overlaps(bag)).ToList();
+            HashSet<int> checkedIndexes = new HashSet<int>();
+            Parallel.For(0, possibleBags.Count,
+                         i =>
+                         {
+                             checkedIndexes.Add(i);
+                             HashSet<int> bag = possibleBags[i];
+                             List<HashSet<int>> remainingList = possibleBags.GetRange(i + 1, possibleBags.Count - (i + 1))
+                                 .Where(set => !set.Overlaps(bag)).ToList();
 
-                for (int j = 0; j < remainingList.Count; j++)
-                {
-                    HashSet<int> bag2 = remainingList[j];
-                    List<HashSet<int>> remainingList2 = remainingList.GetRange(j + 1, remainingList.Count - (j + 1))
-                        .Where(set => !set.Overlaps(bag2)).ToList();
+                             for (int j = 0; j < remainingList.Count; j++)
+                             {
+                                 HashSet<int> bag2 = remainingList[j];
+                                 List<HashSet<int>> remainingList2 = remainingList.GetRange(j + 1, remainingList.Count - (j + 1))
+                                     .Where(set => !set.Overlaps(bag2)).ToList();
 
-                    for (int k = 0; k < remainingList2.Count; k++)
-                    {
-                        HashSet<int> bag3 = remainingList2[k];
+                                 for (int k = 0; k < remainingList2.Count; k++)
+                                 {
+                                     HashSet<int> bag3 = remainingList2[k];
 
-                        Tuple<HashSet<int>, HashSet<int>, HashSet<int>> combo = Tuple.Create(bag, bag2, bag3);
-                        ret.Add(combo);
-                    }
-                }
-            }
+                                     Tuple<HashSet<int>, HashSet<int>, HashSet<int>> combo = Tuple.Create(bag, bag2, bag3);
+                                     ret.Add(combo);
+                                 }
+                             }
+                         });
+            //for (int i = 0; i < possibleBags.Count; i++)
+            //{
+            //    HashSet<int> bag = possibleBags[i];
+            //    List<HashSet<int>> remainingList = possibleBags.GetRange(i + 1, possibleBags.Count - (i + 1))
+            //        .Where(set => !set.Overlaps(bag)).ToList();
+
+            //    for (int j = 0; j < remainingList.Count; j++)
+            //    {
+            //        HashSet<int> bag2 = remainingList[j];
+            //        List<HashSet<int>> remainingList2 = remainingList.GetRange(j + 1, remainingList.Count - (j + 1))
+            //            .Where(set => !set.Overlaps(bag2)).ToList();
+
+            //        for (int k = 0; k < remainingList2.Count; k++)
+            //        {
+            //            HashSet<int> bag3 = remainingList2[k];
+
+            //            Tuple<HashSet<int>, HashSet<int>, HashSet<int>> combo = Tuple.Create(bag, bag2, bag3);
+            //            ret.Add(combo);
+            //        }
+            //    }
+            //}
 
             return ret;
         }
@@ -292,14 +317,30 @@ namespace AdventOfCode.Days
             allPresents.Reverse();
             totalWeight = allPresents.Sum();
             HashSet<List<int>> possiblePresentBags = MakeTriplets(allPresents);
-            HashSet<Tuple<HashSet<int>, HashSet<int>, HashSet<int>>> combinations = GetCombinations(possiblePresentBags);
 
-            
+            int smallestCount = possiblePresentBags.Min(bag => bag.Count);
+            var combinations = possiblePresentBags.Where(b => b.Count == smallestCount);
             PresentState.targetWeight = totalWeight / 3;
-            PresentState p = new PresentState {remainingPresents = new Queue<int>(allPresents)};
-            int result = new AStar().GetMinimumCost(p, verbose: true);
-
-            return result.ToString();
+            long best = long.MaxValue;
+            foreach (List<int> combination in combinations)
+            {
+                long entanglement = 1;
+                foreach (int present in combination)
+                {
+                    entanglement *= present;
+                }
+                if (entanglement < best)
+                {
+                    best = entanglement;
+                }
+            }
+            long result = best;
+            long lastResult = 33144344931;
+            if (result < lastResult)
+            {
+                Console.WriteLine("Good");
+            }
+            return result.ToString(); //33.144.344.931 too high
         }
 
         public override string GetSolutionPart2()
