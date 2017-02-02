@@ -13,9 +13,9 @@ namespace AdventOfCode2016.Tools
         string VerboseInfo { get; }
 
         HashSet<ExpandAction> ExpandNode();
-        bool Equals(ISearchNode goalState); //For checking if node is already in openQueue or closedSet
-        bool IsGoalState(ISearchNode gameState); //Goal state ist not necessarily equal in every way
-        float GetHeuristic(ISearchNode goalState);
+        bool Equals(ISearchNode otherState); //For checking if node is already in openQueue or closedSet
+        bool IsGoalState(ISearchNode goalState = null); //Goal state ist not necessarily equal in every way
+        float GetHeuristic(ISearchNode goalState = null);
     }
 
     public struct ExpandAction
@@ -32,13 +32,13 @@ namespace AdventOfCode2016.Tools
 
         Dictionary<ISearchNode, int> nodeCost = new Dictionary<ISearchNode, int>();
 
-        public int GetMinimumCost(ISearchNode startState, ISearchNode goalState, bool verbose = false)
+        public int GetMinimumCost(ISearchNode startState, ISearchNode goalState = null, bool verbose = false)
         {
             Tuple<List<object>, int> path = GetOptimalPath(startState, goalState, verbose);
             return path.Item2;
         }
 
-        public Tuple<List<object>, int> GetOptimalPath(ISearchNode startState, ISearchNode goalState, bool verbose = false)
+        public Tuple<List<object>, int> GetOptimalPath(ISearchNode startState, ISearchNode goalState = null, bool verbose = false)
         {
             if (verbose)
             {
