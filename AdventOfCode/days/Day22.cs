@@ -298,9 +298,9 @@ namespace AdventOfCode.Days
                 return true;
             }
 
-            public bool Equals(ISearchNode goalState)
+            public bool Equals(ISearchNode otherState)
             {
-                var state = goalState as GameState;
+                var state = otherState as GameState;
                 //return VerboseInfo == state.VerboseInfo;
                 bool equals = (state.Player.Equals(Player) && state.Boss.Equals(Boss)
                                 && ActiveEffectsEqual(state));
@@ -339,9 +339,9 @@ namespace AdventOfCode.Days
                 return Cost + GetHeuristic(goalState);
             }
 
-            public bool IsGoalState(ISearchNode gameState)
+            public bool IsGoalState(ISearchNode goalState)
             {
-                var state = gameState as GameState;
+                var state = goalState as GameState;
                 if (state.Boss.Hitpoints <= 0)
                 {
                     Console.WriteLine("STOP!");
