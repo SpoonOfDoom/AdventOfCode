@@ -53,7 +53,7 @@ namespace AdventOfCode.Days
         
         public override string GetSolutionPart2()
         {
-            return base.GetSolutionPart2();
+            return "Hooray!";
         }
     }
 }
