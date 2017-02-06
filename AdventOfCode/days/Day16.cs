@@ -110,7 +110,7 @@ namespace AdventOfCode.Days
         public override string GetSolutionPart2()
         {
             var validCandidates = Candidates.Where(c => c.IsValidCandidate2()).ToList();
-
+            //todo: find out why there are two candidates
             return validCandidates.Select(s => s.Id).Max().ToString(); //Not sure if it's correct that there are two possible candidates, but close enough for now.
         }
     }
