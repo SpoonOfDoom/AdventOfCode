@@ -455,9 +455,9 @@ namespace AdventOfCode.Days
         
         public override string GetSolutionPart1()
         {
-	        return "Skipping this - solution was: 831600";
+	        //return "Skipping this - solution was: 831600";
 			int result = DoIt();
-			return result.ToString();
+			return result.ToString(); //831600
         }
 
         public override string GetSolutionPart2()
