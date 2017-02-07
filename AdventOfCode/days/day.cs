@@ -57,17 +57,24 @@ namespace AdventOfCode.Days
 
         private static void WriteTimesToFile(string filename = "solutionTimes")
         {
+            const string timeExportFolder = "exports";
+            if (!Directory.Exists(timeExportFolder))
+            {
+                Directory.CreateDirectory(timeExportFolder);
+            }
             if (filename == "solutionTimes")
             {
                 filename += DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss") + ".csv";
             }
+            string filePath = timeExportFolder + "\\" + filename;
+
             string fileContent = "Day Number;Part 1;Part 2;Total\n";
             foreach (KeyValuePair<int, Dictionary<string, TimeSpan>> solutionTime in SolutionTimes)
             {
                 fileContent += $"{solutionTime.Key};{solutionTime.Value["Part1"]};{solutionTime.Value["Part2"]};{solutionTime.Value["Total"]}\n";
             }
             
-            File.WriteAllText(filename, fileContent, Encoding.UTF8);
+            File.WriteAllText(filePath, fileContent, Encoding.UTF8);
         }
 
         public static void RunDay(int number, Day dayInstance = null, bool batch = false, bool verbose = true)
