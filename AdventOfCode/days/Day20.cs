@@ -256,21 +256,37 @@ namespace AdventOfCode.Days
 	    private static int DoIt()
 	    {
 		    int presentCount = 0;
-		    IEnumerable<int> elves;
-		    for (int i = 1; i < targetPresentCount; i++)
-		    {
-			    elves = GetDivisors(i);
-			    presentCount = elves.Sum(e => e*10);
+		    
+            int maxSoFar = int.MaxValue;
+            object lockObject = new object();
+	        int amountChecked = 0;
+	        Parallel.For(1,
+	                     targetPresentCount,
+	                     (x) =>
+	                     {
+	                         amountChecked++;
+	                         lock (lockObject)
+	                         {
+	                             if (x >= maxSoFar)
+	                             {
+	                                 return;
+	                             }
+	                         }
+                             IEnumerable<int> tempElves = GetDivisors(x);
+                             presentCount = tempElves.Sum(e => e * 10);
 
-			    if (presentCount >= targetPresentCount)
-			    {
-				    Console.WriteLine();
-				    Console.WriteLine("Finished!");
-				    return i;
-			    }
-			    Console.Write($"i: {i}\r");
-		    }
-		    return -1;
+                             if (presentCount >= targetPresentCount)
+                             {
+                                 lock (lockObject)
+                                 {
+                                     if (x < maxSoFar)
+                                     {
+                                         maxSoFar = x;
+                                     }
+                                 }
+                             }
+                         });
+	        return maxSoFar;
 	    }
 
 	    private static int DoItAgain()
