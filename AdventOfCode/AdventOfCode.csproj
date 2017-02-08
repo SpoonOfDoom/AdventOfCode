@@ -52,7 +52,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Days\day.cs" />
+    <Compile Include="Days\Day.cs" />
     <Compile Include="Days\Day1.cs" />
     <Compile Include="Days\Day10.cs" />
     <Compile Include="Days\Day11.cs" />
