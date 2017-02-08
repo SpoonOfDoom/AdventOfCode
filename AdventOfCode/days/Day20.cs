@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace AdventOfCode.Days
@@ -253,39 +252,35 @@ namespace AdventOfCode.Days
 		    return false;
 	    }
 
-	    private static int DoIt()
+	    private static long DoIt()
 	    {
 		    int presentCount = 0;
 		    
-            int maxSoFar = int.MaxValue;
-            object lockObject = new object();
+            long maxSoFar = int.MaxValue;
+            
 	        int amountChecked = 0;
 	        Parallel.For(1,
 	                     targetPresentCount,
 	                     (x) =>
 	                     {
 	                         amountChecked++;
-	                         lock (lockObject)
+
+	                         if (x > maxSoFar)
 	                         {
-	                             if (x >= maxSoFar)
-	                             {
-	                                 return;
-	                             }
+	                            return;
 	                         }
+	                         
                              IEnumerable<int> tempElves = GetDivisors(x);
                              presentCount = tempElves.Sum(e => e * 10);
 
                              if (presentCount >= targetPresentCount)
-                             {
-                                 lock (lockObject)
-                                 {
-                                     if (x < maxSoFar)
-                                     {
-                                         maxSoFar = x;
-                                     }
-                                 }
-                             }
-                         });
+	                         {
+	                             if (x < maxSoFar)
+	                             {
+	                                 maxSoFar = x;
+	                             }
+	                         }
+	                     });
 	        return maxSoFar;
 	    }
 
@@ -472,7 +467,7 @@ namespace AdventOfCode.Days
         public override string GetSolutionPart1()
         {
 	        //return "Skipping this - solution was: 831600";
-			int result = DoIt();
+			long result = DoIt();
 			return result.ToString(); //831600
         }
 
