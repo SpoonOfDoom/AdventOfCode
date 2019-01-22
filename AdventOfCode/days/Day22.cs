@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using AdventOfCode.Extensions;
-using AdventOfCode2016.Tools;
+using AdventOfCode.Tools;
 
 namespace AdventOfCode.Days
 {

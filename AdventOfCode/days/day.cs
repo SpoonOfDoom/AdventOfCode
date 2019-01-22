@@ -9,15 +9,49 @@ namespace AdventOfCode.Days
 {
     public abstract class Day
     {
-        protected string input;
-        protected List<string> inputLines;
-        public readonly int Number;
+#if DEBUG
+        private const string Configuration = "Debug";
+#else
+        private const string Configuration = "Release";
+#endif
 
-        public static Dictionary<int, Dictionary<string, TimeSpan>> SolutionTimes = new Dictionary<int, Dictionary<string, TimeSpan>>();
+        private const string TimeExportFolder = "exports";
+        protected object solutionPart1, solutionPart2;
+        protected TimeSpan solutionTime1, solutionTime2;
+        private TimeSpan TotalTime => solutionTime1 + solutionTime2;
+        protected string Input;
+        protected List<string> InputLines;
+        private readonly int number;
+
+        private static Dictionary<int, List<Dictionary<string, TimeSpan>>> solutionTimes = new Dictionary<int, List<Dictionary<string, TimeSpan>>>();
+
+        private object SolutionPart1
+        {
+            get
+            {
+                if (solutionPart1 == null)
+                {
+                    GetSolutionPart1();
+                }
+                return solutionPart1;
+            }
+        }
+
+        private object SolutionPart2
+        {
+            get
+            {
+                if (solutionPart2 == null)
+                {
+                    GetSolutionPart2();
+                }
+                return solutionPart2;
+            }
+        }
 
         protected Day(int number)
         {
-            Number = number;
+            this.number = number;
             GetInput();
         }
 
@@ -27,29 +61,35 @@ namespace AdventOfCode.Days
         /// <returns></returns>
         private void GetInput()
         {
-            input = File.ReadAllText("input\\day" + Number + ".txt");
-            inputLines = File.ReadAllLines("input\\day" + Number + ".txt").ToList();
+            Input = File.ReadAllText("input\\day" + number.ToString("00") + ".txt");
+            InputLines = File.ReadAllLines("input\\day" + number.ToString("00") + ".txt").ToList();
         }
 
-        public virtual string GetSolutionPart1()
+        protected virtual object GetSolutionPart1()
         {
-            throw new NotImplementedException();
-        }
-        public virtual string GetSolutionPart2()
-        {
-            throw new NotImplementedException();
+            solutionPart1 = "not implemented.";
+            solutionTime1 = TimeSpan.Zero;
+            return SolutionPart1;
         }
 
+        protected virtual object GetSolutionPart2()
+        {
+            solutionPart2 = "not implemented";
+            solutionTime2 = TimeSpan.Zero;
+            return SolutionPart2;
+        }
+
+        // ReSharper disable once UnusedMember.Global
         public static void RunAllDays(bool verbose = true)
         {
-            Stopwatch sw = new Stopwatch();
+            var sw = new Stopwatch();
             sw.Start();
             for (int i = 1; i <= 25; i++)
             {
-                RunDay(i, batch:true, verbose:verbose);
+                RunDay(i, batch: true, verbose: verbose);
             }
             sw.Stop();
-            
+
             WriteTimesToFile();
             Console.WriteLine($"Total time taken: {sw.Elapsed.Hours}:{sw.Elapsed.Minutes}:{sw.Elapsed.Seconds}:{sw.Elapsed.Milliseconds}");
             Console.ReadLine();
@@ -57,96 +97,139 @@ namespace AdventOfCode.Days
 
         private static void WriteTimesToFile(string filename = "solutionTimes")
         {
-            const string timeExportFolder = "exports";
-            if (!Directory.Exists(timeExportFolder))
+            if (!Directory.Exists(TimeExportFolder))
             {
-                Directory.CreateDirectory(timeExportFolder);
+                Directory.CreateDirectory(TimeExportFolder);
             }
             if (filename == "solutionTimes")
             {
                 filename += DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss") + ".csv";
             }
-            string filePath = timeExportFolder + "\\" + filename;
+            string filePath = TimeExportFolder + "\\" + filename;
+            string fileContent = "Machine Name;Build Configuration;Day Number;Part 1;Part 2;Total\n";
 
-            string fileContent = "Day Number;Part 1;Part 2;Total\n";
-            foreach (KeyValuePair<int, Dictionary<string, TimeSpan>> solutionTime in SolutionTimes)
+
+            foreach (KeyValuePair<int, List<Dictionary<string, TimeSpan>>> solutionTime in solutionTimes)
             {
-                fileContent += $"{solutionTime.Key};{solutionTime.Value["Part1"]};{solutionTime.Value["Part2"]};{solutionTime.Value["Total"]}\n";
+                foreach (Dictionary<string, TimeSpan> uniqueRun in solutionTime.Value)
+                {
+                    fileContent += $"{Environment.MachineName};{Configuration};{solutionTime.Key};{uniqueRun["Part1"]};{uniqueRun["Part2"]};{uniqueRun["Total"]}\n";
+                }
             }
-            
             File.WriteAllText(filePath, fileContent, Encoding.UTF8);
         }
 
-        public static void RunDay(int number, Day dayInstance = null, bool batch = false, bool verbose = true)
+        private void WriteToFile(int part, bool append = true)
+        {
+            if (!Directory.Exists(TimeExportFolder))
+            {
+                Directory.CreateDirectory(TimeExportFolder);
+            }
+            string filename = "day_" + number.ToString("00") + ".log";
+
+            string filePath = TimeExportFolder + "\\" + filename;
+
+            string solution = part == 1 ? SolutionPart1.ToString() : SolutionPart2.ToString();
+            TimeSpan solutionTime = part == 1 ? solutionTime1 : solutionTime2;
+
+            string fileContent = $"{Environment.MachineName}|{Configuration}\\Day {number.ToString("00")} - Part {part}: {solution} (solved in {solutionTime.TotalSeconds} seconds / {solutionTime}, saved at {DateTime.Now:yyyy-MM-dd_HH-mm-ss})\n";
+
+            if (append)
+            {
+                File.AppendAllText(filePath, fileContent, Encoding.UTF8);
+            }
+            else
+            {
+                File.WriteAllText(filePath, fileContent, Encoding.UTF8);
+            }
+
+
+        }
+
+        public static void RunDay(int number, Day dayInstance = null, bool batch = false, bool verbose = true, int times = 1)
         {
             if (dayInstance == null)
             {
-                Type dayType = Type.GetType("AdventOfCode.Days.Day" + number);
+                Type dayType = Type.GetType("AdventOfCode.Days.Day" + number.ToString("00"));
+                if (dayType == null)
+                {
+                    throw new Exception("Couldn't find type AdventOfCode.Days.Day" + number.ToString("00"));
+                }
                 dayInstance = (Day)Activator.CreateInstance(dayType);
             }
 
-            Stopwatch sw = new Stopwatch();
 
-            string solution1, solution2;
-            TimeSpan totalTime = new TimeSpan();
-            TimeSpan part1Time = new TimeSpan();
-            TimeSpan part2Time = new TimeSpan();
-            try
+            for (int i = 0; i < times; i++)
             {
+                var sw = new Stopwatch();
+
                 sw.Start();
-                solution1 = dayInstance.GetSolutionPart1();
+                object solution1 = dayInstance.GetSolutionPart1();
                 sw.Stop();
-                part1Time = sw.Elapsed;
-                totalTime += sw.Elapsed;
-            }
-            catch (NotImplementedException)
-            {
-                sw.Stop();
-                solution1 = "not implemented.";
-            }
-            if (verbose)
-            {
-                Console.WriteLine($"day {dayInstance.Number} part 1 : {solution1} - solved in {sw.Elapsed.TotalSeconds} seconds ({sw.Elapsed.TotalMilliseconds} milliseconds)");
+                if (dayInstance.solutionPart1 == null)
+                {
+                    dayInstance.solutionPart1 = solution1;
+                    dayInstance.solutionTime1 = sw.Elapsed;
+                }
 
-            }
 
-            try
-            {
+                //dayInstance.WriteToFile();
+                if (verbose)
+                {
+                    Console.WriteLine($"day {dayInstance.number.ToString("00")} part 1 : {dayInstance.SolutionPart1} - solved in {dayInstance.solutionTime1.TotalSeconds} seconds ({dayInstance.solutionTime1.TotalMilliseconds} milliseconds)");
+                }
+                try
+                {
+                    dayInstance.WriteToFile(1);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                }
+
                 sw.Restart();
-                solution2 = dayInstance.GetSolutionPart2();
+                object solution2 = dayInstance.GetSolutionPart2();
                 sw.Stop();
-                part2Time = sw.Elapsed;
-                totalTime += sw.Elapsed;
-            }
-            catch (NotImplementedException)
-            {
-                sw.Stop();
-                solution2 = "not implemented.";
-            }
-            if (verbose)
-            {
-                Console.WriteLine($"day {dayInstance.Number} part 2 : {solution2} - solved in {sw.Elapsed.TotalSeconds} seconds ({sw.Elapsed.TotalMilliseconds} milliseconds)");
-                Console.WriteLine($"total time: {totalTime.TotalSeconds} seconds ({totalTime.TotalMilliseconds} milliseconds)");
-            }
 
-            SolutionTimes[number] = new Dictionary<string, TimeSpan>
-                                    {
-                                        {"Total", totalTime},
-                                        {"Part1", part1Time},
-                                        {"Part2", part2Time}
-                                    };
+                if (dayInstance.solutionPart2 == null)
+                {
+                    dayInstance.solutionPart2 = solution2;
+                    dayInstance.solutionTime2 = sw.Elapsed;
+                }
+
+
+                if (verbose)
+                {
+                    Console.WriteLine($"day {dayInstance.number.ToString("00")} part 2 : {dayInstance.SolutionPart2} - solved in {dayInstance.solutionTime2.TotalSeconds} seconds ({dayInstance.solutionTime2.TotalMilliseconds} milliseconds)");
+                    Console.WriteLine($"total time: {dayInstance.TotalTime.TotalSeconds} seconds ({dayInstance.TotalTime.TotalMilliseconds} milliseconds)");
+                }
+
+                try
+                {
+                    dayInstance.WriteToFile(2);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                }
+
+                var run = new Dictionary<string, TimeSpan>
+                {
+                    {"Total", dayInstance.TotalTime},
+                    {"Part1", dayInstance.solutionTime1},
+                    {"Part2", dayInstance.solutionTime2}
+                };
+                if (!solutionTimes.ContainsKey(number))
+                {
+                    solutionTimes[number] = new List<Dictionary<string, TimeSpan>>();
+                }
+                solutionTimes[number].Add(run);
+            }
 
             if (!batch)
             {
                 Console.Read();
             }
-        }
-
-        public static Day GetDayInstance(int number)
-        {
-            Type dayType = Type.GetType("Day" + number);
-            Day dayInstance = (Day) Activator.CreateInstance(dayType);
-            return dayInstance;
         }
     }
 }

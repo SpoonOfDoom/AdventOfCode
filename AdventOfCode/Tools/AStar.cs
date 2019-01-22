@@ -4,41 +4,174 @@ using System.Diagnostics;
 using System.Linq;
 using Priority_Queue;
 
-namespace AdventOfCode2016.Tools
+namespace AdventOfCode.Tools
 {
-    public interface ISearchNode
+    public class SearchEventArgs : EventArgs
     {
+        public SimplePriorityQueue<ISearchNode> OpenQueue;
+        public HashSet<ISearchNode> ClosedSet;
+        public ISearchNode CurrentNode;
+        public ISearchNode GoalNode;
+    }
+    
+    public interface ISearchNode //todo: convert to abstract class and provide default implementations of methods
+    {
+        //todo: introduce bool numericHashMode to control whether to use string or numeric hash in default Equals implementation
         int Cost { get; set; }
-        List<object> Actions { get; set; }
+        List<object> Actions { get; set; } //todo: change implementation to avoid having a full list in every node ("predecessor" variable, and then walk along the predecessors of every node)
         string VerboseInfo { get; }
+        string StringHash { get; }
+        long NumericHash { get; }
 
         HashSet<ExpandAction> ExpandNode();
         bool Equals(ISearchNode otherState); //For checking if node is already in openQueue or closedSet
         bool IsGoalState(ISearchNode goalState = null); //Goal state ist not necessarily equal in every way
         float GetHeuristic(ISearchNode goalState = null);
+
+        void CreateHash();
     }
 
+    public abstract class SearchNode
+    {
+        protected abstract void CreateNumericHash();
+        protected abstract void CreateStringHash();
+        public abstract HashSet<ExpandActionNew> ExpandNode();
+
+        private bool hashCreated = false;
+        protected string stringHash;
+        protected long numericHash;
+        public int Cost { get; set; }
+        public List<object> Actions { get; set; } //todo: change implementation to avoid having a full list in every node ("predecessor" variable, and then walk along the predecessors of every node)
+        public virtual string VerboseInfo => "";
+
+        public string StringHash
+        {
+            get
+            {
+                if (!hashCreated)
+                {
+                    CreateHash();
+                }
+                return stringHash;
+            }
+        }
+
+        public long NumericHash
+        {
+            get
+            {
+                if (!hashCreated)
+                {
+                    CreateHash();
+                }
+                return numericHash;
+            }
+        }
+
+        /// <summary>Bestimmt, ob das angegebene Objekt mit dem aktuellen Objekt identisch ist.</summary>
+        /// <returns>true, wenn das angegebene Objekt und das aktuelle Objekt gleich sind, andernfalls false.</returns>
+        /// <param name="obj">Das Objekt, das mit dem aktuellen Objekt verglichen werden soll. </param>
+        public override bool Equals(object obj)
+        {
+            if (!(obj is SearchNode))
+            {
+                return false;
+            }
+            switch (AStar.HashingMode)
+            {
+                case AStar.NodeHashMode.String:
+                    return StringHash == ((SearchNode)obj).StringHash;
+                case AStar.NodeHashMode.Numeric:
+                    return NumericHash == ((SearchNode)obj).NumericHash;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        public virtual bool IsGoalState(SearchNode goalState = null)
+        {
+            return this.Equals(goalState);
+        }
+
+        public virtual float GetHeuristic(SearchNode goalState = null)
+        {
+            return 0;
+        }
+
+        public void CreateHash()
+        {
+            hashCreated = true;
+            switch (AStar.HashingMode)
+            {
+                case AStar.NodeHashMode.String:
+                    CreateStringHash();
+                    return;
+                case AStar.NodeHashMode.Numeric:
+                    CreateNumericHash();
+                    return;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+    }
+    
     public struct ExpandAction
     {
-        public ISearchNode result;
-        public object action;
-        public int cost;
+        public ISearchNode Result;
+        public object Action; //todo: make "Action" interface/abstract class so we can grab the cost and other data from them
+        /// <summary>
+        /// The cost of taking this step (not total cost)
+        /// </summary>
+        public int Cost;
+    }
+
+    public struct ExpandActionNew
+    {
+        public SearchNode Result;
+        public object Action; //todo: make "Action" interface/abstract class so we can grab the cost and other data from them
+        public int Cost;
     }
 
     public class AStar
     {
-        SimplePriorityQueue<ISearchNode> openQueue;
-        HashSet<ISearchNode> closedSet;
+        public enum NodeHashMode
+        {
+            String,
+            Numeric
+        }
 
-        Dictionary<ISearchNode, int> nodeCost = new Dictionary<ISearchNode, int>();
+        public static NodeHashMode HashingMode;
 
-        public int GetMinimumCost(ISearchNode startState, ISearchNode goalState = null, bool verbose = false)
+        private SimplePriorityQueue<ISearchNode> openQueue;
+        private HashSet<ISearchNode> closedSet;
+
+        private SimplePriorityQueue<SearchNode> openQueueNew;
+        private HashSet<SearchNode> closedSetNew;
+
+        public AStar()
+        {
+            HashingMode = NodeHashMode.String;
+        }
+
+        public AStar(NodeHashMode hashingMode)
+        {
+            HashingMode = hashingMode;
+        }
+
+        public int GetMinimumCost(ISearchNode startState, ISearchNode goalState = null, bool verbose = false, bool stepByStep = false)
+        {
+            Tuple<List<object>, int> path = GetOptimalPath(startState, goalState, verbose, stepByStep);
+            return path.Item2;
+        }
+
+        public int GetMinimumCost(SearchNode startState, SearchNode goalState = null, bool verbose = false, bool stepByStep = false)
         {
             Tuple<List<object>, int> path = GetOptimalPath(startState, goalState, verbose);
             return path.Item2;
         }
 
-        public Tuple<List<object>, int> GetOptimalPath(ISearchNode startState, ISearchNode goalState = null, bool verbose = false)
+        // ReSharper disable once MemberCanBePrivate.Global
+        public Tuple<List<object>, int> GetOptimalPath(ISearchNode startState, ISearchNode goalState = null, bool verbose = false, bool stepByStep = false)
         {
             if (verbose)
             {
@@ -51,19 +184,100 @@ namespace AdventOfCode2016.Tools
 
             openQueue.Enqueue(startState, 0);
             long step = 0;
+            ISearchNode current;
+            HashSet<ExpandAction> expandActions;
+            ISearchNode newNode;
+            ISearchNode match;
             while (openQueue.Count > 0)
             {
                 step++;
-                ISearchNode current = openQueue.Dequeue();
+                current = openQueue.Dequeue();
 
-                if (current.IsGoalState(current))
+                if (current.IsGoalState(goalState))
                 {
                     return Tuple.Create(current.Actions, current.Cost);
                 }
+                expandActions = current.ExpandNode();
                 closedSet.Add(current);
+                
+                if (verbose)
+                {
+                    OutputVerboseInfo(goalState, searchWatch, step, current);
+                    if (stepByStep)
+                    {
+                        Console.ReadLine();
+                    }
+                }
 
+                foreach (ExpandAction expandAction in expandActions)
+                {
+                    newNode = expandAction.Result;
+                    newNode.Cost = current.Cost + expandAction.Cost;
+                    newNode.Actions.Add(expandAction.Action);
+                    if (closedSet.Any(x => x.Equals(newNode)))
+                    {
+                        continue;
+                    }
+                    match = openQueue.SingleOrDefault(x => x.Equals(newNode));
+                    if (match != default(ISearchNode))
+                    {
+                        if (match.Cost > newNode.Cost)
+                        {
+                            openQueue.UpdatePriority(match, newNode.Cost + newNode.GetHeuristic(goalState));
+                        }
+                    }
+                    else
+                    {
+                        openQueue.Enqueue(newNode, newNode.Cost + newNode.GetHeuristic(goalState));
+                    }
+                }
+                OnSearchNodeProcessed(new SearchEventArgs
+                {
+                    ClosedSet = closedSet,
+                    OpenQueue = openQueue,
+                    CurrentNode = current
+                });
+            }
 
-                HashSet<ExpandAction> expandActions = current.ExpandNode();
+            return Tuple.Create(new List<object>(), -1);
+        }
+
+        public event EventHandler SearchNodeProcessed;
+        public event EventHandler GeneralVerboseOutputPrinted;
+        
+
+        public Tuple<List<object>, int> GetLongestPath(ISearchNode startState, ISearchNode goalState = null, bool verbose = false)
+        {
+            if (verbose)
+            {
+                Console.Clear();
+            }
+            Stopwatch searchWatch = new Stopwatch();
+            searchWatch.Start();
+            openQueue = new SimplePriorityQueue<ISearchNode>();
+            closedSet = new HashSet<ISearchNode>();
+
+            openQueue.Enqueue(startState, 0);
+            long step = 0;
+            ISearchNode current;
+            HashSet<ExpandAction> expandActions;
+            ISearchNode newNode;
+            ISearchNode match;
+            var targetCandidates = new List<Tuple<List<object>, int>>();
+            while (openQueue.Count > 0)
+            {
+                step++;
+                current = openQueue.Dequeue();
+
+                closedSet.Add(current);
+                if (current.IsGoalState(goalState))
+                {
+                    //todo: this can probably be optimized to work more like standard A*, but negating Cost + Heuristic wasn't enough and this is probably the next best thing. Or at least it's the next thing I came up with.
+                    targetCandidates.Add(Tuple.Create(current.Actions, current.Cost));
+                    continue;
+                }
+                
+                expandActions = current.ExpandNode();
 
                 if (verbose)
                 {
@@ -72,29 +286,92 @@ namespace AdventOfCode2016.Tools
 
                 foreach (ExpandAction expandAction in expandActions)
                 {
-                    ISearchNode newNode = expandAction.result;
-                    newNode.Cost = current.Cost + expandAction.cost;
-                    newNode.Actions.Add(expandAction.action);
+                    newNode = expandAction.Result;
+                    newNode.Cost = current.Cost + expandAction.Cost;
+                    newNode.Actions.Add(expandAction.Action);
                     if (closedSet.Any(x => x.Equals(newNode)))
                     {
                         continue;
                     }
-
-                    if (openQueue.Any(x => x.Equals(newNode)))
+                    match = openQueue.SingleOrDefault(x => x.Equals(newNode));
+                    if (match != default(ISearchNode))
                     {
-                        if (openQueue.Single(x => x.Equals(newNode)).Cost > newNode.Cost)
+                        if (match.Cost < newNode.Cost)
                         {
-                            openQueue.UpdatePriority(openQueue.Single(x => x.Equals(newNode)), newNode.Cost + newNode.GetHeuristic(goalState));
+                            openQueue.UpdatePriority(match, -1 * (newNode.Cost + newNode.GetHeuristic(goalState)));
                         }
                     }
                     else
                     {
-                        openQueue.Enqueue(newNode, newNode.Cost + newNode.GetHeuristic(goalState));
+                        openQueue.Enqueue(newNode, -1 * (newNode.Cost + newNode.GetHeuristic(goalState)));
                     }
                 }
             }
 
-            return null;
+            return targetCandidates.OrderByDescending(c => c.Item2).First();
+        }
+
+        public Tuple<List<object>, int> GetOptimalPath(SearchNode startState, SearchNode goalState = null, bool verbose = false)
+        {
+            if (verbose)
+            {
+                Console.Clear();
+            }
+            Stopwatch searchWatch = new Stopwatch();
+            searchWatch.Start();
+            openQueueNew = new SimplePriorityQueue<SearchNode>();
+            closedSetNew = new HashSet<SearchNode>();
+
+            openQueueNew.Enqueue(startState, 0);
+            long step = 0;
+            SearchNode current;
+            HashSet<ExpandActionNew> expandActions;
+            SearchNode newNode;
+            SearchNode match;
+            while (openQueueNew.Count > 0)
+            {
+                step++;
+                current = openQueueNew.Dequeue();
+
+                if (current.IsGoalState(current))
+                {
+                    return Tuple.Create(current.Actions, current.Cost);
+                }
+                closedSetNew.Add(current);
+
+                expandActions = current.ExpandNode();
+
+                if (verbose)
+                {
+                    OutputVerboseInfo(goalState, searchWatch, step, current);
+                }
+
+
+                foreach (ExpandActionNew expandAction in expandActions)
+                {
+                    newNode = expandAction.Result;
+                    newNode.Cost = current.Cost + expandAction.Cost;
+                    newNode.Actions.Add(expandAction.Action);
+                    if (closedSetNew.Contains(newNode))
+                    {
+                        continue;
+                    }
+                    match = openQueueNew.SingleOrDefault(x => x.Equals(newNode));
+                    if (match != null)
+                    {
+                        if (match.Cost > newNode.Cost)
+                        {
+                            openQueueNew.UpdatePriority(match, newNode.Cost + newNode.GetHeuristic(goalState));
+                        }
+                    }
+                    else
+                    {
+                        openQueueNew.Enqueue(newNode, newNode.Cost + newNode.GetHeuristic(goalState));
+                    }
+                }
+            }
+
+            return Tuple.Create(new List<object>(), -1);
         }
 
         private void OutputVerboseInfo(ISearchNode goalState, Stopwatch searchWatch, long step, ISearchNode current)
@@ -114,8 +391,45 @@ namespace AdventOfCode2016.Tools
             }
             Console.WriteLine($"Step: {step}   ");
             Console.WriteLine("Time: {0}:{1}:{2}.{3}   ", searchWatch.Elapsed.Hours, searchWatch.Elapsed.Minutes, searchWatch.Elapsed.Seconds, searchWatch.Elapsed.Milliseconds);
-
+            Console.WriteLine("Closed/Open Ratio: " + 1.0f * closedSet.Count / openQueue.Count);
             Console.WriteLine(current.VerboseInfo);
+            OnGeneralVerboseOutputPrinted(new SearchEventArgs
+            {
+                OpenQueue = openQueue,
+                ClosedSet = closedSet,
+                CurrentNode = current,
+                GoalNode = goalState
+            });
+        }
+
+        private void OutputVerboseInfo(SearchNode goalState, Stopwatch searchWatch, long step, SearchNode current)
+        {
+            Console.SetCursorPosition(0, 0);
+            Console.WriteLine("Open list: {0}   ", openQueueNew.Count);
+            Console.WriteLine("Closed list: {0}   ", closedSetNew.Count);
+            if (openQueueNew.Count > 0)
+            {
+                Console.WriteLine("First cost until now: {0}   ", openQueueNew.First.Cost);
+                Console.WriteLine("First tentative cost: {0}   ", openQueueNew.First.Cost + openQueueNew.First.GetHeuristic(goalState));
+            }
+            else
+            {
+                Console.WriteLine();
+                Console.WriteLine();
+            }
+            Console.WriteLine($"Step: {step}   ");
+            Console.WriteLine("Time: {0}:{1}:{2}.{3}   ", searchWatch.Elapsed.Hours, searchWatch.Elapsed.Minutes, searchWatch.Elapsed.Seconds, searchWatch.Elapsed.Milliseconds);
+            Console.WriteLine(current.VerboseInfo);
+        }
+
+        protected virtual void OnSearchNodeProcessed(SearchEventArgs e)
+        {
+            SearchNodeProcessed?.Invoke(this, e);
+        }
+
+        protected virtual void OnGeneralVerboseOutputPrinted(SearchEventArgs e)
+        {
+            GeneralVerboseOutputPrinted?.Invoke(this, e);
         }
     }
 }
