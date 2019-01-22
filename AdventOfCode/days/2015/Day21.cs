@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using AdventOfCode.Extensions;
 
-namespace AdventOfCode.Days
+namespace AdventOfCode.Days._2015
 {
     // ReSharper disable once UnusedMember.Global
     public class Day21 : Day
     {
-        public Day21() : base(21) { }
+        public Day21() : base(2015, 21) { }
 
         
         private int BossStartHP, BossDamage, BossArmor;

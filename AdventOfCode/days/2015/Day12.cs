@@ -3,12 +3,12 @@ using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace AdventOfCode.Days
+namespace AdventOfCode.Days._2015
 {
     // ReSharper disable once UnusedMember.Global
     public class Day12 : Day
     {
-        public Day12() : base(12) { }
+        public Day12() : base(2015, 12) { }
 
         private static bool ContainsRed(dynamic json)
         {

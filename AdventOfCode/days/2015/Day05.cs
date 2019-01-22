@@ -1,12 +1,12 @@
-using System.Text.RegularExpressions;
 using System.Linq;
+using System.Text.RegularExpressions;
 
-namespace AdventOfCode.Days
+namespace AdventOfCode.Days._2015
 {
     // ReSharper disable once UnusedMember.Global
     public class Day05 : Day
     {
-        public Day05() : base(5) { }
+        public Day05() : base(2015, 5) { }
         
         private static bool IsNice(string myString)
         {

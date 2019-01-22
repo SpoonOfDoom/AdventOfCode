@@ -1,9 +1,9 @@
-using AdventOfCode.Extensions;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using AdventOfCode.Extensions;
 
-namespace AdventOfCode.Days
+namespace AdventOfCode.Days._2015
 {
     class Sue
     {
@@ -71,7 +71,7 @@ namespace AdventOfCode.Days
     // ReSharper disable once UnusedMember.Global
     public class Day16 : Day
     {
-        public Day16() : base(16) { }
+        public Day16() : base(2015, 16) { }
 
         private Regex regLine = new Regex(@"Sue (\d+): (.+)");
         private List<Sue> Candidates = new List<Sue>();

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using AdventOfCode.Extensions;
 
-namespace AdventOfCode.Days
+namespace AdventOfCode.Days._2015
 {
     class Ingredient
     {
@@ -64,7 +64,7 @@ namespace AdventOfCode.Days
     // ReSharper disable once UnusedMember.Global
     public class Day15 : Day
     {
-        public Day15() : base(15) { }
+        public Day15() : base(2015, 15) { }
 
         private Regex regLine = new Regex(@"^(\w+)[^0-9-]+(-?\d+)[^0-9-]+(-?\d+)[^0-9-]+(-?\d+)[^0-9-]+(-?\d+)[^0-9-]+(-?\d+)");
         private List<Ingredient> ingredients = new List<Ingredient>();

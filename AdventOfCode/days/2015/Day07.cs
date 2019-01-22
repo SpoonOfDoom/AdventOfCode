@@ -2,12 +2,12 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using AdventOfCode.Extensions;
 
-namespace AdventOfCode.Days
+namespace AdventOfCode.Days._2015
 {
     // ReSharper disable once UnusedMember.Global
     public class Day07 : Day
     {
-        public Day07() : base(7) { }
+        public Day07() : base(2015, 7) { }
 
         private Dictionary<string, string> instructions = new Dictionary<string, string>();
         private Dictionary<string, int> instructionSolved = new Dictionary<string, int>();

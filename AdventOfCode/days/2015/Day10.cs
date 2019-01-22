@@ -1,11 +1,11 @@
 using System.Text;
 
-namespace AdventOfCode.Days
+namespace AdventOfCode.Days._2015
 {
     // ReSharper disable once UnusedMember.Global
     public class Day10 : Day
     {
-        public Day10() : base(10) { }
+        public Day10() : base(2015, 10) { }
 
         private string getNewSequence(string sequence)
         {

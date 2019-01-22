@@ -3,12 +3,12 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using AdventOfCode.Extensions;
 
-namespace AdventOfCode.Days
+namespace AdventOfCode.Days._2015
 {
     // ReSharper disable once UnusedMember.Global
     public class Day06 : Day
     {
-        public Day06() : base(6) { }
+        public Day06() : base(2015, 6) { }
 
         private bool[,] lightsBool = new bool[1000, 1000];
         private int[,] lightsInt = new int[1000, 1000];

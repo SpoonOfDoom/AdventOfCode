@@ -1,11 +1,11 @@
 using System.Text;
 
-namespace AdventOfCode.Days
+namespace AdventOfCode.Days._2015
 {
     // ReSharper disable once UnusedMember.Global
     public class Day04 : Day
     {
-        public Day04() : base(4) { }
+        public Day04() : base(2015, 4) { }
         
         static System.Security.Cryptography.MD5 md5 = System.Security.Cryptography.MD5.Create();
         static StringBuilder sb = new StringBuilder();

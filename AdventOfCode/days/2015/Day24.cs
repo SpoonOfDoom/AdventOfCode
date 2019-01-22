@@ -2,12 +2,12 @@ using System.Collections.Generic;
 using System.Linq;
 using AdventOfCode.Extensions;
 
-namespace AdventOfCode.Days
+namespace AdventOfCode.Days._2015
 {
     // ReSharper disable once UnusedMember.Global
     public class Day24 : Day
     {
-        public Day24() : base(24) { }
+        public Day24() : base(2015, 24) { }
 
         List<int> allPresents = new List<int>();
         int totalWeight;

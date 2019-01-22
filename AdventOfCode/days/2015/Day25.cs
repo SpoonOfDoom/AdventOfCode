@@ -1,11 +1,11 @@
 using AdventOfCode.Extensions;
 
-namespace AdventOfCode.Days
+namespace AdventOfCode.Days._2015
 {
     // ReSharper disable once UnusedMember.Global
     public class Day25 : Day
     {
-        public Day25() : base(25) { }
+        public Day25() : base(2015, 25) { }
         int targetRow, targetColumn;
         long startCode = 20151125;
 

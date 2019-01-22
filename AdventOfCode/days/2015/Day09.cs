@@ -3,12 +3,12 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using AdventOfCode.Extensions;
 
-namespace AdventOfCode.Days
+namespace AdventOfCode.Days._2015
 {
     // ReSharper disable once UnusedMember.Global
     public class Day09 : Day
     {
-        public Day09() : base(9) { }
+        public Day09() : base(2015, 9) { }
 
         struct Route
         {

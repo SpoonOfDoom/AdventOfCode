@@ -1,11 +1,11 @@
 using System.Text.RegularExpressions;
 
-namespace AdventOfCode.Days
+namespace AdventOfCode.Days._2015
 {
     // ReSharper disable once UnusedMember.Global
     public class Day08 : Day
     {
-        public Day08() : base(8) { }
+        public Day08() : base(2015, 8) { }
 
         private static int GetMemoryCharacters(string text)
         {

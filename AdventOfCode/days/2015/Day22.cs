@@ -4,7 +4,7 @@ using System.Linq;
 using AdventOfCode.Extensions;
 using AdventOfCode.Tools;
 
-namespace AdventOfCode.Days
+namespace AdventOfCode.Days._2015
 {
     /// <summary>
     /// 
@@ -12,7 +12,7 @@ namespace AdventOfCode.Days
     // ReSharper disable once UnusedMember.Global
     public class Day22 : Day
     {
-        public Day22() : base(22) { }
+        public Day22() : base(2015, 22) { }
 
         static Dictionary<Spell, int> SpellCost = new Dictionary<Spell, int>
                                                   {

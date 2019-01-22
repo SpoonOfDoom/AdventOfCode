@@ -52,32 +52,32 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Days\2015\Day01.cs" />
+    <Compile Include="Days\2015\Day02.cs" />
+    <Compile Include="Days\2015\Day03.cs" />
+    <Compile Include="Days\2015\Day04.cs" />
+    <Compile Include="Days\2015\Day05.cs" />
+    <Compile Include="Days\2015\Day06.cs" />
+    <Compile Include="Days\2015\Day07.cs" />
+    <Compile Include="Days\2015\Day08.cs" />
+    <Compile Include="Days\2015\Day09.cs" />
+    <Compile Include="Days\2015\Day10.cs" />
+    <Compile Include="Days\2015\Day11.cs" />
+    <Compile Include="Days\2015\Day12.cs" />
+    <Compile Include="Days\2015\Day13.cs" />
+    <Compile Include="Days\2015\Day14.cs" />
+    <Compile Include="Days\2015\Day15.cs" />
+    <Compile Include="Days\2015\Day16.cs" />
+    <Compile Include="Days\2015\Day17.cs" />
+    <Compile Include="Days\2015\Day18.cs" />
+    <Compile Include="Days\2015\Day19.cs" />
+    <Compile Include="Days\2015\Day20.cs" />
+    <Compile Include="Days\2015\Day21.cs" />
+    <Compile Include="Days\2015\Day22.cs" />
+    <Compile Include="Days\2015\Day23.cs" />
+    <Compile Include="Days\2015\Day24.cs" />
+    <Compile Include="Days\2015\Day25.cs" />
     <Compile Include="Days\Day.cs" />
-    <Compile Include="Days\Day01.cs" />
-    <Compile Include="Days\Day10.cs" />
-    <Compile Include="Days\Day11.cs" />
-    <Compile Include="Days\Day12.cs" />
-    <Compile Include="Days\Day13.cs" />
-    <Compile Include="Days\Day19.cs" />
-    <Compile Include="Days\Day18.cs" />
-    <Compile Include="Days\Day17.cs" />
-    <Compile Include="Days\Day16.cs" />
-    <Compile Include="Days\Day15.cs" />
-    <Compile Include="Days\Day14.cs" />
-    <Compile Include="Days\Day21.cs" />
-    <Compile Include="Days\Day25.cs" />
-    <Compile Include="Days\Day24.cs" />
-    <Compile Include="Days\Day23.cs" />
-    <Compile Include="Days\Day22.cs" />
-    <Compile Include="Days\Day20.cs" />
-    <Compile Include="Days\Day02.cs" />
-    <Compile Include="Days\Day03.cs" />
-    <Compile Include="Days\Day04.cs" />
-    <Compile Include="Days\Day05.cs" />
-    <Compile Include="Days\Day06.cs" />
-    <Compile Include="Days\Day07.cs" />
-    <Compile Include="Days\Day08.cs" />
-    <Compile Include="Days\Day09.cs" />
     <Compile Include="Extensions\EnumerableExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Program.cs" />
@@ -91,81 +91,89 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Input\day16.txt">
+    <Content Include="Input\2015\day01.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Input\day15.txt">
+    <Content Include="Input\2015\day02.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Input\day14.txt">
+    <Content Include="Input\2015\day03.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Input\day13.txt">
+    <Content Include="Input\2015\day04.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Input\day12.txt">
+    <Content Include="Input\2015\day05.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Input\day11.txt">
+    <Content Include="Input\2015\day06.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Input\day17.txt">
+    <Content Include="Input\2015\day07.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Input\day21.txt">
+    <Content Include="Input\2015\day08.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Input\day25.txt">
+    <Content Include="Input\2015\day09.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Input\day24.txt">
+    <Content Include="Input\2015\day10.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Input\day23.txt">
+    <Content Include="Input\2015\day11.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Input\day22.txt">
+    <Content Include="Input\2015\day12.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Input\day20.txt">
+    <Content Include="Input\2015\day13.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Input\day19.txt">
+    <Content Include="Input\2015\day14.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Input\day18.txt">
+    <Content Include="Input\2015\day15.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Input\day05.txt">
+    <Content Include="Input\2015\day16.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Input\day04.txt">
+    <Content Include="Input\2015\day17.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Input\day03.txt">
+    <Content Include="Input\2015\day18.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Input\day02.txt">
+    <Content Include="Input\2015\day19.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Input\day01.txt">
+    <Content Include="Input\2015\day20.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Input\day06.txt">
+    <Content Include="Input\2015\day21.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Input\day10.txt">
+    <Content Include="Input\2015\day22.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Input\day09.txt">
+    <Content Include="Input\2015\day23.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Input\day08.txt">
+    <Content Include="Input\2015\day24.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Input\day07.txt">
+    <Content Include="Input\2015\day25.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Days\2016" />
+    <Folder Include="Days\2017" />
+    <Folder Include="Days\2018" />
+    <Folder Include="Input\2016" />
+    <Folder Include="Input\2017" />
+    <Folder Include="Input\2018" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

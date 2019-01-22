@@ -1,14 +1,14 @@
 using System;
-using AdventOfCode.Extensions;
 using System.Collections.Generic;
 using System.Linq;
+using AdventOfCode.Extensions;
 
-namespace AdventOfCode.Days
+namespace AdventOfCode.Days._2015
 {
     // ReSharper disable once UnusedMember.Global
     public class Day17 : Day
     {
-        public Day17() : base(17) { }
+        public Day17() : base(2015, 17) { }
 
         private List<int> containers;
         private const int target = 150;

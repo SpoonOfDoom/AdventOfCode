@@ -6,9 +6,10 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Priority_Queue;
+
 // ReSharper disable FieldCanBeMadeReadOnly.Local
 
-namespace AdventOfCode.Days
+namespace AdventOfCode.Days._2015
 {
     // ReSharper disable once UnusedMember.Global
     public class Day19 : Day
@@ -23,7 +24,7 @@ namespace AdventOfCode.Days
             public List<string> Atoms = new List<string>();
         }
 
-        public Day19() : base(19) { }
+        public Day19() : base(2015, 19) { }
 
         private Regex replacementRegex = new Regex(@"^(\w+) => (\w+)$");
         

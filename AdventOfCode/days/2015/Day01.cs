@@ -1,11 +1,11 @@
 using System.Linq;
 
-namespace AdventOfCode.Days
+namespace AdventOfCode.Days._2015
 {
     // ReSharper disable once UnusedMember.Global
     public class Day01 : Day
     {
-        public Day01() : base(1) { }
+        public Day01() : base(2015, 1) { }
 
         protected override object GetSolutionPart1()
         {

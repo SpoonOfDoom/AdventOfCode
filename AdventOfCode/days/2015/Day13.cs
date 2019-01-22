@@ -3,12 +3,12 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using AdventOfCode.Extensions;
 
-namespace AdventOfCode.Days
+namespace AdventOfCode.Days._2015
 {
     // ReSharper disable once UnusedMember.Global
     public class Day13 : Day
     {
-        public Day13() : base(13) { }
+        public Day13() : base(2015, 13) { }
 
         private Dictionary<string, int> neighbourStats = new Dictionary<string, int>();
         private HashSet<string> guests = new HashSet<string>();

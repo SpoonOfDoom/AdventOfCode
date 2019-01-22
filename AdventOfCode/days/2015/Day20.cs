@@ -4,12 +4,12 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace AdventOfCode.Days
+namespace AdventOfCode.Days._2015
 {
 	// ReSharper disable once UnusedMember.Global
     public class Day20 : Day
     {
-        public Day20() : base(20) { }
+        public Day20() : base(2015, 20) { }
 
         private static Dictionary<int,int> housePresents = new Dictionary<int, int>();
 		private static HashSet<string> startedSarches = new HashSet<string>();

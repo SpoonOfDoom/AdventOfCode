@@ -2,12 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace AdventOfCode.Days
+namespace AdventOfCode.Days._2015
 {
     // ReSharper disable once UnusedMember.Global
     public class Day18 : Day
     {
-        public Day18() : base(18) { }
+        public Day18() : base(2015, 18) { }
         
 
         private bool[,] PopulateInitialGrid(bool cornersOn = false)

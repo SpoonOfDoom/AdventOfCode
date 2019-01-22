@@ -21,6 +21,7 @@ namespace AdventOfCode.Days
         private TimeSpan TotalTime => solutionTime1 + solutionTime2;
         protected string Input;
         protected List<string> InputLines;
+        private readonly int year;
         private readonly int number;
 
         private static Dictionary<int, List<Dictionary<string, TimeSpan>>> solutionTimes = new Dictionary<int, List<Dictionary<string, TimeSpan>>>();
@@ -49,20 +50,21 @@ namespace AdventOfCode.Days
             }
         }
 
-        protected Day(int number)
+        protected Day(int year, int number)
         {
+            this.year = year;
             this.number = number;
             GetInput();
         }
 
         /// <summary>
-        /// Input will be entered in a seperate method so that it can be collapsed individually (for bigger inputs)
+        /// Input will be entered in a separate method so that it can be collapsed individually (for bigger inputs)
         /// </summary>
         /// <returns></returns>
         private void GetInput()
         {
-            Input = File.ReadAllText("input\\day" + number.ToString("00") + ".txt");
-            InputLines = File.ReadAllLines("input\\day" + number.ToString("00") + ".txt").ToList();
+            Input = File.ReadAllText($"input\\{year}\\day{number:00}.txt");
+            InputLines = File.ReadAllLines($"input\\{year}\\day{number:00}.txt").ToList();
         }
 
         protected virtual object GetSolutionPart1()
@@ -80,13 +82,13 @@ namespace AdventOfCode.Days
         }
 
         // ReSharper disable once UnusedMember.Global
-        public static void RunAllDays(bool verbose = true)
+        public static void RunAllDays(int year, bool verbose = true)
         {
             var sw = new Stopwatch();
             sw.Start();
             for (int i = 1; i <= 25; i++)
             {
-                RunDay(i, batch: true, verbose: verbose);
+                RunDay(year, i, batch: true, verbose: verbose);
             }
             sw.Stop();
 
@@ -94,6 +96,8 @@ namespace AdventOfCode.Days
             Console.WriteLine($"Total time taken: {sw.Elapsed.Hours}:{sw.Elapsed.Minutes}:{sw.Elapsed.Seconds}:{sw.Elapsed.Milliseconds}");
             Console.ReadLine();
         }
+        
+        
 
         private static void WriteTimesToFile(string filename = "solutionTimes")
         {
@@ -146,14 +150,14 @@ namespace AdventOfCode.Days
 
         }
 
-        public static void RunDay(int number, Day dayInstance = null, bool batch = false, bool verbose = true, int times = 1)
+        public static void RunDay(int year, int number, Day dayInstance = null, bool batch = false, bool verbose = true, int times = 1)
         {
             if (dayInstance == null)
             {
-                Type dayType = Type.GetType("AdventOfCode.Days.Day" + number.ToString("00"));
+                Type dayType = Type.GetType($"AdventOfCode.Days._{year}.Day{number:00}");
                 if (dayType == null)
                 {
-                    throw new Exception("Couldn't find type AdventOfCode.Days.Day" + number.ToString("00"));
+                    throw new Exception($"Couldn't find type AdventOfCode.Days._{year}.Day{number:00}");
                 }
                 dayInstance = (Day)Activator.CreateInstance(dayType);
             }

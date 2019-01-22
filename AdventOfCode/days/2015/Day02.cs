@@ -2,12 +2,12 @@ using System;
 using System.Linq;
 using AdventOfCode.Extensions;
 
-namespace AdventOfCode.Days
+namespace AdventOfCode.Days._2015
 {
     // ReSharper disable once UnusedMember.Global
     public class Day02 : Day
     {
-        public Day02() : base(2) { }
+        public Day02() : base(2015, 2) { }
 
         private int getSurface(string dimensions)
         {

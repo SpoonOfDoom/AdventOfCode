@@ -2,12 +2,12 @@ using System;
 using System.Collections.Generic;
 using AdventOfCode.Extensions;
 
-namespace AdventOfCode.Days
+namespace AdventOfCode.Days._2015
 {
     // ReSharper disable once UnusedMember.Global
     public class Day23 : Day
     {
-        public Day23() : base(23) { }
+        public Day23() : base(2015, 23) { }
 
         class Instruction
         {
