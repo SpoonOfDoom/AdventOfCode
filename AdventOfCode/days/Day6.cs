@@ -84,9 +84,9 @@ namespace AdventOfCode.Days
             }
         }
 
-        public override string GetSolutionPart1()
+        protected override object GetSolutionPart1()
         {
-            foreach (string line in inputLines)
+            foreach (string line in InputLines)
             {
                 ExecuteInstruction(line);
             }
@@ -99,9 +99,9 @@ namespace AdventOfCode.Days
             return lightCount.ToString();
         }
 
-        public override string GetSolutionPart2()
+        protected override object GetSolutionPart2()
         {
-            foreach (string line in inputLines)
+            foreach (string line in InputLines)
             {
                 ExecuteInstruction2(line);
             }

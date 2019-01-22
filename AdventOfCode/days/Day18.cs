@@ -1,9 +1,6 @@
 using System;
-using AdventOfCode.Extensions;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Threading;
 
 namespace AdventOfCode.Days
 {
@@ -15,9 +12,9 @@ namespace AdventOfCode.Days
         private bool[,] PopulateInitialGrid(bool cornersOn = false)
         {
             var grid = new bool[100,100];
-            for (int i = 0; i < inputLines.Count; i++)
+            for (int i = 0; i < InputLines.Count; i++)
             {
-                string line = inputLines[i];
+                string line = InputLines[i];
                 for (int j = 0; j < line.Length; j++)
                 {
                     if (line[j] == '#')
@@ -152,7 +149,7 @@ namespace AdventOfCode.Days
             }
         }
 
-        public override string GetSolutionPart1()
+        protected override object GetSolutionPart1()
         {
             var grid = PopulateInitialGrid();
             for (int i = 0; i < 100; i++)
@@ -171,7 +168,7 @@ namespace AdventOfCode.Days
             return count.ToString();
         }
 
-        public override string GetSolutionPart2()
+        protected override object GetSolutionPart2()
         {
             var grid = PopulateInitialGrid(cornersOn: true);
             

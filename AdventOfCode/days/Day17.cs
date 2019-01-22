@@ -29,15 +29,15 @@ namespace AdventOfCode.Days
             return retLists;
         }
 
-        public override string GetSolutionPart1()
+        protected override object GetSolutionPart1()
         {
-            containers = inputLines.Select(i => i.ToInt()).ToList();
+            containers = InputLines.Select(i => i.ToInt()).ToList();
             
             var results = GetIndexCombinations(containers).Where(element => element.Sum() == 150).ToList();
             return results.Count.ToString();
         }
 
-        public override string GetSolutionPart2()
+        protected override object GetSolutionPart2()
         {
             var results = GetIndexCombinations(containers, true).Where(element => element.Sum() == 150).ToList();
 

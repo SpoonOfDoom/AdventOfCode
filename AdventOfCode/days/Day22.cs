@@ -351,11 +351,11 @@ namespace AdventOfCode.Days
         }
 
         
-        public override string GetSolutionPart1()
+        protected override object GetSolutionPart1()
         {
-            for (int i = 0; i < inputLines.Count; i++)
+            for (int i = 0; i < InputLines.Count; i++)
             {
-                string line = inputLines[i];
+                string line = InputLines[i];
                 int number = line.Split(new[]
                                     {
                                             ": "
@@ -381,7 +381,7 @@ namespace AdventOfCode.Days
             return result.ToString();
         }
 
-        public override string GetSolutionPart2()
+        protected override object GetSolutionPart2()
         {
             var boss = new Combatant { Hitpoints = BossStartHP, Mana = 0 };
             var player = new Combatant { Hitpoints = 50, Mana = 500 };

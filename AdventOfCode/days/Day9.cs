@@ -53,12 +53,12 @@ namespace AdventOfCode.Days
             
         }
 
-        public override string GetSolutionPart1()
+        protected override object GetSolutionPart1()
         {
             Regex regLine = new Regex(@"(\w+) to (\w+) = (\d+)");
             
 
-            foreach (string line in inputLines)
+            foreach (string line in InputLines)
             {
                 var groups = regLine.Match(line).Groups;
                 Route r = new Route
@@ -80,7 +80,7 @@ namespace AdventOfCode.Days
             return distances.Min().ToString();
         }
 
-        public override string GetSolutionPart2()
+        protected override object GetSolutionPart2()
         {
             List<int> distances = new List<int>();
             foreach (var start in cities)

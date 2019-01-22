@@ -68,9 +68,9 @@ namespace AdventOfCode.Days
             return false;
         }
 
-        public override string GetSolutionPart1()
+        protected override object GetSolutionPart1()
         {
-            string password = input;
+            string password = Input;
 
             while (!IsValidPassword(password))
             {
@@ -80,7 +80,7 @@ namespace AdventOfCode.Days
             return password;
         }
 
-        public override string GetSolutionPart2()
+        protected override object GetSolutionPart2()
         {
             string password = IteratePassword(result1);
 

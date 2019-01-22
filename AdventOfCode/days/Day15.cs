@@ -123,9 +123,9 @@ namespace AdventOfCode.Days
             return scores.Max();
         }
 
-        public override string GetSolutionPart1()
+        protected override object GetSolutionPart1()
         {
-            foreach (string line in inputLines)
+            foreach (string line in InputLines)
             {
                 ingredients.Add(ParseLine(line));
             }
@@ -136,7 +136,7 @@ namespace AdventOfCode.Days
             return score.ToString();
         }
 
-        public override string GetSolutionPart2()
+        protected override object GetSolutionPart2()
         {
             Cookie c = new Cookie();
 

@@ -1,5 +1,5 @@
-using System.Linq;
 using System.Text.RegularExpressions;
+using System.Linq;
 
 namespace AdventOfCode.Days
 {
@@ -45,15 +45,15 @@ namespace AdventOfCode.Days
             return regexBetween.IsMatch(myString) && regexPair.IsMatch(myString);
         }
 
-        public override string GetSolutionPart1()
+        protected override object GetSolutionPart1()
         {
-            int niceCount = inputLines.Count(x => IsNice(x));
+            int niceCount = InputLines.Count(x => IsNice(x));
             return niceCount.ToString();
         }
 
-        public override string GetSolutionPart2()
+        protected override object GetSolutionPart2()
         {
-            int niceCount = inputLines.Count(x => IsNice2(x));
+            int niceCount = InputLines.Count(x => IsNice2(x));
             return niceCount.ToString();
         }
     }

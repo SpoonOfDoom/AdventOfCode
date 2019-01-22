@@ -20,12 +20,12 @@ namespace AdventOfCode.Days
             text = text.Replace("\"", "\\\"");
             return text.Length + 2;
         }
-        public override string GetSolutionPart1()
+        protected override object GetSolutionPart1()
         {
             int sumChars = 0;
             int sumMemoryChars = 0;
 
-            foreach (string line in inputLines)
+            foreach (string line in InputLines)
             {
                 sumChars += line.Length;
                 sumMemoryChars += GetMemoryCharacters(line);
@@ -34,12 +34,12 @@ namespace AdventOfCode.Days
             return (sumChars - sumMemoryChars).ToString();
         }
 
-        public override string GetSolutionPart2()
+        protected override object GetSolutionPart2()
         {
             int sumChars = 0;
             int sumEncodedChars = 0;
 
-            foreach (string line in inputLines)
+            foreach (string line in InputLines)
             {
                 sumChars += line.Length;
                 sumEncodedChars += GetEncodedCharacters(line);

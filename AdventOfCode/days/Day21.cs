@@ -142,11 +142,11 @@ namespace AdventOfCode.Days
             return result;
         }
 
-        public override string GetSolutionPart1()
+        protected override object GetSolutionPart1()
         {
-            for (int i = 0; i < inputLines.Count; i++)
+            for (int i = 0; i < InputLines.Count; i++)
             {
-                string line = inputLines[i];
+                string line = InputLines[i];
                 int number = line.Split(new[] { ": " }, StringSplitOptions.None)[1].ToInt();
                 if (i == 0)
                 {
@@ -229,7 +229,7 @@ namespace AdventOfCode.Days
             return result.ToString(); //91
         }
 
-        public override string GetSolutionPart2()
+        protected override object GetSolutionPart2()
         {
             int result = losingCosts.Max();
             return result.ToString(); //158

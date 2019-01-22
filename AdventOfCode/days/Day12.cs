@@ -100,11 +100,11 @@ namespace AdventOfCode.Days
             return sum + ret;
         }
 
-        public override string GetSolutionPart1()
+        protected override object GetSolutionPart1()
         {
             Regex regNumbers = new Regex(@"(-?\d+)");
 
-            var matches = regNumbers.Matches(input);
+            var matches = regNumbers.Matches(Input);
             int sum = 0;
 
             foreach (Match match in matches)
@@ -115,9 +115,9 @@ namespace AdventOfCode.Days
             return sum.ToString();
         }
         
-        public override string GetSolutionPart2()
+        protected override object GetSolutionPart2()
         {
-            dynamic json = JsonConvert.DeserializeObject(input);
+            dynamic json = JsonConvert.DeserializeObject(Input);
             int sum = AddNumbers(0, json);
             return sum.ToString();
         }

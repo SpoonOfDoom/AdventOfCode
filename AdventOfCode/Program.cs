@@ -1,6 +1,4 @@
 ﻿using AdventOfCode.Days;
-using System;
-using System.Diagnostics;
 
 namespace AdventOfCode
 {

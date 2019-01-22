@@ -31,7 +31,7 @@ namespace AdventOfCode.Days
             int i = 0;
             while (!hash.StartsWith(hashStart))
             {
-                hash = GetHash(input + i);
+                hash = GetHash(Input + i);
                 if (hash.StartsWith(hashStart))
                 {
                     break;
@@ -41,12 +41,12 @@ namespace AdventOfCode.Days
 
             return i;
         }
-        public override string GetSolutionPart1()
+        protected override object GetSolutionPart1()
         {
             return GetNumberToMatch("00000").ToString();
         }
 
-        public override string GetSolutionPart2()
+        protected override object GetSolutionPart2()
         {
             return GetNumberToMatch("000000").ToString();
         }

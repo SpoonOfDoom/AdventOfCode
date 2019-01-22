@@ -88,9 +88,9 @@ namespace AdventOfCode.Days
             }
         }
 
-        public override string GetSolutionPart1()
+        protected override object GetSolutionPart1()
         {
-            foreach (string line in inputLines) //For easy access, first parse the instructions into input and output parts
+            foreach (string line in InputLines) //For easy access, first parse the instructions into input and output parts
             {
                 Regex regLine = new Regex(@"((\w|\d| )+) -> (\w+)");
                 var groups = regLine.Match(line).Groups;
@@ -104,7 +104,7 @@ namespace AdventOfCode.Days
             return solution.ToString();
         }
 
-        public override string GetSolutionPart2()
+        protected override object GetSolutionPart2()
         {
             instructions["b"] = instructionSolved["a"].ToString();
             instructionSolved.Clear();

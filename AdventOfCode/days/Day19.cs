@@ -40,7 +40,7 @@ namespace AdventOfCode.Days
 
         private void ParseLines()
         {
-            foreach (string line in inputLines)
+            foreach (string line in InputLines)
             {
                 if (line.Contains("=>"))
                 {
@@ -284,7 +284,7 @@ namespace AdventOfCode.Days
             return -1;
         }
 
-        public override string GetSolutionPart1()
+        protected override object GetSolutionPart1()
         {
             ParseLines();
             
@@ -295,7 +295,7 @@ namespace AdventOfCode.Days
             return possibleMolecules.Count.ToString();
         }
 
-        public override string GetSolutionPart2()
+        protected override object GetSolutionPart2()
         {
             medicineAtoms = GetAtoms(medicineMolecule);
             int result = GetRoute(medicineMolecule, "e");

@@ -6,15 +6,15 @@ namespace AdventOfCode.Days
     {
         public Day3() : base(3) { }
         
-        public override string GetSolutionPart1()
+        protected override object GetSolutionPart1()
         {
             HashSet<string> hashset = new HashSet<string>();
             int x = 0;
             int y = 0;
             hashset.Add(x + "/" + y);
-            for (int i = 0; i < input.Length; i++)
+            for (int i = 0; i < Input.Length; i++)
             {
-                switch (input[i])
+                switch (Input[i])
                 {
                     case '^':
                         y++;
@@ -35,7 +35,7 @@ namespace AdventOfCode.Days
             return hashset.Count.ToString();
         }
 
-        public override string GetSolutionPart2()
+        protected override object GetSolutionPart2()
         {
             HashSet<string> hashset = new HashSet<string>();
             int x1 = 0;
@@ -44,9 +44,9 @@ namespace AdventOfCode.Days
             int y2 = 0;
             hashset.Add(x1 + "/" + y1); //add starting location
             bool robo = false;
-            for (int i = 0; i < input.Length; i++)
+            for (int i = 0; i < Input.Length; i++)
             {
-                switch (input[i])
+                switch (Input[i])
                 {
                     case '^':
                         if (robo)

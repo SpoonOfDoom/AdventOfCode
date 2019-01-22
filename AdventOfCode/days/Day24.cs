@@ -1,9 +1,6 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using AdventOfCode.Extensions;
-using AdventOfCode2016.Tools;
 
 namespace AdventOfCode.Days
 {
@@ -81,9 +78,9 @@ namespace AdventOfCode.Days
             }
         }
         
-        public override string GetSolutionPart1()
+        protected override object GetSolutionPart1()
         {
-            allPresents.AddRange(inputLines.Select(line => line.ToInt()));
+            allPresents.AddRange(InputLines.Select(line => line.ToInt()));
             allPresents.Reverse();
             totalWeight = allPresents.Sum();
             HashSet<List<int>> possiblePresentBags = MakeTriplets(allPresents);
@@ -107,7 +104,7 @@ namespace AdventOfCode.Days
             return result.ToString(); //11266889531
         }
 
-        public override string GetSolutionPart2()
+        protected override object GetSolutionPart2()
         {
             HashSet<List<int>> possiblePresentBags = MakeTriplets(allPresents, 4);
 

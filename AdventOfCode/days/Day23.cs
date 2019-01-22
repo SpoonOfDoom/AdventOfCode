@@ -98,9 +98,9 @@ namespace AdventOfCode.Days
         }
 
 
-        public override string GetSolutionPart1()
+        protected override object GetSolutionPart1()
         {
-            foreach (string line in inputLines)
+            foreach (string line in InputLines)
             {
                 InstructionSet.Add(ParseLine(line));
             }
@@ -113,7 +113,7 @@ namespace AdventOfCode.Days
             return Registers["b"].ToString(); //255
         }
 
-        public override string GetSolutionPart2()
+        protected override object GetSolutionPart2()
         {
             Registers["a"] = 1;
             Registers["b"] = 0;

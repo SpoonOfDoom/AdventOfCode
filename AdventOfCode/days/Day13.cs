@@ -59,9 +59,9 @@ namespace AdventOfCode.Days
             
         }
         
-        public override string GetSolutionPart1()
+        protected override object GetSolutionPart1()
         {
-            foreach (string line in inputLines)
+            foreach (string line in InputLines)
             {
                 ParseLine(neighbourStats, guests, line);
             }
@@ -76,7 +76,7 @@ namespace AdventOfCode.Days
             return results.Max().ToString();
         }
 
-        public override string GetSolutionPart2()
+        protected override object GetSolutionPart2()
         {
             foreach (string guest in guests)
             {

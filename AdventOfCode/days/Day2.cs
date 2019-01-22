@@ -30,20 +30,20 @@ namespace AdventOfCode.Days
             return 2 * smallest[0] + 2 * smallest[1] + dim[0] * dim[1] * dim[2];
         }
 
-        public override string GetSolutionPart1()
+        protected override object GetSolutionPart1()
         {
             int sum = 0;
-            foreach (string line in inputLines)
+            foreach (string line in InputLines)
             {
                 sum += getSurface(line);
             }
             return sum.ToString();
         }
 
-        public override string GetSolutionPart2()
+        protected override object GetSolutionPart2()
         {
             int sum = 0;
-            foreach (string line in inputLines)
+            foreach (string line in InputLines)
             {
                 sum += getRibbon(line);
             }

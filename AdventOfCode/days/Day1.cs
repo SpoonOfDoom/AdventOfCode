@@ -6,23 +6,23 @@ namespace AdventOfCode.Days
     {
         public Day1() : base(1) { }
 
-        public override string GetSolutionPart1()
+        protected override object GetSolutionPart1()
         {
             int floor = 0;
 
-            floor += input.Count(c => c == '(');
-            floor -= input.Count(c => c == ')');
+            floor += Input.Count(c => c == '(');
+            floor -= Input.Count(c => c == ')');
 
             return floor.ToString();
         }
 
-        public override string GetSolutionPart2()
+        protected override object GetSolutionPart2()
         {
             int floor = 0;
             int i;
-            for (i = 0; i < input.Length; i++)
+            for (i = 0; i < Input.Length; i++)
             {
-                if (input[i] == '(')
+                if (Input[i] == '(')
                 {
                     floor++;
                 }

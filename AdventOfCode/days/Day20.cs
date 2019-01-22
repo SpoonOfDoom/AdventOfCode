@@ -464,14 +464,14 @@ namespace AdventOfCode.Days
             return lowestFound;
         }
         
-        public override string GetSolutionPart1()
+        protected override object GetSolutionPart1()
         {
 	        //return "Skipping this - solution was: 831600";
 			long result = DoIt();
 			return result.ToString(); //831600
         }
 
-        public override string GetSolutionPart2()
+        protected override object GetSolutionPart2()
         {
 	        int result = DoItAgain();
             return result.ToString();

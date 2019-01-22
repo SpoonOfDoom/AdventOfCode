@@ -1,4 +1,3 @@
-using System;
 using AdventOfCode.Extensions;
 
 namespace AdventOfCode.Days
@@ -41,17 +40,17 @@ namespace AdventOfCode.Days
             return code;
         }
 
-        public override string GetSolutionPart1()
+        protected override object GetSolutionPart1()
         {
-            targetRow = input.Split(',')[0].ToInt();
-            targetColumn = input.Split(',')[1].ToInt();
+            targetRow = Input.Split(',')[0].ToInt();
+            targetColumn = Input.Split(',')[1].ToInt();
             
             long code = GetCodeFor(targetRow, targetColumn);
             
             return code.ToString(); //19980801
         }
         
-        public override string GetSolutionPart2()
+        protected override object GetSolutionPart2()
         {
             return "Hooray!";
         }

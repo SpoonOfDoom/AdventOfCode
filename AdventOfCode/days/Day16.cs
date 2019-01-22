@@ -94,9 +94,9 @@ namespace AdventOfCode.Days
             
             return s;
         }
-        public override string GetSolutionPart1()
+        protected override object GetSolutionPart1()
         {
-            foreach (var line in inputLines)
+            foreach (var line in InputLines)
             {
                 var sue = ParseLine(line);
                 Candidates.Add(sue);
@@ -107,7 +107,7 @@ namespace AdventOfCode.Days
             return validCandidates.Select(s => s.Id).Single().ToString();
         }
 
-        public override string GetSolutionPart2()
+        protected override object GetSolutionPart2()
         {
             var validCandidates = Candidates.Where(c => c.IsValidCandidate2()).ToList();
             //todo: find out why there are two candidates

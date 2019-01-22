@@ -37,9 +37,9 @@ namespace AdventOfCode.Days
             return sb.ToString();
         }
         
-        public override string GetSolutionPart1()
+        protected override object GetSolutionPart1()
         {
-            string result = input;
+            string result = Input;
             for (int i = 0; i < 40; i++)
             {
                 result = getNewSequence(result);
@@ -47,9 +47,9 @@ namespace AdventOfCode.Days
             return result.Length.ToString();
         }
 
-        public override string GetSolutionPart2()
+        protected override object GetSolutionPart2()
         {
-            string result = input;
+            string result = Input;
             for (int i = 0; i < 50; i++)
             {
                 result = getNewSequence(result);

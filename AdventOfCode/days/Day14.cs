@@ -96,9 +96,9 @@ namespace AdventOfCode.Days
             }
         }
 
-        public override string GetSolutionPart1()
+        protected override object GetSolutionPart1()
         {
-            foreach (string line in inputLines)
+            foreach (string line in InputLines)
             {
                 reindeers.Add(ParseLine(line));
             }
@@ -108,7 +108,7 @@ namespace AdventOfCode.Days
             return biggestDistance.ToString();
         }
 
-        public override string GetSolutionPart2()
+        protected override object GetSolutionPart2()
         {
             for (int i = 0; i < raceTime; i++)
             {

@@ -4,7 +4,7 @@
 
 using System;
 
-namespace AdventOfCode2017.Tools
+namespace AdventOfCode.Tools
 {
     public static class TailRecursion
     {
