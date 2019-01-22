@@ -6,9 +6,9 @@ using AdventOfCode.Extensions;
 namespace AdventOfCode.Days
 {
     // ReSharper disable once UnusedMember.Global
-    public class Day6 : Day
+    public class Day06 : Day
     {
-        public Day6() : base(6) { }
+        public Day06() : base(6) { }
 
         private bool[,] lightsBool = new bool[1000, 1000];
         private int[,] lightsInt = new int[1000, 1000];

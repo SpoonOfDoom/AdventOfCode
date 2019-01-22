@@ -5,9 +5,9 @@ using AdventOfCode.Extensions;
 namespace AdventOfCode.Days
 {
     // ReSharper disable once UnusedMember.Global
-    public class Day7 : Day
+    public class Day07 : Day
     {
-        public Day7() : base(7) { }
+        public Day07() : base(7) { }
 
         private Dictionary<string, string> instructions = new Dictionary<string, string>();
         private Dictionary<string, int> instructionSolved = new Dictionary<string, int>();

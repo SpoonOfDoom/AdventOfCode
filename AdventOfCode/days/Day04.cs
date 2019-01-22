@@ -3,9 +3,9 @@ using System.Text;
 namespace AdventOfCode.Days
 {
     // ReSharper disable once UnusedMember.Global
-    public class Day4 : Day
+    public class Day04 : Day
     {
-        public Day4() : base(4) { }
+        public Day04() : base(4) { }
         
         static System.Security.Cryptography.MD5 md5 = System.Security.Cryptography.MD5.Create();
         static StringBuilder sb = new StringBuilder();

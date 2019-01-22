@@ -6,9 +6,9 @@ using AdventOfCode.Extensions;
 namespace AdventOfCode.Days
 {
     // ReSharper disable once UnusedMember.Global
-    public class Day9 : Day
+    public class Day09 : Day
     {
-        public Day9() : base(9) { }
+        public Day09() : base(9) { }
 
         struct Route
         {

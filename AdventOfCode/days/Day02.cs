@@ -5,9 +5,9 @@ using AdventOfCode.Extensions;
 namespace AdventOfCode.Days
 {
     // ReSharper disable once UnusedMember.Global
-    public class Day2 : Day
+    public class Day02 : Day
     {
-        public Day2() : base(2) { }
+        public Day02() : base(2) { }
 
         private int getSurface(string dimensions)
         {

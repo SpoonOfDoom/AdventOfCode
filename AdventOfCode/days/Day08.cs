@@ -3,9 +3,9 @@ using System.Text.RegularExpressions;
 namespace AdventOfCode.Days
 {
     // ReSharper disable once UnusedMember.Global
-    public class Day8 : Day
+    public class Day08 : Day
     {
-        public Day8() : base(8) { }
+        public Day08() : base(8) { }
 
         private static int GetMemoryCharacters(string text)
         {

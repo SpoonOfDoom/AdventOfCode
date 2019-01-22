@@ -4,9 +4,9 @@ using System.Linq;
 namespace AdventOfCode.Days
 {
     // ReSharper disable once UnusedMember.Global
-    public class Day5 : Day
+    public class Day05 : Day
     {
-        public Day5() : base(5) { }
+        public Day05() : base(5) { }
         
         private static bool IsNice(string myString)
         {

@@ -3,9 +3,9 @@ using System.Linq;
 namespace AdventOfCode.Days
 {
     // ReSharper disable once UnusedMember.Global
-    public class Day1 : Day
+    public class Day01 : Day
     {
-        public Day1() : base(1) { }
+        public Day01() : base(1) { }
 
         protected override object GetSolutionPart1()
         {
