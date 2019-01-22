@@ -2,6 +2,7 @@ using System.Text;
 
 namespace AdventOfCode.Days
 {
+    // ReSharper disable once UnusedMember.Global
     public class Day4 : Day
     {
         public Day4() : base(4) { }

@@ -61,6 +61,7 @@ namespace AdventOfCode.Days
         }
     }
 
+    // ReSharper disable once UnusedMember.Global
     public class Day15 : Day
     {
         public Day15() : base(15) { }

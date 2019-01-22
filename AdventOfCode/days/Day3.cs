@@ -2,6 +2,7 @@ using System.Collections.Generic;
 
 namespace AdventOfCode.Days
 {
+    // ReSharper disable once UnusedMember.Global
     public class Day3 : Day
     {
         public Day3() : base(3) { }

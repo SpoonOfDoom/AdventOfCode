@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace AdventOfCode.Days
 {
+	// ReSharper disable once UnusedMember.Global
     public class Day20 : Day
     {
         public Day20() : base(20) { }

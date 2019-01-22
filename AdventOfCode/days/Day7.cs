@@ -4,6 +4,7 @@ using AdventOfCode.Extensions;
 
 namespace AdventOfCode.Days
 {
+    // ReSharper disable once UnusedMember.Global
     public class Day7 : Day
     {
         public Day7() : base(7) { }

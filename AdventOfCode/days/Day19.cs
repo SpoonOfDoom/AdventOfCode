@@ -10,6 +10,7 @@ using Priority_Queue;
 
 namespace AdventOfCode.Days
 {
+    // ReSharper disable once UnusedMember.Global
     public class Day19 : Day
     {
         private class MyNode

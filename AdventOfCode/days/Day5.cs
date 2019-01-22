@@ -3,6 +3,7 @@ using System.Linq;
 
 namespace AdventOfCode.Days
 {
+    // ReSharper disable once UnusedMember.Global
     public class Day5 : Day
     {
         public Day5() : base(5) { }

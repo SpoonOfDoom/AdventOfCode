@@ -5,6 +5,7 @@ using Newtonsoft.Json.Linq;
 
 namespace AdventOfCode.Days
 {
+    // ReSharper disable once UnusedMember.Global
     public class Day12 : Day
     {
         public Day12() : base(12) { }

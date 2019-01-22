@@ -2,6 +2,7 @@ using System.Text.RegularExpressions;
 
 namespace AdventOfCode.Days
 {
+    // ReSharper disable once UnusedMember.Global
     public class Day8 : Day
     {
         public Day8() : base(8) { }
