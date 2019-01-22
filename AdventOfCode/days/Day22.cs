@@ -6,6 +6,10 @@ using AdventOfCode.Tools;
 
 namespace AdventOfCode.Days
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    // ReSharper disable once UnusedMember.Global
     public class Day22 : Day
     {
         public Day22() : base(22) { }
@@ -27,7 +31,8 @@ namespace AdventOfCode.Days
                                                         {Spell.Poison, 3},
                                                         {Spell.Recharge, 101}
                                                     };
-        static int BossStartHP, BossDamage;
+
+        private static int bossStartHP, bossDamage;
 
         enum Spell
         {
@@ -93,11 +98,6 @@ namespace AdventOfCode.Days
                 return $"{EffectType}P{Power}T{TurnsLeft}";
             }
 
-            public bool Equals(Effect otherEffect)
-            {
-                return EffectType == otherEffect.EffectType && TurnsLeft == otherEffect.TurnsLeft;
-            }
-            
             public int CompareTo(Effect other)
             {
                 if (EffectType == other.EffectType && Power == other.Power && TurnsLeft == other.TurnsLeft)
@@ -106,17 +106,21 @@ namespace AdventOfCode.Days
                 }
                 return -EffectType.CompareTo(other.EffectType);
             }
+
+            public string GetHash()
+            {
+                return $"{EffectType}_{TurnsLeft}";
+            }
         }
 
-        class Combatant
+        private class Combatant
         {
             public int Hitpoints = 50;
             public int Mana = 500;
 
-            public bool Equals(Combatant otherCombatant)
+            public string GetHash()
             {
-                bool equals = Hitpoints == otherCombatant.Hitpoints && Mana == otherCombatant.Mana;
-                return equals;
+                return $"{Hitpoints}_{Mana}";
             }
         }
 
@@ -132,7 +136,7 @@ namespace AdventOfCode.Days
 
             public List<object> Actions { get; set; }
 
-            public string ActiveSpellsToString
+            private string ActiveSpellsToString
             {
                 get
                 {
@@ -146,15 +150,26 @@ namespace AdventOfCode.Days
                 }
             }
 
-            public string VerboseInfo
+            public string VerboseInfo 
+                => $"Boss HP: {Boss.Hitpoints}\nPlayer HP: {Player.Hitpoints}\nPlayer Mana: {Player.Mana}\nActive Effects: {ActiveEffects.Count}\nTurn: {Turn.ToString("D3")}\n{ActiveSpellsToString}";
+
+            public string StringHash
             {
                 get
                 {
-                    return $"Boss HP: {Boss.Hitpoints}\nPlayer HP: {Player.Hitpoints}\nPlayer Mana: {Player.Mana}\nActive Effects: {ActiveEffects.Count}\nTurn: {Turn.ToString("D3")}\n{ActiveSpellsToString}";
+                    if (stringHash is null)
+                    {
+                        CreateHash();
+                    }
+
+                    return stringHash;
                 }
-                set { throw new NotImplementedException(); } }
+            }
+
+            public long NumericHash { get; }
 
             public bool Hardmode = false;
+            private string stringHash;
 
             public GameState Clone()
             {
@@ -171,13 +186,13 @@ namespace AdventOfCode.Days
                     Spell s = (Spell) action;
                     actions.Add(s);
                 }
-                int cost = this.Cost;
+                int cost = Cost;
 
-                var clonedState = new GameState {Player = player, Boss = boss, ActiveEffects = activeEffects, Turn = Turn, Cost = cost, Actions = actions, Hardmode = this.Hardmode};
+                var clonedState = new GameState {Player = player, Boss = boss, ActiveEffects = activeEffects, Turn = Turn, Cost = cost, Actions = actions, Hardmode = Hardmode};
                 return clonedState;
             }
 
-            public bool CastSpell(Spell spellType)
+            private bool CastSpell(Spell spellType)
             {
                 if (ActiveEffects.Any(effect => effect.EffectType == spellType))
                 {
@@ -213,11 +228,11 @@ namespace AdventOfCode.Days
                 return true;
             }
 
-            public void BossPunch()
+            private void BossPunch()
             {
                 var shieldEffect = ActiveEffects.Where(effect => effect.EffectType == Spell.Shield);
-                int damage = BossDamage;
-                if (shieldEffect.Any())
+                int damage = bossDamage;
+                if (shieldEffect.Any()) //todo: why is this not just a count check?
                 {
                     damage = Math.Max(1, damage - shieldEffect.First().Power);
                 }
@@ -236,7 +251,7 @@ namespace AdventOfCode.Days
                         continue;
                     }
                     
-                    GameState newState = this.Clone();
+                    GameState newState = Clone();
                     newState.Turn++;
                     if (!newState.CastSpell(keyValuePair.Key))
                     {
@@ -270,41 +285,20 @@ namespace AdventOfCode.Days
                     }
                     newState.ActiveEffects.RemoveAll(spell => spell.TurnsLeft <= 0);
 
-                    actions.Add(new ExpandAction { action = keyValuePair.Key, cost = keyValuePair.Value, result = newState });
+                    actions.Add(new ExpandAction { Action = keyValuePair.Key, Cost = keyValuePair.Value, Result = newState });
                 }
                 return actions;
             }
 
-            private bool ActiveEffectsEqual(GameState otherState)
+            private string GetActiveEffectsHash()
             {
-
-                if (ActiveEffects.Count != otherState.ActiveEffects.Count)
-                {
-                    return false;
-                }
-                if (ActiveEffects.Count == 0)
-                {
-                    return true;
-                }
-                for (int i = 0; i < ActiveEffects.Count; i++)
-                {
-                    Effect effect = ActiveEffects[i];
-                    if (!effect.Equals(otherState.ActiveEffects[i]))
-                    {
-                        return false;
-                    }
-                }
-
-                return true;
+                return string.Join("_", ActiveEffects.Select(e => e.GetHash()));
             }
 
             public bool Equals(ISearchNode otherState)
             {
                 var state = otherState as GameState;
-                //return VerboseInfo == state.VerboseInfo;
-                bool equals = (state.Player.Equals(Player) && state.Boss.Equals(Boss)
-                                && ActiveEffectsEqual(state));
-                return equals;
+                return state.StringHash == stringHash;
             }
 
             public float GetHeuristic(ISearchNode goalState)
@@ -316,7 +310,7 @@ namespace AdventOfCode.Days
                 }
                 float maxPossibleDamage = 3 + 6.33333333333f; //average cost per round: 73
                 float priority = 0; //the cheapest spell we have costs 53, so that's the minimum cost
-                //int bossHpScore = (int) Math.Pow(Boss.Hitpoints * 10, 2); //high boss HP is our main criteria, and should also be bigger than the sum of the other positive aspects we substract later
+                //int bossHpScore = (int) Math.Pow(Boss.Hitpoints * 10, 2); //high boss HP is our main criteria, and should also be bigger than the sum of the other positive aspects we subtract later
                 float bossHpScore = (Boss.Hitpoints / maxPossibleDamage) * 53 ; //maximum amount of damage times cost of cheapest spell
                 float playerHpScore = Player.Hitpoints; //A player with little HP is less likely to survive until the boss drops
                 float activeEffectsScore = ActiveEffects.Count; //Effects are all good for the player, so we give a good bonus for every one that's active
@@ -327,30 +321,26 @@ namespace AdventOfCode.Days
                 priority -= activeEffectsScore;
                 priority -= playerManaScore;
 
-
-
                 //priority = Math.Max(53, priority); //Going below 1 might eff up everything
 
+                //jesus christ, Past!Chris, this doesn't look admissible at all, or even like a proper heuristic. But I guess it works in this case...
+                //todo: find proper heuristic maybe?
                 return priority;
             }
 
-            public float GetTentativeCost(ISearchNode goalState)
+            public void CreateHash()
             {
-                return Cost + GetHeuristic(goalState);
+                stringHash = $"{Player.GetHash()}_{Boss.GetHash()}_{GetActiveEffectsHash()}";
             }
 
-            public bool IsGoalState(ISearchNode goalState)
+            public bool IsGoalState(ISearchNode otherState = null)
             {
-                var state = goalState as GameState;
-                if (state.Boss.Hitpoints <= 0)
-                {
-                    Console.WriteLine("STOP!");
-                }
-                return state.Player.Hitpoints > 0 && state.Boss.Hitpoints <= 0;
+                return Player.Hitpoints > 0 && Boss.Hitpoints <= 0;
             }
         }
 
-        
+
+        /// <inheritdoc />
         protected override object GetSolutionPart1()
         {
             for (int i = 0; i < InputLines.Count; i++)
@@ -363,33 +353,32 @@ namespace AdventOfCode.Days
                                     StringSplitOptions.None)[1].ToInt();
                 if (i == 0)
                 {
-                    BossStartHP = number;
+                    bossStartHP = number;
                 }
                 if (i == 1)
                 {
-                    BossDamage = number;
+                    bossDamage = number;
                 }
             }
             
-            var boss = new Combatant {Hitpoints = BossStartHP, Mana = 0};
+            var boss = new Combatant {Hitpoints = bossStartHP, Mana = 0};
             var player = new Combatant {Hitpoints = 50, Mana = 500};
 
             var startState = new GameState {Boss = boss, Player = player, ActiveEffects = new List<Effect>(), Cost = 0, Turn = 0, Actions = new List<object>()};
-            var goalState = new GameState {Boss = new Combatant {Hitpoints = 0} };
 
-            var result = new AStar().GetMinimumCost(startState, goalState); //1824
+            var result = new AStar().GetMinimumCost(startState); //1824
             return result.ToString();
         }
 
+        /// <inheritdoc />
         protected override object GetSolutionPart2()
         {
-            var boss = new Combatant { Hitpoints = BossStartHP, Mana = 0 };
+            var boss = new Combatant { Hitpoints = bossStartHP, Mana = 0 };
             var player = new Combatant { Hitpoints = 50, Mana = 500 };
 
             var startState = new GameState { Boss = boss, Player = player, ActiveEffects = new List<Effect>(), Cost = 0, Turn = 0, Actions = new List<object>(), Hardmode = true };
-            var goalState = new GameState { Boss = new Combatant { Hitpoints = 0 } };
 
-            var result = new AStar().GetMinimumCost(startState, goalState); //1937
+            var result = new AStar().GetMinimumCost(startState); //1937
             return result.ToString();
         }
     }
