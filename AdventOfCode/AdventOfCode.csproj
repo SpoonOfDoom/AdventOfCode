@@ -77,12 +77,49 @@
     <Compile Include="Days\2015\Day23.cs" />
     <Compile Include="Days\2015\Day24.cs" />
     <Compile Include="Days\2015\Day25.cs" />
+    <Compile Include="Days\2016\Day01.cs" />
+    <Compile Include="Days\2016\Day02.cs" />
+    <Compile Include="Days\2016\Day03.cs" />
+    <Compile Include="Days\2016\Day04.cs" />
+    <Compile Include="Days\2016\Day05.cs" />
+    <Compile Include="Days\2016\Day06.cs" />
+    <Compile Include="Days\2016\Day07.cs" />
+    <Compile Include="Days\2016\Day08.cs" />
+    <Compile Include="Days\2016\Day09.cs" />
+    <Compile Include="Days\2016\Day10.cs" />
+    <Compile Include="Days\2016\Day11.cs" />
+    <Compile Include="Days\2016\Day12.cs" />
+    <Compile Include="Days\2016\Day13.cs" />
+    <Compile Include="Days\2016\Day14.cs" />
+    <Compile Include="Days\2016\Day15.cs" />
+    <Compile Include="Days\2016\Day16.cs" />
+    <Compile Include="Days\2016\Day17.cs" />
+    <Compile Include="Days\2016\Day18.cs" />
+    <Compile Include="Days\2016\Day19.cs" />
+    <Compile Include="Days\2016\Day20.cs" />
+    <Compile Include="Days\2016\Day21.cs" />
+    <Compile Include="Days\2016\Day22.cs" />
+    <Compile Include="Days\2016\Day23.cs" />
+    <Compile Include="Days\2016\Day24.cs" />
+    <Compile Include="Days\2016\Day25.cs" />
+    <Compile Include="Days\2017\Day01.cs" />
+    <Compile Include="Days\2017\Day02.cs" />
+    <Compile Include="Days\2017\Day03.cs" />
+    <Compile Include="Days\2017\Day04.cs" />
+    <Compile Include="Days\2017\Day05.cs" />
+    <Compile Include="Days\2017\Day06.cs" />
     <Compile Include="Days\Day.cs" />
+    <Compile Include="Extensions\CharExtensions.cs" />
     <Compile Include="Extensions\EnumerableExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
+    <Compile Include="Extensions\TupleExtensions.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tools\AStar.cs" />
+    <Compile Include="Tools\FrequentlyUsedEnums\DirectionMethods.cs" />
+    <Compile Include="Tools\TailRecursion.cs" />
+    <Compile Include="Tools\Toolbox.cs" />
+    <Compile Include="Tools\Trampoline.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
@@ -166,13 +203,40 @@
     <Content Include="Input\2015\day25.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Input\2016\day01.txt" />
+    <Content Include="Input\2016\day10.txt" />
+    <Content Include="Input\2016\day11.txt" />
+    <Content Include="Input\2016\day12.txt" />
+    <Content Include="Input\2016\day13.txt" />
+    <Content Include="Input\2016\day14.txt" />
+    <Content Include="Input\2016\day15.txt" />
+    <Content Include="Input\2016\day16.txt" />
+    <Content Include="Input\2016\day17.txt" />
+    <Content Include="Input\2016\day18.txt" />
+    <Content Include="Input\2016\day19.txt" />
+    <Content Include="Input\2016\day02.txt" />
+    <Content Include="Input\2016\day20.txt" />
+    <Content Include="Input\2016\day21.txt" />
+    <Content Include="Input\2016\day22.txt" />
+    <Content Include="Input\2016\day23.txt" />
+    <Content Include="Input\2016\day24.txt" />
+    <Content Include="Input\2016\day25.txt" />
+    <Content Include="Input\2016\day03.txt" />
+    <Content Include="Input\2016\day04.txt" />
+    <Content Include="Input\2016\day05.txt" />
+    <Content Include="Input\2016\day06.txt" />
+    <Content Include="Input\2016\day07.txt" />
+    <Content Include="Input\2016\day08.txt" />
+    <Content Include="Input\2016\day09.txt" />
+    <Content Include="Input\2017\day01.txt" />
+    <Content Include="Input\2017\day02.txt" />
+    <Content Include="Input\2017\day03.txt" />
+    <Content Include="Input\2017\day04.txt" />
+    <Content Include="Input\2017\day05.txt" />
+    <Content Include="Input\2017\day06.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Days\2016" />
-    <Folder Include="Days\2017" />
     <Folder Include="Days\2018" />
-    <Folder Include="Input\2016" />
-    <Folder Include="Input\2017" />
     <Folder Include="Input\2018" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
