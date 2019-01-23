@@ -137,7 +137,6 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Days2" />
     <Folder Include="Days\2018" />
     <Folder Include="Input\2018" />
   </ItemGroup>
