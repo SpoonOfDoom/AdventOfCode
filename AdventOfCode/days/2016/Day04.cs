@@ -7,7 +7,7 @@ using AdventOfCode.Extensions;
 namespace AdventOfCode.Days._2016
 {
     // ReSharper disable once UnusedMember.Global
-    class Day4 : Day
+    class Day04 : Day
 	{
 		private class Room
 		{
@@ -74,7 +74,7 @@ namespace AdventOfCode.Days._2016
 				return CreateChecksum() == Checksum;
 			}
 		}
-		public Day4() : base(2016, 4) {}
+		public Day04() : base(2016, 4) {}
 
 		private Regex regex = new Regex(@"(.+)-(\d+)\[(\w+)\]");
 		private List<Room> rooms = new List<Room>();

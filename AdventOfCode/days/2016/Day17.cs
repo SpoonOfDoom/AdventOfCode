@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using AdventOfCode.Tools;
+using Org.BouncyCastle.Crypto.Digests;
 
 namespace AdventOfCode.Days._2016
 {

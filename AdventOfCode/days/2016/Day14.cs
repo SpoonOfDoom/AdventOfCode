@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
 using AdventOfCode.Tools;
+using Org.BouncyCastle.Crypto.Digests;
 
 namespace AdventOfCode.Days._2016
 {

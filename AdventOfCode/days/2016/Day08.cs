@@ -5,9 +5,9 @@ using AdventOfCode.Extensions;
 namespace AdventOfCode.Days._2016
 {
     // ReSharper disable once UnusedMember.Global
-    class Day8 : Day
+    class Day08 : Day
     {
-        public Day8() : base(2016, 8) {}
+        public Day08() : base(2016, 8) {}
 
         private enum CommandType
         {

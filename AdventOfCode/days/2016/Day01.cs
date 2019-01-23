@@ -6,9 +6,9 @@ using AdventOfCode.Extensions;
 namespace AdventOfCode.Days._2016
 {
     // ReSharper disable once UnusedMember.Global
-    class Day1 : Day
+    class Day01 : Day
 	{
-		public Day1() : base(2016, 1) {}
+		public Day01() : base(2016, 1) {}
 		private List<MoveCommand> commandList = new List<MoveCommand>();
 		private HashSet<string> visitedLocations = new HashSet<string>();
 		

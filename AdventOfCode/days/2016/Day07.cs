@@ -5,9 +5,9 @@ using System.Text.RegularExpressions;
 namespace AdventOfCode.Days._2016
 {
     // ReSharper disable once UnusedMember.Global
-    class Day7 : Day
+    class Day07 : Day
     {
-        public Day7() : base(2016, 7) {}
+        public Day07() : base(2016, 7) {}
         Regex regexAbbaInBrackets = new Regex(@"\[\w*((\w)(\w)\3\2)\w*\]");
         Regex regexAbba = new Regex(@"\w*((\w)(\w)\3\2)\w*");
         Regex stuffInBrackets = new Regex(@"\[(\w+)\]");

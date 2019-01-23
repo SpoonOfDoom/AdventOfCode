@@ -3,9 +3,9 @@
 namespace AdventOfCode.Days._2016
 {
     // ReSharper disable once UnusedMember.Global
-    class Day6 : Day
+    class Day06 : Day
     {
-        public Day6() : base(2016, 6) {}
+        public Day06() : base(2016, 6) {}
         
         private Dictionary<int, Dictionary<char, int>> letterCount = new Dictionary<int, Dictionary<char, int>>();
         private int messageLength;

@@ -8,9 +8,9 @@ using AdventOfCode.Tools;
 namespace AdventOfCode.Days._2016
 {
     // ReSharper disable once UnusedMember.Global
-    class Day9 : Day
+    class Day09 : Day
     {
-        public Day9() : base(2016, 9) {}
+        public Day09() : base(2016, 9) {}
         private readonly Regex regex = new Regex(@"(\(\d+x\d+\))");
 
         private class Marker

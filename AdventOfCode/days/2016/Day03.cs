@@ -6,7 +6,7 @@ using AdventOfCode.Extensions;
 namespace AdventOfCode.Days._2016
 {
     // ReSharper disable once UnusedMember.Global
-    class Day3 : Day
+    class Day03 : Day
 	{
 		private class Triangle
 		{
@@ -36,7 +36,7 @@ namespace AdventOfCode.Days._2016
 										&& SideA + SideC > SideB
 										&& SideB + SideC > SideA;
 		}
-		public Day3() : base(2016, 3) {}
+		public Day03() : base(2016, 3) {}
 		
 		private static List<Triangle> Triangles = new List<Triangle>();
 

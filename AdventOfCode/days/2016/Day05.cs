@@ -7,9 +7,9 @@ using AdventOfCode.Extensions;
 namespace AdventOfCode.Days._2016
 {
     // ReSharper disable once UnusedMember.Global
-    class Day5 : Day
+    class Day05 : Day
 	{
-		public Day5() : base(2016, 5) {}
+		public Day05() : base(2016, 5) {}
 
 		private static readonly Random Rand = new Random();
 		private const string Characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_/*\\+-|?^°!\"§$%&()=~";

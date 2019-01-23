@@ -4,9 +4,9 @@ using System.Collections.Generic;
 namespace AdventOfCode.Days._2016
 {
     // ReSharper disable once UnusedMember.Global
-    class Day2 : Day
+    class Day02 : Day
     {
-        public Day2() : base(2016, 2) {}
+        public Day02() : base(2016, 2) {}
         private Dictionary<string, int> CoordinateKeys = new Dictionary<string, int>
         {
             ["0-0"] = 1,

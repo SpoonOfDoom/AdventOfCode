@@ -6,7 +6,7 @@ namespace AdventOfCode
     {
         static void Main()
         {
-            Day.RunAllDays(2015);
+            Day.RunAllDays(2017);
         }
     }
 }
