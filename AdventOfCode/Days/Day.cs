@@ -24,7 +24,7 @@ namespace AdventOfCode.Days
         private readonly int year;
         private readonly int number;
 
-        private static Dictionary<int, List<Dictionary<string, TimeSpan>>> solutionTimes = new Dictionary<int, List<Dictionary<string, TimeSpan>>>();
+        private static Dictionary<string, List<Dictionary<string, TimeSpan>>> solutionTimes = new Dictionary<string, List<Dictionary<string, TimeSpan>>>();
 
         private object SolutionPart1
         {
@@ -82,21 +82,38 @@ namespace AdventOfCode.Days
         }
 
         // ReSharper disable once UnusedMember.Global
-        public static void RunAllDays(int year, bool verbose = true)
+        public static void RunAllDays(bool verbose = true)
         {
             var sw = new Stopwatch();
             sw.Start();
-            for (int i = 1; i <= 25; i++)
+            for (int y = 2015; y <= 2018; y++) //todo: get existing years and days programatically
+            {
+                RunDaysOfYear(y, verbose: verbose, writeTimesOnFinish: false);
+            }
+            sw.Stop();
+
+            WriteTimesToFile();
+            Console.WriteLine($"Overall total time taken: {sw.Elapsed.Hours}:{sw.Elapsed.Minutes}:{sw.Elapsed.Seconds}:{sw.Elapsed.Milliseconds}");
+            Console.ReadLine();
+        }
+
+        public static void RunDaysOfYear(int year, bool verbose = true, bool writeTimesOnFinish = true)
+        {
+            var sw = new Stopwatch();
+            sw.Start();
+            for (int i = 1; i <= 25; i++) //todo: get existing years and days programatically
             {
                 RunDay(year, i, batch: true, verbose: verbose);
             }
             sw.Stop();
 
-            WriteTimesToFile();
-            Console.WriteLine($"Total time taken: {sw.Elapsed.Hours}:{sw.Elapsed.Minutes}:{sw.Elapsed.Seconds}:{sw.Elapsed.Milliseconds}");
+            if (writeTimesOnFinish)
+            {
+                WriteTimesToFile();
+            }
+            Console.WriteLine($"Year {year} total time taken: {sw.Elapsed.Hours}:{sw.Elapsed.Minutes}:{sw.Elapsed.Seconds}:{sw.Elapsed.Milliseconds}");
             Console.ReadLine();
         }
-        
         
 
         private static void WriteTimesToFile(string filename = "solutionTimes")
@@ -107,16 +124,18 @@ namespace AdventOfCode.Days
             }
             if (filename == "solutionTimes")
             {
-                filename += DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss") + ".csv";
+                filename += $"{DateTime.Now:yyyy-MM-dd_HH-mm-ss}.csv";
             }
-            string filePath = TimeExportFolder + "\\" + filename;
-            string fileContent = "Machine Name;Build Configuration;Day Number;Part 1;Part 2;Total\n";
+            string filePath = $"{TimeExportFolder}\\{filename}";
+            string fileContent = "Machine Name;Build Configuration;Year;Day Number;Part 1;Part 2;Total\n";
 
 
-            foreach (KeyValuePair<int, List<Dictionary<string, TimeSpan>>> solutionTime in solutionTimes)
+            foreach (KeyValuePair<string, List<Dictionary<string, TimeSpan>>> solutionTime in solutionTimes)
             {
                 foreach (Dictionary<string, TimeSpan> uniqueRun in solutionTime.Value)
                 {
+                    //not very pretty, but solutionTime.Key is a string of format {year};{day}, so there's one more semicolon here than we can see. Was the easiest day to adjust for multiple years.
+                    //todo: make this less hacky.
                     fileContent += $"{Environment.MachineName};{Configuration};{solutionTime.Key};{uniqueRun["Part1"]};{uniqueRun["Part2"]};{uniqueRun["Total"]}\n";
                 }
             }
@@ -129,14 +148,14 @@ namespace AdventOfCode.Days
             {
                 Directory.CreateDirectory(TimeExportFolder);
             }
-            string filename = "day_" + number.ToString("00") + ".log";
+            string filename = $"year_{year}_day_{number:00}.log";
 
-            string filePath = TimeExportFolder + "\\" + filename;
+            string filePath = $"{TimeExportFolder}\\{filename}";
 
             string solution = part == 1 ? SolutionPart1.ToString() : SolutionPart2.ToString();
             TimeSpan solutionTime = part == 1 ? solutionTime1 : solutionTime2;
 
-            string fileContent = $"{Environment.MachineName}|{Configuration}\\Day {number.ToString("00")} - Part {part}: {solution} (solved in {solutionTime.TotalSeconds} seconds / {solutionTime}, saved at {DateTime.Now:yyyy-MM-dd_HH-mm-ss})\n";
+            string fileContent = $"{Environment.MachineName}|{Configuration}\\Year {year}, Day {number:00} - Part {part}: {solution} (solved in {solutionTime.TotalSeconds} seconds / {solutionTime}, saved at {DateTime.Now:yyyy-MM-dd_HH-mm-ss})\n";
 
             if (append)
             {
@@ -146,8 +165,6 @@ namespace AdventOfCode.Days
             {
                 File.WriteAllText(filePath, fileContent, Encoding.UTF8);
             }
-
-
         }
 
         public static void RunDay(int year, int number, Day dayInstance = null, bool batch = false, bool verbose = true, int times = 1)
@@ -180,7 +197,7 @@ namespace AdventOfCode.Days
                 //dayInstance.WriteToFile();
                 if (verbose)
                 {
-                    Console.WriteLine($"day {dayInstance.number.ToString("00")} part 1 : {dayInstance.SolutionPart1} - solved in {dayInstance.solutionTime1.TotalSeconds} seconds ({dayInstance.solutionTime1.TotalMilliseconds} milliseconds)");
+                    Console.WriteLine($"year {dayInstance.year}, day {dayInstance.number:00} part 1 : {dayInstance.SolutionPart1} - solved in {dayInstance.solutionTime1.TotalSeconds} seconds ({dayInstance.solutionTime1.TotalMilliseconds} milliseconds)");
                 }
                 try
                 {
@@ -204,7 +221,7 @@ namespace AdventOfCode.Days
 
                 if (verbose)
                 {
-                    Console.WriteLine($"day {dayInstance.number.ToString("00")} part 2 : {dayInstance.SolutionPart2} - solved in {dayInstance.solutionTime2.TotalSeconds} seconds ({dayInstance.solutionTime2.TotalMilliseconds} milliseconds)");
+                    Console.WriteLine($"year {dayInstance.year}, day {dayInstance.number:00} part 2 : {dayInstance.SolutionPart2} - solved in {dayInstance.solutionTime2.TotalSeconds} seconds ({dayInstance.solutionTime2.TotalMilliseconds} milliseconds)");
                     Console.WriteLine($"total time: {dayInstance.TotalTime.TotalSeconds} seconds ({dayInstance.TotalTime.TotalMilliseconds} milliseconds)");
                 }
 
@@ -223,11 +240,13 @@ namespace AdventOfCode.Days
                     {"Part1", dayInstance.solutionTime1},
                     {"Part2", dayInstance.solutionTime2}
                 };
-                if (!solutionTimes.ContainsKey(number))
+
+                string key = $"{year};{number}";
+                if (!solutionTimes.ContainsKey(key))
                 {
-                    solutionTimes[number] = new List<Dictionary<string, TimeSpan>>();
+                    solutionTimes[key] = new List<Dictionary<string, TimeSpan>>();
                 }
-                solutionTimes[number].Add(run);
+                solutionTimes[key].Add(run);
             }
 
             if (!batch)
