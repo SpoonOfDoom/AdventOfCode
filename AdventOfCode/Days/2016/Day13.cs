@@ -12,6 +12,8 @@ namespace AdventOfCode.Days._2016
     {
         public Day13() : base(2016, 13) {}
 
+        private static bool drawMap = false;
+        
         private struct Coordinate
         {
             public int X;
@@ -126,7 +128,7 @@ namespace AdventOfCode.Days._2016
         private void DrawMap(Coordinate start, Coordinate current, SimplePriorityQueue<Coordinate> openList, HashSet<Coordinate> closed)
         {
             var dummy = new Coordinate() {X = int.MaxValue, Y = int.MaxValue};
-            DrawMap(start, dummy, current, openList, closed);
+            //DrawMap(start, dummy, current, openList, closed);
         }
 
         private void DrawMap(Coordinate start, Coordinate target, Coordinate current, SimplePriorityQueue<Coordinate> openList, HashSet<Coordinate> closed)
@@ -201,7 +203,11 @@ namespace AdventOfCode.Days._2016
                     return nodeCostLookup[current];
                 }
 
-                DrawMap(start, target, current, openList, closed);
+                if (drawMap)
+                {
+                    DrawMap(start, target, current, openList, closed);
+                }
+                
                 var newNodes = ExpandNode(current);
                 int newCost = nodeCostLookup[current] + 1;
 
@@ -256,7 +262,10 @@ namespace AdventOfCode.Days._2016
                     visitedLocations.Add(current);
                 }
 
-                DrawMap(start, current, openList, closed);
+                if (drawMap)
+                {
+                    DrawMap(start, current, openList, closed);                    
+                }
                 
                 int newCost = nodeCostLookup[current] + 1;
                 var newNodes = ExpandNode(current);

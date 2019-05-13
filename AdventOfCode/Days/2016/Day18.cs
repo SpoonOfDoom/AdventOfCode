@@ -191,7 +191,7 @@ namespace AdventOfCode.Days._2016
             bool[,] grid = InitializeTiles(Input, 400000);
             FillTileGrid(grid);
             string gridResult = TileGridToString(grid);
-            Console.WriteLine(gridResult);
+//            Console.WriteLine(gridResult);
             int safeTiles = grid.Cast<bool>().Count(tile => !tile);
 
             return safeTiles; //19991126

@@ -548,7 +548,7 @@ namespace AdventOfCode.Days._2016
             startState.EmptyX = emptyNode.X;
             startState.EmptyY = emptyNode.Y;
             aStar.SearchNodeProcessed += AStarSearchNodeProcessed; //this is leftover from when I saved a whole lot more data and had much more runtime, and ran out of memory. Probably not needed anymore.
-            return aStar.GetMinimumCost(startState, verbose:true); //188
+            return aStar.GetMinimumCost(startState); //188
         }
     }
 }
