@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>AdventOfCode</RootNamespace>
     <AssemblyName>AdventOfCode</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <TargetFrameworkProfile />
@@ -34,6 +34,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BouncyCastle.Crypto, Version=1.8.4.0, Culture=neutral, PublicKeyToken=0e99375e54769942">
+      <HintPath>..\packages\BouncyCastle.1.8.4\lib\BouncyCastle.Crypto.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
@@ -52,38 +56,74 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Days\2015\Day01.cs" />
+    <Compile Include="Days\2015\Day02.cs" />
+    <Compile Include="Days\2015\Day03.cs" />
+    <Compile Include="Days\2015\Day04.cs" />
+    <Compile Include="Days\2015\Day05.cs" />
+    <Compile Include="Days\2015\Day06.cs" />
+    <Compile Include="Days\2015\Day07.cs" />
+    <Compile Include="Days\2015\Day08.cs" />
+    <Compile Include="Days\2015\Day09.cs" />
+    <Compile Include="Days\2015\Day10.cs" />
+    <Compile Include="Days\2015\Day11.cs" />
+    <Compile Include="Days\2015\Day12.cs" />
+    <Compile Include="Days\2015\Day13.cs" />
+    <Compile Include="Days\2015\Day14.cs" />
+    <Compile Include="Days\2015\Day15.cs" />
+    <Compile Include="Days\2015\Day16.cs" />
+    <Compile Include="Days\2015\Day17.cs" />
+    <Compile Include="Days\2015\Day18.cs" />
+    <Compile Include="Days\2015\Day19.cs" />
+    <Compile Include="Days\2015\Day20.cs" />
+    <Compile Include="Days\2015\Day21.cs" />
+    <Compile Include="Days\2015\Day22.cs" />
+    <Compile Include="Days\2015\Day23.cs" />
+    <Compile Include="Days\2015\Day24.cs" />
+    <Compile Include="Days\2015\Day25.cs" />
+    <Compile Include="Days\2016\Day01.cs" />
+    <Compile Include="Days\2016\Day02.cs" />
+    <Compile Include="Days\2016\Day03.cs" />
+    <Compile Include="Days\2016\Day04.cs" />
+    <Compile Include="Days\2016\Day05.cs" />
+    <Compile Include="Days\2016\Day06.cs" />
+    <Compile Include="Days\2016\Day07.cs" />
+    <Compile Include="Days\2016\Day08.cs" />
+    <Compile Include="Days\2016\Day09.cs" />
+    <Compile Include="Days\2016\Day10.cs" />
+    <Compile Include="Days\2016\Day11.cs" />
+    <Compile Include="Days\2016\Day12.cs" />
+    <Compile Include="Days\2016\Day13.cs" />
+    <Compile Include="Days\2016\Day14.cs" />
+    <Compile Include="Days\2016\Day15.cs" />
+    <Compile Include="Days\2016\Day16.cs" />
+    <Compile Include="Days\2016\Day17.cs" />
+    <Compile Include="Days\2016\Day18.cs" />
+    <Compile Include="Days\2016\Day19.cs" />
+    <Compile Include="Days\2016\Day20.cs" />
+    <Compile Include="Days\2016\Day21.cs" />
+    <Compile Include="Days\2016\Day22.cs" />
+    <Compile Include="Days\2016\Day23.cs" />
+    <Compile Include="Days\2016\Day24.cs" />
+    <Compile Include="Days\2016\Day25.cs" />
+    <Compile Include="Days\2017\Day01.cs" />
+    <Compile Include="Days\2017\Day02.cs" />
+    <Compile Include="Days\2017\Day03.cs" />
+    <Compile Include="Days\2017\Day04.cs" />
+    <Compile Include="Days\2017\Day05.cs" />
+    <Compile Include="Days\2017\Day06.cs" />
     <Compile Include="Days\Day.cs" />
-    <Compile Include="Days\Day1.cs" />
-    <Compile Include="Days\Day10.cs" />
-    <Compile Include="Days\Day11.cs" />
-    <Compile Include="Days\Day12.cs" />
-    <Compile Include="Days\Day13.cs" />
-    <Compile Include="Days\Day19.cs" />
-    <Compile Include="Days\Day18.cs" />
-    <Compile Include="Days\Day17.cs" />
-    <Compile Include="Days\Day16.cs" />
-    <Compile Include="Days\Day15.cs" />
-    <Compile Include="Days\Day14.cs" />
-    <Compile Include="Days\Day21.cs" />
-    <Compile Include="Days\Day25.cs" />
-    <Compile Include="Days\Day24.cs" />
-    <Compile Include="Days\Day23.cs" />
-    <Compile Include="Days\Day22.cs" />
-    <Compile Include="Days\Day20.cs" />
-    <Compile Include="Days\Day2.cs" />
-    <Compile Include="Days\Day3.cs" />
-    <Compile Include="Days\Day4.cs" />
-    <Compile Include="Days\Day5.cs" />
-    <Compile Include="Days\Day6.cs" />
-    <Compile Include="Days\Day7.cs" />
-    <Compile Include="Days\Day8.cs" />
-    <Compile Include="Days\Day9.cs" />
-    <Compile Include="Days\InputEmptyException.cs" />
+    <Compile Include="Extensions\CharExtensions.cs" />
     <Compile Include="Extensions\EnumerableExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
+    <Compile Include="Extensions\TupleExtensions.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tools\AStar.cs" />
+    <Compile Include="Tools\FrequentlyUsedEnums\DirectionMethods.cs" />
+    <Compile Include="Tools\TailRecursion.cs" />
+    <Compile Include="Tools\Toolbox.cs" />
+    <Compile Include="Tools\Trampoline.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
@@ -92,81 +132,13 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="input\day16.txt">
+    <Content Include="Input\**\*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="input\day15.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="input\day14.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="input\day13.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="input\day12.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="input\day11.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="input\day17.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="input\day21.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="input\day25.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="input\day24.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="input\day23.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="input\day22.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="input\day20.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="input\day19.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="input\day18.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="input\day5.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="input\day4.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="input\day3.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="input\day2.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="input\day1.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="input\day6.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="input\day10.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="input\day9.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="input\day8.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="input\day7.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Days\2018" />
+    <Folder Include="Input\2018" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

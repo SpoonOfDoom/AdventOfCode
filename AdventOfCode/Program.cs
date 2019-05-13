@@ -1,6 +1,4 @@
 ﻿using AdventOfCode.Days;
-using System;
-using System.Diagnostics;
 
 namespace AdventOfCode
 {
@@ -8,7 +6,7 @@ namespace AdventOfCode
     {
         static void Main()
         {
-            Day.RunAllDays();
+            Day.RunDaysOfYear(2017);
         }
     }
 }
