@@ -155,7 +155,7 @@ namespace AdventOfCode.Days._2016
                 }
                 Console.Write("\n");
             }
-            Console.Read();
+//            Console.Read();
             //todo: read letters programmatically
             return "RURUCEOEIL"; //RURUCEOEIL
         }

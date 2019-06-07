@@ -184,7 +184,7 @@ namespace AdventOfCode.Days
             {
                 var sw = new Stopwatch();
 
-                Console.WriteLine($"Starting {year}, day {number}, part 1...");
+                Console.WriteLine($"Starting {year}, day {number}, part 1 at {DateTime.Now}...");
                 sw.Start();
                 object solution1 = dayInstance.GetSolutionPart1();
                 sw.Stop();
@@ -209,7 +209,7 @@ namespace AdventOfCode.Days
                     Console.WriteLine(ex);
                 }
 
-                Console.WriteLine($"Starting {year}, day {number}, part 2...");
+                Console.WriteLine($"Starting {year}, day {number}, part 2 at {DateTime.Now}...");
                 sw.Restart();
                 object solution2 = dayInstance.GetSolutionPart2();
                 sw.Stop();
