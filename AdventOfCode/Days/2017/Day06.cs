@@ -132,9 +132,9 @@ namespace AdventOfCode.Days._2017
 			    Reallocate(testInputs);
 			    stringState = string.Join("", testInputs);
 			    count++;
-			    foreach (KeyValuePair<string,int> pair in testStates)
+			    foreach (string key in testStates.Keys.ToList())
 			    {
-				    testStates[pair.Key]++;
+				    testStates[key]++;
 			    }
 		    }
 		    
@@ -156,9 +156,9 @@ namespace AdventOfCode.Days._2017
 			    Reallocate(banks);
 			    stringState = string.Join("", banks);
 			    count++;
-			    foreach (KeyValuePair<string,int> pair in states)
+			    foreach (string key in states.Keys.ToList())
 			    {
-				    states[pair.Key]++;
+				    states[key]++;
 			    }
 		    }
 		    
