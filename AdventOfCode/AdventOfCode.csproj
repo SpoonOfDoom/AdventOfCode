@@ -112,6 +112,7 @@
     <Compile Include="Days\2017\Day04.cs" />
     <Compile Include="Days\2017\Day05.cs" />
     <Compile Include="Days\2017\Day06.cs" />
+    <Compile Include="Days\2017\Day07.cs" />
     <Compile Include="Days\Day.cs" />
     <Compile Include="Extensions\CharExtensions.cs" />
     <Compile Include="Extensions\EnumerableExtensions.cs" />
@@ -138,7 +139,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Days\2018" />
-    <Folder Include="Input\2018" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
